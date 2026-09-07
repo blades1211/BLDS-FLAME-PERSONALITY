@@ -1,22 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>THE FLAME RESONANCE ASSESSMENT // BLDS ARCHIVE</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-color: #050505;
-            --panel-bg: rgba(18, 18, 18, 0.75);
-            --panel-border: rgba(255, 255, 255, 0.12);
-            --panel-border-glow: rgba(255, 255, 255, 0.25);
-            --text-main: #f0f0f0;
-            --text-muted: #888888;
-            --text-dim: #555555;
-            --accent-glow: rgba(255, 255, 255, 0.85);
-            --warning-color: #d97706;
-            --font-family: 'Courier New', Courier, monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --max-width: 900px;
+            --bg-void: #040405;
+            --bg-surface: #0a0a0d;
+            --bg-card: rgba(15, 15, 20, 0.65);
+            --bg-card-hover: rgba(25, 25, 35, 0.75);
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 255, 255, 0.2);
+            --border-active: rgba(255, 255, 255, 0.6);
+
+            --text-primary: #f0f2f5;
+            --text-secondary: #8c92a0;
+            --text-dim: #4a505e;
+
+            --flame-warm-glow: rgba(255, 255, 255, 0.12);
+            --accent-flame: #ffffff;
+            --warning-amber: #d97706;
+            --shadow-red: #e11d48;
+
+            --font-heading: 'Chakra Petch', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --max-width: 860px;
         }
 
         * {
@@ -26,124 +42,181 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Ambient Layering & Atmospheric Effects */
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-family);
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            overflow-x: hidden;
+            min-height: 100vh;
             position: relative;
             background-image: 
-                radial-gradient(circle at 50% 30%, rgba(30, 30, 30, 0.4) 0%, transparent 70%),
-                linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(5,5,5,1));
-            line-height: 1.5;
+                radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
+                radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.8) 0%, var(--bg-void) 100%);
         }
 
-        /* Ambient scanline overlay */
+        /* Subtle Grid Pattern Overlay */
         body::before {
-            content: " ";
-            display: block;
+            content: "";
             position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 4px;
-            z-index: 1000;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 32px 32px;
             pointer-events: none;
-            opacity: 0.6;
+            z-index: 1;
+        }
+
+        /* Faint Vignette & Scanline */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.7) 100%),
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 100%, 100% 4px;
+            pointer-events: none;
+            z-index: 2;
         }
 
         .container {
             width: 100%;
             max-width: var(--max-width);
-            padding: 24px 16px;
+            padding: 24px 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             z-index: 10;
+            margin: 0 auto;
         }
 
-        /* Typography & Utility */
-        .system-label {
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
+        /* Header Navigation Minimalist */
+        header {
+            width: 100%;
+            max-width: var(--max-width);
+            padding: 20px 20px 0 20px;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 12px;
+        }
+
+        .header-brand {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .system-label::before {
-            content: "◈";
-            color: var(--text-main);
-        }
-
-        h1 {
-            font-size: clamp(1.8rem, 5vw, 2.8rem);
+        .header-brand span {
+            color: var(--text-secondary);
             font-weight: 300;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            line-height: 1.2;
-            margin-bottom: 12px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
-        .tagline {
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            margin-bottom: 32px;
+        .header-tag {
+            font-size: 0.7rem;
+            color: var(--text-dim);
             letter-spacing: 1px;
         }
 
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .eyebrow::before {
+            content: "◈";
+            color: var(--text-primary);
+            font-size: 0.8rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-subtitle {
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            margin-bottom: 32px;
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+        }
+
+        /* Panels & Cards */
         .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 24px;
+            border-radius: 4px;
             margin-bottom: 24px;
             position: relative;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            transition: border-color 0.3s ease;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .panel::before {
-            content: "✦";
+            content: "";
             position: absolute;
-            top: -6px;
-            left: -6px;
-            font-size: 10px;
-            color: var(--text-muted);
+            top: -1px; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
         }
 
-        .panel::after {
-            content: "✦";
-            position: absolute;
-            bottom: -6px;
-            right: -6px;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        /* Buttons */
+        /* Custom Futuristic Button */
         .btn {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--panel-border);
-            padding: 14px 28px;
-            font-family: inherit;
-            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            border: 1px solid var(--border-glow);
+            padding: 16px 28px;
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+            font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             width: 100%;
             display: inline-flex;
             justify-content: center;
@@ -151,85 +224,178 @@
             gap: 12px;
             outline: none;
             position: relative;
-            overflow: hidden;
+            border-radius: 2px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
         .btn:hover:not(:disabled) {
-            border-color: var(--text-main);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+            border-color: var(--border-active);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
         }
 
         .btn:active:not(:disabled) {
             transform: translateY(1px);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
         }
 
         .btn:disabled {
-            opacity: 0.3;
+            opacity: 0.35;
             cursor: not-allowed;
-            border-color: var(--text-dim);
+            border-color: var(--border-subtle);
         }
 
-        /* Input fields */
+        /* Input Fields */
         .input-group {
-            margin-bottom: 24px;
-            position: relative;
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             letter-spacing: 2px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
         .text-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--panel-border);
-            color: var(--text-main);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-glow);
+            color: var(--text-primary);
             padding: 14px 16px;
-            font-family: inherit;
+            font-family: var(--font-mono);
             font-size: 1rem;
-            letter-spacing: 1px;
+            border-radius: 2px;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .text-input:focus {
-            border-color: var(--text-main);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            border-color: var(--text-primary);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 15, 0.8);
         }
 
-        /* Status indicators */
+        /* Status Indicators */
         .status-msg {
             font-size: 0.8rem;
             letter-spacing: 1px;
-            margin-top: 8px;
+            margin-top: 10px;
             min-height: 20px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .status-msg.success { color: #10b981; }
         .status-msg.error { color: #f43f5e; }
-        .status-msg.warning { color: var(--warning-color); }
+        .status-msg.warning { color: var(--warning-amber); }
 
-        /* Views management */
+        /* Compact System Status Box */
+        .system-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            letter-spacing: 1px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* CORE RESONANCE ANIMATED SVG VISUAL */
+        .core-visual-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 32px 0;
+            position: relative;
+        }
+
+        .core-svg {
+            width: 140px;
+            height: 140px;
+            overflow: visible;
+        }
+
+        .core-ring {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.15);
+            stroke-width: 1;
+            transform-origin: center;
+        }
+
+        .core-ring-1 {
+            animation: rotateClockwise 20s linear infinite;
+            stroke-dasharray: 4 8 12 8;
+        }
+
+        .core-ring-2 {
+            animation: rotateCounterClockwise 15s linear infinite;
+            stroke-dasharray: 20 10 5 10;
+            stroke: rgba(255, 255, 255, 0.25);
+        }
+
+        .core-diamond {
+            fill: rgba(255, 255, 255, 0.05);
+            stroke: #ffffff;
+            stroke-width: 1.5;
+            transform-origin: center;
+            animation: pulseCore 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+        }
+
+        @keyframes rotateClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateCounterClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes pulseCore {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.7)); }
+        }
+
+        /* View Switching */
         .view {
             display: none;
             opacity: 0;
-            transition: opacity 0.4s ease-in-out;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .view.active {
             display: block;
             opacity: 1;
+            transform: translateY(0);
         }
 
-        /* Assessment UI */
+        /* Assessment Question UI */
         .progress-container {
             margin-bottom: 24px;
         }
@@ -238,32 +404,35 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.75rem;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            margin-bottom: 8px;
+            color: var(--text-secondary);
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
         }
 
         .progress-bar-bg {
             width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            position: relative;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
             overflow: hidden;
+            position: relative;
         }
 
         .progress-bar-fill {
             height: 100%;
-            background: var(--text-main);
+            background: var(--text-primary);
             width: 0%;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 8px var(--text-main);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .question-text {
-            font-size: clamp(1rem, 3vw, 1.25rem);
-            line-height: 1.6;
+            font-family: var(--font-heading);
+            font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+            font-weight: 400;
+            line-height: 1.5;
             margin-bottom: 28px;
-            font-weight: 300;
+            color: var(--text-primary);
         }
 
         .options-container {
@@ -275,126 +444,128 @@
 
         .option-btn {
             background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--panel-border);
-            padding: 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 16px 18px;
             text-align: left;
-            color: var(--text-muted);
-            font-family: inherit;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 14px;
             line-height: 1.5;
+            border-radius: 2px;
         }
 
         .option-btn:hover {
             background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
+            color: var(--text-primary);
             border-color: rgba(255, 255, 255, 0.3);
         }
 
         .option-btn.selected {
             background: rgba(255, 255, 255, 0.08);
-            color: var(--text-main);
-            border-color: var(--text-main);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05), 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .option-prefix {
-            font-weight: bold;
+            font-weight: 700;
             color: var(--text-dim);
             flex-shrink: 0;
+            font-family: var(--font-heading);
         }
 
         .option-btn.selected .option-prefix {
-            color: var(--text-main);
+            color: var(--text-primary);
         }
 
-        /* Calibration Sequence */
+        /* Calibration Reveal UI */
         .calibration-screen {
             text-align: center;
             padding: 60px 20px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-top: 1px solid var(--text-main);
-            border-radius: 50%;
-            margin: 0 auto 24px auto;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .calibration-text {
-            font-size: 0.85rem;
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
             letter-spacing: 3px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             height: 24px;
+            text-transform: uppercase;
+            margin-top: 20px;
         }
 
         /* Results Display */
         .result-header {
             text-align: center;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 20px;
             margin-bottom: 24px;
         }
 
         .primary-card {
-            border: 1px solid var(--text-main);
-            padding: 24px;
+            border: 1px solid var(--border-glow);
+            padding: 28px 20px;
             text-align: center;
             margin-bottom: 24px;
             background: rgba(255, 255, 255, 0.02);
-            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.02);
         }
 
         .symbol-large {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 12px;
             display: block;
+            color: var(--text-primary);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
         .tier-badge {
             display: inline-block;
-            font-size: 0.7rem;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 600;
             letter-spacing: 2px;
-            padding: 2px 8px;
-            border: 1px solid var(--panel-border);
-            color: var(--text-muted);
-            margin-top: 8px;
+            padding: 4px 12px;
+            border: 1px solid var(--border-glow);
+            color: var(--text-primary);
+            margin-top: 10px;
             text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .resonance-warning {
-            border: 1px solid var(--warning-color);
-            background: rgba(217, 119, 6, 0.05);
-            padding: 16px;
+            border: 1px solid var(--warning-amber);
+            background: rgba(217, 119, 6, 0.06);
+            padding: 16px 20px;
             margin-bottom: 24px;
             font-size: 0.85rem;
             color: #fcd34d;
-            line-height: 1.5;
+            line-height: 1.6;
+            border-radius: 2px;
         }
 
         .flame-grid {
             display: flex;
             flex-direction: column;
             gap: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
         }
 
         .flame-item {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .flame-info {
@@ -408,28 +579,34 @@
             height: 4px;
             background: rgba(255,255,255,0.05);
             width: 100%;
+            border-radius: 2px;
+            overflow: hidden;
         }
 
         .flame-bar-fill {
             height: 100%;
-            background: var(--text-main);
+            background: var(--text-primary);
             width: 0%;
+            transition: width 0.8s ease;
         }
 
         .details-toggle {
             cursor: pointer;
             user-select: none;
-            padding: 12px;
-            border: 1px solid var(--panel-border);
+            padding: 14px;
+            border: 1px solid var(--border-subtle);
             text-align: center;
-            font-size: 0.8rem;
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
             letter-spacing: 2px;
             margin-bottom: 24px;
             transition: background 0.2s ease;
+            color: var(--text-secondary);
         }
 
         .details-toggle:hover {
             background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
         }
 
         .details-content {
@@ -442,51 +619,59 @@
         }
 
         /* Disclaimer & Footer */
-        .disclaimer {
-            font-size: 0.7rem;
+        .disclaimer-card {
+            font-size: 0.72rem;
             color: var(--text-dim);
-            line-height: 1.4;
-            margin-top: 24px;
+            line-height: 1.5;
+            margin-top: 12px;
+            margin-bottom: 24px;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 16px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 2px;
         }
 
         footer {
             width: 100%;
             max-width: var(--max-width);
-            padding: 32px 16px;
-            border-top: 1px solid var(--panel-border);
+            padding: 24px 20px 32px 20px;
+            border-top: 1px solid var(--border-subtle);
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 16px;
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             letter-spacing: 1px;
         }
 
         .footer-links {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
+            width: 100%;
         }
 
         .footer-link {
-            color: var(--text-main);
+            color: var(--text-primary);
             text-decoration: none;
-            border: 1px solid var(--panel-border);
-            padding: 8px 16px;
+            border: 1px solid var(--border-subtle);
+            padding: 10px 20px;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border-radius: 2px;
         }
 
         .footer-link:hover {
-            border-color: var(--text-main);
+            border-color: var(--border-glow);
             background: rgba(255, 255, 255, 0.05);
         }
 
@@ -499,73 +684,108 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-width: 90vw;
+            max-width: calc(100vw - 40px);
         }
 
         .toast {
-            background: #121212;
-            border: 1px solid var(--panel-border);
-            color: var(--text-main);
+            background: rgba(12, 12, 16, 0.95);
+            border: 1px solid var(--border-glow);
+            color: var(--text-primary);
             padding: 12px 20px;
             font-size: 0.8rem;
             letter-spacing: 1px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             gap: 10px;
+            border-radius: 2px;
+            backdrop-filter: blur(8px);
             animation: slideIn 0.3s ease forwards;
         }
 
         .toast.error { border-color: #f43f5e; }
-        .toast.warning { border-color: var(--warning-color); }
+        .toast.warning { border-color: var(--warning-amber); }
 
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Accessibility: Respect Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Mobile First Breakpoints */
         @media (max-width: 600px) {
-            .container { padding: 16px 12px; }
-            .panel { padding: 16px; }
-            .btn { padding: 12px 20px; font-size: 0.8rem; }
-            .option-btn { padding: 12px; font-size: 0.85rem; }
-            footer { padding: 24px 12px; }
-            .footer-links { flex-direction: column; width: 100%; }
+            .container { padding: 16px 16px; }
+            .panel { padding: 18px 16px; margin-bottom: 18px; }
+            .btn { padding: 14px 18px; font-size: 0.85rem; }
+            .option-btn { padding: 14px 14px; font-size: 0.85rem; gap: 10px; }
+            header { padding: 16px 16px 12px 16px; }
+            footer { padding: 20px 16px 28px 16px; }
+            .footer-links { flex-direction: column; }
             .footer-link { width: 100%; justify-content: center; }
+            .core-svg { width: 110px; height: 110px; }
+            .hero-title { font-size: 2.1rem; }
         }
     </style>
 </head>
 <body>
 
+    <header>
+        <div class="header-brand">
+            BLDS <span>/ RESONANCE DIVISION</span>
+        </div>
+        <div class="header-tag">ARCHIVE // 2026</div>
+    </header>
+
     <div class="container">
-        <!-- 1. LANDING VIEW -->
+        
         <div id="view-landing" class="view active">
-            <div class="system-label">BLDS ARCHIVE // RESONANCE DIVISION</div>
-            <h1>THE FLAME<br>RESONANCE</h1>
-            <p class="tagline">"Every Fragment reflects something within you."</p>
+            <div style="text-align: center; margin-top: 10px;">
+                <div class="eyebrow" style="justify-content: center;">BLDS ARCHIVE // RESONANCE SYSTEM</div>
+                <h1 class="hero-title">THE FLAME<br>RESONANCE</h1>
+                <p class="hero-subtitle">"Every Fragment reflects something within you."</p>
+
+                <div class="core-visual-container">
+                    <svg class="core-svg" viewBox="0 0 100 100">
+                        <circle class="core-ring core-ring-1" cx="50" cy="50" r="42" />
+                        <circle class="core-ring core-ring-2" cx="50" cy="50" r="32" />
+                        <polygon class="core-diamond" points="50,22 72,50 50,78 28,50" />
+                        <circle cx="50" cy="50" r="2" fill="#ffffff" />
+                    </svg>
+                </div>
+
+                <div class="system-status-pill">
+                    <span class="status-dot"></span>
+                    <span>CORE CONNECTION — STABLE</span>
+                </div>
+            </div>
 
             <div class="panel">
-                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.8;">
-                    ◈ SYSTEM ONLINE<br>
-                    ◈ CORE CONNECTION ESTABLISHED<br>
-                    ◈ AWAITING SUBJECT REGISTRATION
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 24px; line-height: 1.6;">
-                    The Core emits Fragments. Fragments yield Flames. The nature of your inner drive determines which Flame resonates with your soul. Proceed to establish your registry ID.
+                <div class="eyebrow">CORE RECORD</div>
+                <p style="font-size: 0.88rem; color: var(--text-primary); margin-bottom: 20px; line-height: 1.7;">
+                    The Core emits Fragments. Fragments yield Flames. The nature of your inner drive determines which Flame resonates with your soul.
                 </p>
+                
                 <button class="btn" onclick="switchView('view-register')">
-                    [ BEGIN RESONANCE ]
+                    <span>◈ BEGIN RESONANCE</span>
                 </button>
             </div>
 
-            <p class="disclaimer">
+            <div class="disclaimer-card">
                 This is a fictional personality-based assessment created for the BLDS universe. It is not a clinical psychological test or professional diagnosis.
-            </p>
+            </div>
         </div>
 
-        <!-- 2. REGISTRATION VIEW -->
         <div id="view-register" class="view">
-            <div class="system-label">IDENTIFICATION PROTOCOL</div>
+            <div class="eyebrow">IDENTIFICATION PROTOCOL</div>
             <div class="panel">
                 <div class="input-group">
                     <label for="participant-name">ENTER SUBJECT NAME / DESIGNATION</label>
@@ -574,15 +794,15 @@
                 </div>
 
                 <button id="btn-check-name" class="btn" onclick="handleNameCheck()">
-                    [ CHECK RESONANCE ID ]
+                    <span>[ CHECK RESONANCE ID ]</span>
                 </button>
             </div>
-            <button class="btn" style="border-color: transparent;" onclick="switchView('view-landing')">
+
+            <button class="btn" style="border-color: transparent; background: transparent; box-shadow: none;" onclick="switchView('view-landing')">
                 ← BACK TO TERMINAL
             </button>
         </div>
 
-        <!-- 3. ASSESSMENT VIEW -->
         <div id="view-assessment" class="view">
             <div class="progress-container">
                 <div class="progress-header">
@@ -597,24 +817,28 @@
             <div class="panel">
                 <div id="question-text" class="question-text">Loading query...</div>
                 <div id="options-container" class="options-container"></div>
+                
                 <button id="btn-next" class="btn" disabled onclick="handleNextQuestion()">
-                    CONTINUE →
+                    <span>CONTINUE →</span>
                 </button>
             </div>
         </div>
 
-        <!-- 4. CALIBRATION VIEW -->
         <div id="view-calibration" class="view">
             <div class="panel calibration-screen">
-                <div class="spinner"></div>
+                <div class="core-visual-container" style="margin: 0 0 20px 0;">
+                    <svg class="core-svg" viewBox="0 0 100 100" style="width: 90px; height: 90px;">
+                        <circle class="core-ring core-ring-1" cx="50" cy="50" r="40" />
+                        <polygon class="core-diamond" points="50,25 68,50 50,75 32,50" />
+                    </svg>
+                </div>
                 <div id="calibration-status" class="calibration-text">CALIBRATING...</div>
             </div>
         </div>
 
-        <!-- 5. RESULT VIEW -->
         <div id="view-result" class="view">
             <div class="result-header">
-                <div class="system-label" style="justify-content: center;">RESONANCE PROFILE ESTABLISHED</div>
+                <div class="eyebrow" style="justify-content: center;">RESONANCE PROFILE ESTABLISHED</div>
                 <h1 style="font-size: 1.8rem; margin-bottom: 4px;" id="res-display-name">SUBJECT NAME</h1>
                 <div style="font-size: 0.75rem; color: var(--text-dim); letter-spacing: 2px;" id="res-participant-id">ID: 00000000</div>
             </div>
@@ -624,37 +848,37 @@
             </div>
 
             <div class="primary-card">
-                <div class="system-label" style="justify-content: center; margin-bottom: 12px;">PRIMARY RESONANCE</div>
+                <div class="eyebrow" style="justify-content: center; margin-bottom: 12px;">PRIMARY RESONANCE</div>
                 <span id="res-primary-symbol" class="symbol-large">◇</span>
-                <h2 id="res-primary-name" style="font-size: 1.5rem; letter-spacing: 3px; font-weight: 400;">FLAME</h2>
-                <div id="res-primary-score" style="font-size: 1.2rem; color: var(--text-muted); margin: 4px 0;">0.0 / 10</div>
+                <h2 id="res-primary-name" style="font-size: 1.6rem; letter-spacing: 3px; font-weight: 600;">FLAME</h2>
+                <div id="res-primary-score" style="font-size: 1.2rem; color: var(--text-secondary); margin: 6px 0;">0.0 / 10</div>
                 <div id="res-primary-tier" class="tier-badge">DORMANT</div>
-                <p id="res-primary-desc" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 16px; font-style: italic;"></p>
+                <p id="res-primary-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 16px; font-style: italic;"></p>
             </div>
 
             <div class="panel">
-                <div class="system-label">SECONDARY RESONANCE</div>
+                <div class="eyebrow">SECONDARY RESONANCE</div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                    <span id="res-secondary-name" style="font-size: 1.1rem;">-</span>
-                    <span id="res-secondary-score" style="color: var(--text-muted);">0.0 / 10</span>
+                    <span id="res-secondary-name" style="font-size: 1.1rem; font-family: var(--font-heading);">-</span>
+                    <span id="res-secondary-score" style="color: var(--text-secondary);">0.0 / 10</span>
                 </div>
-                <div id="res-secondary-tier" class="tier-badge" style="margin-bottom: 16px;">-</div>
+                <div id="res-secondary-tier" class="tier-badge" style="margin-bottom: 20px;">-</div>
 
-                <div class="system-label" style="margin-top: 16px;">TERTIARY RESONANCE</div>
+                <div class="eyebrow" style="margin-top: 16px;">TERTIARY RESONANCE</div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                    <span id="res-tertiary-name" style="font-size: 1.1rem;">-</span>
-                    <span id="res-tertiary-score" style="color: var(--text-muted);">0.0 / 10</span>
+                    <span id="res-tertiary-name" style="font-size: 1.1rem; font-family: var(--font-heading);">-</span>
+                    <span id="res-tertiary-score" style="color: var(--text-secondary);">0.0 / 10</span>
                 </div>
                 <div id="res-tertiary-tier" class="tier-badge">-</div>
             </div>
 
-            <div class="panel" style="border-color: rgba(255, 255, 255, 0.2);">
-                <div class="system-label">PRIMARY SHADOW</div>
+            <div class="panel" style="border-color: rgba(225, 29, 72, 0.3);">
+                <div class="eyebrow" style="color: #f43f5e;">PRIMARY SHADOW</div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                    <span id="res-shadow-name" style="font-size: 1.1rem; color: #e11d48;">-</span>
-                    <span id="res-shadow-score" style="color: var(--text-muted);">0.0 / 10</span>
+                    <span id="res-shadow-name" style="font-size: 1.1rem; color: #f43f5e; font-family: var(--font-heading);">-</span>
+                    <span id="res-shadow-score" style="color: var(--text-secondary);">0.0 / 10</span>
                 </div>
-                <p id="res-shadow-desc" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;"></p>
+                <p id="res-shadow-desc" style="font-size: 0.82rem; color: var(--text-secondary); font-style: italic;"></p>
             </div>
 
             <div class="details-toggle" onclick="toggleDetails()">
@@ -662,36 +886,37 @@
             </div>
 
             <div id="details-content" class="details-content panel">
-                <div class="system-label" style="margin-bottom: 16px;">GREATER FLAMES</div>
+                <div class="eyebrow" style="margin-bottom: 16px;">GREATER FLAMES</div>
                 <div id="greater-flames-list" class="flame-grid"></div>
 
-                <div class="system-label" style="margin-top: 24px; margin-bottom: 16px;">LESSER FLAMES</div>
+                <div class="eyebrow" style="margin-top: 24px; margin-bottom: 16px;">LESSER FLAMES</div>
                 <div id="lesser-flames-list" class="flame-grid"></div>
 
-                <div class="system-label" style="margin-top: 24px; margin-bottom: 16px;">SHADOW SPECTRUM</div>
+                <div class="eyebrow" style="margin-top: 24px; margin-bottom: 16px; color: #f43f5e;">SHADOW SPECTRUM</div>
                 <div id="shadow-flames-list" class="flame-grid"></div>
             </div>
 
             <div class="panel">
-                <div class="system-label">◈ ABOUT THE FLAMES</div>
-                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+                <div class="eyebrow">ABOUT THE FLAMES</div>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7;">
                     Every Fragment carries the potential to produce a Flame. But the Flame does not choose its bearer. It reflects them. A Fragment may awaken the same Core energy within different people, yet no two resonances are necessarily the same. The stronger the connection between a person and their nature, the stronger the Flame becomes. And where light exists, a shadow may follow.
                 </p>
             </div>
 
-            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-direction: column;">
                 <button class="btn" onclick="copyResults()">[ COPY RESULT ]</button>
-                <button class="btn" onclick="restartAssessment()">[ ↻ RETAKE ]</button>
+                <button class="btn" style="border-color: transparent; background: transparent; box-shadow: none;" onclick="restartAssessment()">[ ↻ RETAKE ASSESSMENT ]</button>
             </div>
 
-            <p class="disclaimer">
+            <div class="disclaimer-card">
                 This is a fictional personality-based assessment created for the BLDS universe. It is not a clinical psychological test or professional diagnosis.
-            </p>
+            </div>
         </div>
+
     </div>
 
     <footer>
-        <div>BLACKLIGHTDOMS © 2026</div>
+        <div style="font-family: var(--font-heading); font-weight: 600;">BLACKLIGHTDOMS © 2026</div>
         <div class="footer-links">
             <a class="footer-link" href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&ilr=1" target="_blank" rel="noopener noreferrer">
                 <span>◉ WHATSAPP COMMUNITY</span>
@@ -1265,7 +1490,6 @@
             // Derive dependent shadow points if not directly assigned
             Object.keys(FLAMES).forEach(flameKey => {
                 const shadowKey = FLAMES[flameKey].shadow;
-                // Shadow score builds partially from secondary choices
                 if (AppState.shadowScores[shadowKey] === 0) {
                     AppState.shadowScores[shadowKey] = Math.round(AppState.flameScores[flameKey] * 0.4);
                 }
@@ -1275,7 +1499,6 @@
             const normalizedFlames = {};
             const normalizedShadows = {};
 
-            // Max achievable score per flame is ~18-24. We divide by max benchmark (~20) * 10
             Object.keys(FLAMES).forEach(k => {
                 let score = (AppState.flameScores[k] / 18) * 10;
                 normalizedFlames[k] = Math.min(10.0, Math.max(0.5, parseFloat(score.toFixed(1))));
