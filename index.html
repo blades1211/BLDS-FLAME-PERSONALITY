@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FLAME RESONANCE ASSESSMENT // BLDS ARCHIVE</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: rgba(18, 18, 18, 0.75);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --panel-border-glow: rgba(255, 255, 255, 0.25);
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            --text-dim: #555555;
+            --accent-glow: rgba(255, 255, 255, 0.85);
+            --warning-color: #d97706;
+            --font-family: 'Courier New', Courier, monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --max-width: 900px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(30, 30, 30, 0.4) 0%, transparent 70%),
+                linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(5,5,5,1));
+            line-height: 1.5;
+        }
+
+        /* Ambient scanline overlay */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            padding: 24px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* Typography & Utility */
+        .system-label {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .system-label::before {
+            content: "◈";
+            color: var(--text-main);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .tagline {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        .panel::before {
+            content: "✦";
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .panel::after {
+            content: "✦";
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--panel-border);
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover:not(:disabled) {
+            border-color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: var(--text-dim);
+        }
+
+        /* Input fields */
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .text-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            border-color: var(--text-main);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Status indicators */
+        .status-msg {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            min-height: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-msg.success { color: #10b981; }
+        .status-msg.error { color: #f43f5e; }
+        .status-msg.warning { color: var(--warning-color); }
+
+        /* Views management */
+        .view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .view.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Assessment UI */
+        .progress-container {
+            margin-bottom: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--text-main);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--text-main);
+        }
+
+        .question-text {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            line-height: 1.6;
+            margin-bottom: 28px;
+            font-weight: 300;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--panel-border);
+            padding: 16px;
+            text-align: left;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .option-btn.selected {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border-color: var(--text-main);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .option-prefix {
+            font-weight: bold;
+            color: var(--text-dim);
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .option-prefix {
+            color: var(--text-main);
+        }
+
+        /* Calibration Sequence */
+        .calibration-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid var(--text-main);
+            border-radius: 50%;
+            margin: 0 auto 24px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .calibration-text {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            height: 24px;
+        }
+
+        /* Results Display */
+        .result-header {
+            text-align: center;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+        }
+
+        .primary-card {
+            border: 1px solid var(--text-main);
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.03);
+        }
+
+        .symbol-large {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            padding: 2px 8px;
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        .resonance-warning {
+            border: 1px solid var(--warning-color);
+            background: rgba(217, 119, 6, 0.05);
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: #fcd34d;
+            line-height: 1.5;
+        }
+
+        .flame-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .flame-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .flame-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .flame-bar-bg {
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            width: 100%;
+        }
+
+        .flame-bar-fill {
+            height: 100%;
+            background: var(--text-main);
+            width: 0%;
+        }
+
+        .details-toggle {
+            cursor: pointer;
+            user-select: none;
+            padding: 12px;
+            border: 1px solid var(--panel-border);
+            text-align: center;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            transition: background 0.2s ease;
+        }
+
+        .details-toggle:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .details-content {
+            display: none;
+            margin-bottom: 24px;
+        }
+
+        .details-content.open {
+            display: block;
+        }
+
+        /* Disclaimer & Footer */
+        .disclaimer {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+            margin-top: 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 16px;
+        }
+
+        footer {
+            width: 100%;
+            max-width: var(--max-width);
+            padding: 32px 16px;
+            border-top: 1px solid var(--panel-border);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: var(--text-main);
+            text-decoration: none;
+            border: 1px solid var(--panel-border);
+            padding: 8px 16px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-link:hover {
+            border-color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom Toast Notification */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 90vw;
+        }
+
+        .toast {
+            background: #121212;
+            border: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 12px 20px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .toast.error { border-color: #f43f5e; }
+        .toast.warning { border-color: var(--warning-color); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 16px 12px; }
+            .panel { padding: 16px; }
+            .btn { padding: 12px 20px; font-size: 0.8rem; }
+            .option-btn { padding: 12px; font-size: 0.85rem; }
+            footer { padding: 24px 12px; }
+            .footer-links { flex-direction: column; width: 100%; }
+            .footer-link { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. LANDING VIEW -->
+        <div id="view-landing" class="view active">
+            <div class="system-label">BLDS ARCHIVE // RESONANCE DIVISION</div>
+            <h1>THE FLAME<br>RESONANCE</h1>
+            <p class="tagline">"Every Fragment reflects something within you."</p>
+
+            <div class="panel">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.8;">
+                    ◈ SYSTEM ONLINE<br>
+                    ◈ CORE CONNECTION ESTABLISHED<br>
+                    ◈ AWAITING SUBJECT REGISTRATION
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 24px; line-height: 1.6;">
+                    The Core emits Fragments. Fragments yield Flames. The nature of your inner drive determines which Flame resonates with your soul. Proceed to establish your registry ID.
+                </p>
+                <button class="btn" onclick="switchView('view-register')">
+                    [ BEGIN RESONANCE ]
+                </button>
+            </div>
+
+            <p class="disclaimer">
+                This is a fictional personality-based assessment created for the BLDS universe. It is not a clinical psychological test or professional diagnosis.
+            </p>
+        </div>
+
+        <!-- 2. REGISTRATION VIEW -->
+        <div id="view-register" class="view">
+            <div class="system-label">IDENTIFICATION PROTOCOL</div>
+            <div class="panel">
+                <div class="input-group">
+                    <label for="participant-name">ENTER SUBJECT NAME / DESIGNATION</label>
+                    <input type="text" id="participant-name" class="text-input" autocomplete="off" placeholder="e.g. Michael" maxlength="30">
+                    <div id="name-status" class="status-msg"></div>
+                </div>
+
+                <button id="btn-check-name" class="btn" onclick="handleNameCheck()">
+                    [ CHECK RESONANCE ID ]
+                </button>
+            </div>
+            <button class="btn" style="border-color: transparent;" onclick="switchView('view-landing')">
+                ← BACK TO TERMINAL
+            </button>
+        </div>
+
+        <!-- 3. ASSESSMENT VIEW -->
+        <div id="view-assessment" class="view">
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>◈ FLAME RESONANCE SYSTEM</span>
+                    <span id="question-tracker">QUESTION 01 / 30</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div id="question-text" class="question-text">Loading query...</div>
+                <div id="options-container" class="options-container"></div>
+                <button id="btn-next" class="btn" disabled onclick="handleNextQuestion()">
+                    CONTINUE →
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. CALIBRATION VIEW -->
+        <div id="view-calibration" class="view">
+            <div class="panel calibration-screen">
+                <div class="spinner"></div>
+                <div id="calibration-status" class="calibration-text">CALIBRATING...</div>
+            </div>
+        </div>
+
+        <!-- 5. RESULT VIEW -->
+        <div id="view-result" class="view">
+            <div class="result-header">
+                <div class="system-label" style="justify-content: center;">RESONANCE PROFILE ESTABLISHED</div>
+                <h1 style="font-size: 1.8rem; margin-bottom: 4px;" id="res-display-name">SUBJECT NAME</h1>
+                <div style="font-size: 0.75rem; color: var(--text-dim); letter-spacing: 2px;" id="res-participant-id">ID: 00000000</div>
+            </div>
+
+            <div id="unstable-warning" class="resonance-warning" style="display: none;">
+                ⚠ UNSTABLE RESONANCE DETECTED: <span id="unstable-text"></span>
+            </div>
+
+            <div class="primary-card">
+                <div class="system-label" style="justify-content: center; margin-bottom: 12px;">PRIMARY RESONANCE</div>
+                <span id="res-primary-symbol" class="symbol-large">◇</span>
+                <h2 id="res-primary-name" style="font-size: 1.5rem; letter-spacing: 3px; font-weight: 400;">FLAME</h2>
+                <div id="res-primary-score" style="font-size: 1.2rem; color: var(--text-muted); margin: 4px 0;">0.0 / 10</div>
+                <div id="res-primary-tier" class="tier-badge">DORMANT</div>
+                <p id="res-primary-desc" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 16px; font-style: italic;"></p>
+            </div>
+
+            <div class="panel">
+                <div class="system-label">SECONDARY RESONANCE</div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                    <span id="res-secondary-name" style="font-size: 1.1rem;">-</span>
+                    <span id="res-secondary-score" style="color: var(--text-muted);">0.0 / 10</span>
+                </div>
+                <div id="res-secondary-tier" class="tier-badge" style="margin-bottom: 16px;">-</div>
+
+                <div class="system-label" style="margin-top: 16px;">TERTIARY RESONANCE</div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                    <span id="res-tertiary-name" style="font-size: 1.1rem;">-</span>
+                    <span id="res-tertiary-score" style="color: var(--text-muted);">0.0 / 10</span>
+                </div>
+                <div id="res-tertiary-tier" class="tier-badge">-</div>
+            </div>
+
+            <div class="panel" style="border-color: rgba(255, 255, 255, 0.2);">
+                <div class="system-label">PRIMARY SHADOW</div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                    <span id="res-shadow-name" style="font-size: 1.1rem; color: #e11d48;">-</span>
+                    <span id="res-shadow-score" style="color: var(--text-muted);">0.0 / 10</span>
+                </div>
+                <p id="res-shadow-desc" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;"></p>
+            </div>
+
+            <div class="details-toggle" onclick="toggleDetails()">
+                [ ◈ TOGGLE FULL SPECTRUM ANALYSIS ]
+            </div>
+
+            <div id="details-content" class="details-content panel">
+                <div class="system-label" style="margin-bottom: 16px;">GREATER FLAMES</div>
+                <div id="greater-flames-list" class="flame-grid"></div>
+
+                <div class="system-label" style="margin-top: 24px; margin-bottom: 16px;">LESSER FLAMES</div>
+                <div id="lesser-flames-list" class="flame-grid"></div>
+
+                <div class="system-label" style="margin-top: 24px; margin-bottom: 16px;">SHADOW SPECTRUM</div>
+                <div id="shadow-flames-list" class="flame-grid"></div>
+            </div>
+
+            <div class="panel">
+                <div class="system-label">◈ ABOUT THE FLAMES</div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+                    Every Fragment carries the potential to produce a Flame. But the Flame does not choose its bearer. It reflects them. A Fragment may awaken the same Core energy within different people, yet no two resonances are necessarily the same. The stronger the connection between a person and their nature, the stronger the Flame becomes. And where light exists, a shadow may follow.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                <button class="btn" onclick="copyResults()">[ COPY RESULT ]</button>
+                <button class="btn" onclick="restartAssessment()">[ ↻ RETAKE ]</button>
+            </div>
+
+            <p class="disclaimer">
+                This is a fictional personality-based assessment created for the BLDS universe. It is not a clinical psychological test or professional diagnosis.
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <div>BLACKLIGHTDOMS © 2026</div>
+        <div class="footer-links">
+            <a class="footer-link" href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&ilr=1" target="_blank" rel="noopener noreferrer">
+                <span>◉ WHATSAPP COMMUNITY</span>
+            </a>
+            <a class="footer-link" href="https://discord.gg/r4dM4QFteV" target="_blank" rel="noopener noreferrer">
+                <span>◉ DISCORD COMMUNITY</span>
+            </a>
+        </div>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <script>
+        // --- CONSTANTS & DATA STRUCTURES ---
+        const DB_URL = "https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+        const FLAMES = {
+            VISION: { name: "VISION", type: "GREATER", symbol: "◇", shadow: "BLINDNESS", desc: "The ability to see direction even when others are lost." },
+            DISCIPLINE: { name: "DISCIPLINE", type: "GREATER", symbol: "⟐", shadow: "INDISCIPLINE", desc: "To continue growing even when nobody is watching." },
+            LOYALTY: { name: "LOYALTY", type: "GREATER", symbol: "∞", shadow: "BETRAYAL", desc: "To stand together through victory and defeat." },
+            AMBITION: { name: "AMBITION", type: "GREATER", symbol: "↑", shadow: "ARROGANCE", desc: "The desire to surpass limits and continue evolving." },
+            RESILIENCE: { name: "RESILIENCE", type: "GREATER", symbol: "↻", shadow: "DESPAIR", desc: "The strength to rise again after every fall." },
+            HOPE: { name: "HOPE", type: "LESSER", symbol: "✦", shadow: "HOPELESSNESS", desc: "The light that remains during difficult times." },
+            AWARENESS: { name: "AWARENESS", type: "LESSER", symbol: "◉", shadow: "UNAWARENESS", desc: "The ability to stay conscious and understand reality." },
+            PATIENCE: { name: "PATIENCE", type: "LESSER", symbol: "⌁", shadow: "IMPATIENCE", desc: "Growth takes time and endurance." },
+            COURAGE: { name: "COURAGE", type: "LESSER", symbol: "△", shadow: "COWARDICE", desc: "The will to move forward despite fear." },
+            UNITY: { name: "UNITY", type: "LESSER", symbol: "⟡", shadow: "DIVISION", desc: "The bond that turns individuals into something greater." }
+        };
+
+        const SHADOWS = {
+            BLINDNESS: { name: "BLINDNESS", symbol: "◆", desc: "The inability to see a direction, even when the path is right before you." },
+            INDISCIPLINE: { name: "INDISCIPLINE", symbol: "◈", desc: "The refusal to improve, especially when nobody is watching." },
+            BETRAYAL: { name: "BETRAYAL", symbol: "⟁", desc: "The choice to abandon others when loyalty becomes difficult." },
+            ARROGANCE: { name: "ARROGANCE", symbol: "↓", desc: "The belief that there is nothing left to learn and no one worth surpassing." },
+            DESPAIR: { name: "DESPAIR", symbol: "⟲", desc: "The surrender to failure, believing there is no reason to rise again." },
+            HOPELESSNESS: { name: "HOPELESSNESS", symbol: "✧", desc: "The loss of light when difficult times become impossible to endure." },
+            UNAWARENESS: { name: "UNAWARENESS", symbol: "◯", desc: "The inability to recognize reality, even when it stands directly before you." },
+            IMPATIENCE: { name: "IMPATIENCE", symbol: "⚡", desc: "The refusal to wait, allowing haste to destroy what time was meant to build." },
+            COWARDICE: { name: "COWARDICE", symbol: "▽", desc: "The decision to retreat when fear becomes stronger than the will to move forward." },
+            DIVISION: { name: "DIVISION", symbol: "⟑", desc: "The force that separates individuals until nothing greater can be built together." }
+        };
+
+        const UNSTABLE_MESSAGES = {
+            VISION: "Clear vision without awareness of self yields blindness to immediate realities.",
+            DISCIPLINE: "Rigid structure without adaptability degrades into mechanical indiscipline.",
+            LOYALTY: "Blind devotion without discernment opens the door to devastating betrayal.",
+            AMBITION: "Great ambition burns brightly, but unchecked ambition may distort into arrogance.",
+            RESILIENCE: "Enduring endless hardship without purpose eventually surrenders to despair.",
+            HOPE: "Clinging to empty expectations without action collapses into hopelessness.",
+            AWARENESS: "Overthinking reality without taking action results in cognitive unawareness.",
+            PATIENCE: "Waiting endlessly without active progression decays into hidden impatience.",
+            COURAGE: "Reckless bravery without strategic mind retreats into cowardice under extreme threat.",
+            UNITY: "Forcing alignment without genuine trust ultimately accelerates division."
+        };
+
+        // --- 30 Situational Questions ---
+        const QUESTIONS = [
+            {
+                question: "You encounter a complex task with zero oversight and vague guidelines. How do you proceed?",
+                options: [
+                    { text: "Formulate a long-term strategy immediately to map out where this project should lead.", scores: { VISION: 3, AWARENESS: 1 } },
+                    { text: "Establish a strict daily routine to work on it consistently until complete.", scores: { DISCIPLINE: 3, PATIENCE: 1 } },
+                    { text: "Assemble a team of capable peers to pool talents and divide the labor.", scores: { UNITY: 3, LOYALTY: 1 } },
+                    { text: "Push the project far beyond its initial scope to showcase exceptional results.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Adapt as problems arrive, keeping faith that progress will unfold naturally.", scores: { HOPE: 2, RESILIENCE: 2 } }
+                ]
+            },
+            {
+                question: "A major failure halts your team's progress. Expectations were high, but the result was disastrous.",
+                options: [
+                    { text: "Analyze the root cause objectively to ensure the mistake is never repeated.", scores: { AWARENESS: 3, VISION: 1 } },
+                    { text: "Refuse to give up; immediately organize a recovery plan and try again.", scores: { RESILIENCE: 3, COURAGE: 1 } },
+                    { text: "Reassure your allies and remain by their side despite the loss.", scores: { LOYALTY: 3, HOPE: 1 } },
+                    { text: "Blame the current framework and strive harder to independently master the task.", scores: { AMBITION: 2, DESPAIR: 1 } },
+                    { text: "Accept the temporary setback calmly and wait for the right moment to retry.", scores: { PATIENCE: 3, HOPELESSNESS: 1 } }
+                ]
+            },
+            {
+                question: "You notice an ally making a decision that will harm their standing in the long run.",
+                options: [
+                    { text: "Confront them directly with harsh facts to force situational clarity.", scores: { AWARENESS: 2, COURAGE: 2 } },
+                    { text: "Stand by them regardless of their choices, offering unwavering support.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
+                    { text: "Privately explain the long-term consequences they are failing to see.", scores: { VISION: 3, PATIENCE: 1 } },
+                    { text: "Intervene and take control of the situation to prevent damage.", scores: { AMBITION: 2, ARROGANCE: 1 } },
+                    { text: "Guide them gently toward alternative choices through shared discussion.", scores: { UNITY: 2, PATIENCE: 2 } }
+                ]
+            },
+            {
+                question: "You are offered a shortcut that guarantees personal success but bypasses the necessary learning process.",
+                options: [
+                    { text: "Reject it entirely; growth requires rigorous effort and self-control.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
+                    { text: "Decline it because true success must be shared and built with others.", scores: { UNITY: 2, LOYALTY: 2 } },
+                    { text: "Take it to accelerate your goals; ultimate outcome matters most.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Evaluate whether taking it compromises your core long-term vision.", scores: { VISION: 2, AWARENESS: 2 } },
+                    { text: "Politely pass, willing to wait as long as needed to succeed legitimately.", scores: { PATIENCE: 3, IMPATIENCE: 1 } }
+                ]
+            },
+            {
+                question: "In a chaotic situation where panic is spreading, what is your default reaction?",
+                options: [
+                    { text: "Step forward immediately to direct others despite personal fear.", scores: { COURAGE: 3, COWARDICE: 1 } },
+                    { text: "Observe the environment silently to calculate the safest path forward.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
+                    { text: "Keep moral spirits high by reminding everyone that survival is possible.", scores: { HOPE: 3, RESILIENCE: 1 } },
+                    { text: "Maintain strict personal composure and follow established protocols.", scores: { DISCIPLINE: 3, PATIENCE: 1 } },
+                    { text: "Gather scattered individuals into a cohesive group to protect each other.", scores: { UNITY: 3, DIVISION: 1 } }
+                ]
+            },
+            {
+                question: "How do you view your own limits?",
+                options: [
+                    { text: "Boundaries to be dismantled and surpassed through sheer willpower.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Indicators highlighting areas that demand methodical, daily training.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
+                    { text: "Temporary hurdles that time and continuous endurance will break.", scores: { PATIENCE: 2, RESILIENCE: 2 } },
+                    { text: "Realities to accept so I can focus on guiding others effectively.", scores: { VISION: 2, UNITY: 2 } },
+                    { text: "Challenges that reveal true character when faced with bravery.", scores: { COURAGE: 3, HOPE: 1 } }
+                ]
+            },
+            {
+                question: "When working in a team, what role do you naturally fill?",
+                options: [
+                    { text: "The strategist who foresees future obstacles and defines objectives.", scores: { VISION: 3, AWARENESS: 1 } },
+                    { text: "The unyielding backbone who keeps working when others slow down.", scores: { DISCIPLINE: 2, RESILIENCE: 2 } },
+                    { text: "The glue that maintains group harmony and resolves inner tension.", scores: { UNITY: 3, LOYALTY: 1 } },
+                    { text: "The driving engine pushing the group toward higher targets.", scores: { AMBITION: 3, IMPATIENCE: 1 } },
+                    { text: "The reliable defender who protects colleagues in times of crisis.", scores: { LOYALTY: 3, COURAGE: 1 } }
+                ]
+            },
+            {
+                question: "You receive harsh, public criticism regarding your recent performance.",
+                options: [
+                    { text: "Filter out emotional noise to extract actionable truth for self-improvement.", scores: { AWARENESS: 3, DISCIPLINE: 1 } },
+                    { text: "Absorb the hit silently and use it as motivation to bounce back stronger.", scores: { RESILIENCE: 3, DESPAIR: 1 } },
+                    { text: "Stand firm in your convictions if your actions align with long-term goals.", scores: { VISION: 2, COURAGE: 2 } },
+                    { text: "Vow to eclipse all critics by achieving undeniable dominance.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Maintain optimism, trusting your value isn't diminished by criticism.", scores: { HOPE: 3, HOPELESSNESS: 1 } }
+                ]
+            },
+            {
+                question: "A long-term effort you invested months into yields very little initial result.",
+                options: [
+                    { text: "Remain steadfast; true growth requires patience and deep roots.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
+                    { text: "Re-evaluate the operational plan to see where foresight was lacking.", scores: { VISION: 3, AWARENESS: 1 } },
+                    { text: "Redouble effort immediately; failure is merely an incomplete process.", scores: { RESILIENCE: 3, DISCIPLINE: 1 } },
+                    { text: "Pivot aggressively to a new method to secure rapid achievement.", scores: { AMBITION: 2, IMPATIENCE: 2 } },
+                    { text: "Seek counsel from trusted allies to rebuild momentum together.", scores: { UNITY: 2, LOYALTY: 2 } }
+                ]
+            },
+            {
+                question: "An opportunity arises that benefits you greatly, but requires abandoning your current group.",
+                options: [
+                    { text: "Refuse the offer; group solidarity overrides individual gain.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
+                    { text: "Accept it if it aligns with your ultimate destination and evolution.", scores: { AMBITION: 3, BETRAYAL: 1 } },
+                    { text: "Negotiate terms that allow the opportunity to benefit your entire group.", scores: { UNITY: 3, VISION: 1 } },
+                    { text: "Carefully analyze if this offer is a trap or genuine progress.", scores: { AWARENESS: 3, BLINDNESS: 1 } },
+                    { text: "Stay, believing that long-term perseverance where you are brings true success.", scores: { PATIENCE: 2, RESILIENCE: 2 } }
+                ]
+            },
+            {
+                question: "What drives you forward when exhaustion sets in?",
+                options: [
+                    { text: "An unshakeable vision of the destination I must reach.", scores: { VISION: 3, HOPE: 1 } },
+                    { text: "Internal pride in maintaining duty regardless of physical state.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
+                    { text: "The knowledge that people depend on me to hold the line.", scores: { LOYALTY: 3, RESILIENCE: 1 } },
+                    { text: "The refusal to let fatigue prove my limitations.", scores: { AMBITION: 2, RESILIENCE: 2 } },
+                    { text: "Belief that the current suffering is temporary and leads to light.", scores: { HOPE: 3, DESPAIR: 1 } }
+                ]
+            },
+            {
+                question: "How do you respond when faced with a risk that could ruin your current standing?",
+                options: [
+                    { text: "Step into the danger resolutely if the cause is worth the hazard.", scores: { COURAGE: 3, COWARDICE: 1 } },
+                    { text: "Calculate the exact probability of success before taking a step.", scores: { AWARENESS: 3, BLINDNESS: 1 } },
+                    { text: "Avoid unnecessary risk; steady, disciplined progress is superior.", scores: { DISCIPLINE: 2, PATIENCE: 2 } },
+                    { text: "Take the risk if it promises a monumental leap in power or position.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Share the burden of risk with trusted partners to mitigate failure.", scores: { UNITY: 2, LOYALTY: 2 } }
+                ]
+            },
+            {
+                question: "You witness internal conflict destroying a community you care about.",
+                options: [
+                    { text: "Act as a neutral bridge to restore trust and cohesion.", scores: { UNITY: 3, DIVISION: 1 } },
+                    { text: "Enforce strict boundaries and rules to prevent further decay.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
+                    { text: "Remind everyone of the shared long-term goal that binds them.", scores: { VISION: 2, HOPE: 2 } },
+                    { text: "Protect your closest allies and let the unstable elements collapse.", scores: { LOYALTY: 2, BETRAYAL: 1 } },
+                    { text: "Face the instigators directly and challenge their actions.", scores: { COURAGE: 3, DIVISION: 1 } }
+                ]
+            },
+            {
+                question: "What is your greatest fear during a major endeavor?",
+                options: [
+                    { text: "Losing foresight and wandering aimlessly without purpose.", scores: { VISION: 2, BLINDNESS: 2 } },
+                    { text: "Losing self-control and slipping into laziness or stagnation.", scores: { DISCIPLINE: 2, INDISCIPLINE: 2 } },
+                    { text: "Failing the people who placed their trust in my hands.", scores: { LOYALTY: 2, BETRAYAL: 2 } },
+                    { text: "Settling for mediocrity and failing to fulfill my potential.", scores: { AMBITION: 2, ARROGANCE: 2 } },
+                    { text: "Giving up entirely when faced with insurmountable odds.", scores: { RESILIENCE: 2, DESPAIR: 2 } }
+                ]
+            },
+            {
+                question: "How do you handle a scenario where you are completely outmatched?",
+                options: [
+                    { text: "Endure the pressure, adapt continuously, and outlast the opponent.", scores: { RESILIENCE: 3, PATIENCE: 1 } },
+                    { text: "Study the opponent's patterns to find a subtle tactical flaw.", scores: { AWARENESS: 3, VISION: 1 } },
+                    { text: "Combine forces with others to equalize the imbalance.", scores: { UNITY: 3, COURAGE: 1 } },
+                    { text: "Fight with absolute resolve regardless of the probable outcome.", scores: { COURAGE: 3, HOPE: 1 } },
+                    { text: "Retreat temporarily to disciplined training until I surpass them.", scores: { DISCIPLINE: 2, AMBITION: 2 } }
+                ]
+            },
+            {
+                question: "When making a crucial decision, what do you rely on most?",
+                options: [
+                    { text: "Clear perception of current facts, free from emotional bias.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
+                    { text: "Long-range projection of where each choice leads in the future.", scores: { VISION: 3, BLINDNESS: 1 } },
+                    { text: "Commitment to duty and established moral commitments.", scores: { DISCIPLINE: 2, LOYALTY: 2 } },
+                    { text: "The potential for maximum advancement and growth.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "An unyielding belief in a positive outcome.", scores: { HOPE: 3, HOPELESSNESS: 1 } }
+                ]
+            },
+            {
+                question: "Someone in your team is struggling to keep up with standard requirements.",
+                options: [
+                    { text: "Patiently mentor them until they reach the required standard.", scores: { PATIENCE: 3, LOYALTY: 1 } },
+                    { text: "Implement a rigorous daily training regime for them to follow.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
+                    { text: "Encourage them, fostering faith in their hidden capabilities.", scores: { HOPE: 3, RESILIENCE: 1 } },
+                    { text: "Reassign them to a role that better fits the grand strategy.", scores: { VISION: 2, UNITY: 2 } },
+                    { text: "Replace them if they threaten the ultimate goal's achievement.", scores: { AMBITION: 2, DIVISION: 1 } }
+                ]
+            },
+            {
+                question: "You find yourself trapped in a tedious, repetitive environment with slow progress.",
+                options: [
+                    { text: "Maintain strict personal routine, mastering every repetitive task.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
+                    { text: "Wait with quiet endurance, knowing cycles inevitably change.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
+                    { text: "Focus on the ultimate distant goal to keep my mind sharp.", scores: { VISION: 2, HOPE: 2 } },
+                    { text: "Disrupt the status quo to force rapid movement and change.", scores: { AMBITION: 2, COURAGE: 2 } },
+                    { text: "Build strong bonds with fellow captives to make time meaningful.", scores: { UNITY: 3, LOYALTY: 1 } }
+                ]
+            },
+            {
+                question: "A sudden betrayal from an ally destabilizes your plan. What is your immediate focus?",
+                options: [
+                    { text: "Absorb the blow, stabilize the damage, and keep moving forward.", scores: { RESILIENCE: 3, DESPAIR: 1 } },
+                    { text: "Understand why it happened and reassess my situational awareness.", scores: { AWARENESS: 3, BLINDNESS: 1 } },
+                    { text: "Double down on protecting and supporting my remaining true allies.", scores: { LOYALTY: 3, UNITY: 1 } },
+                    { text: "Overcome the setback rapidly to prove the betrayal was meaningless.", scores: { AMBITION: 2, COURAGE: 2 } },
+                    { text: "Refuse to let bitterness destroy my faith in future alliances.", scores: { HOPE: 3, BETRAYAL: 1 } }
+                ]
+            },
+            {
+                question: "How do you measure true victory?",
+                options: [
+                    { text: "Reaching the absolute pinnacle of capability and achievement.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Fulfilling the grand trajectory that was mapped out from the start.", scores: { VISION: 3, BLINDNESS: 1 } },
+                    { text: "Surviving catastrophe with core values and allies intact.", scores: { RESILIENCE: 2, LOYALTY: 2 } },
+                    { text: "Uniting disparate forces into an enduring, harmonious whole.", scores: { UNITY: 3, DIVISION: 1 } },
+                    { text: "Executing duty with flawless self-mastery and precision.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } }
+                ]
+            },
+            {
+                question: "You are tasked with leading a group into unknown and hazardous territory.",
+                options: [
+                    { text: "March at the front, taking the first risks to inspire bravery.", scores: { COURAGE: 3, COWARDICE: 1 } },
+                    { text: "Scan every detail of the environment to avoid unseen traps.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
+                    { text: "Chart the route carefully using long-range environmental signs.", scores: { VISION: 3, BLINDNESS: 1 } },
+                    { text: "Keep the group tied closely together so no one gets lost.", scores: { UNITY: 3, LOYALTY: 1 } },
+                    { text: "Instill absolute belief that destination and safety will be reached.", scores: { HOPE: 3, HOPELESSNESS: 1 } }
+                ]
+            },
+            {
+                question: "When you feel temptation to abandon your duties, what keeps you grounded?",
+                options: [
+                    { text: "Self-imposed code and habits built through daily practice.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
+                    { text: "Honor and obligation to the people who rely on my presence.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
+                    { text: "Clear perception of the negative consequences of slipping.", scores: { AWARENESS: 2, VISION: 2 } },
+                    { text: "Refusal to let temporary weakness derail my personal growth.", scores: { AMBITION: 2, RESILIENCE: 2 } },
+                    { text: "Understanding that endurance now yields fruits in due time.", scores: { PATIENCE: 3, IMPATIENCE: 1 } }
+                ]
+            },
+            {
+                question: "What is your stance on power and influence?",
+                options: [
+                    { text: "Essential tools required to surpass limits and shape reality.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "A heavy responsibility meant solely to protect and unite others.", scores: { LOYALTY: 2, UNITY: 2 } },
+                    { text: "A natural result of consistent discipline and self-mastery.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
+                    { text: "Dangerous unless guided by clear long-term foresight.", scores: { VISION: 3, BLINDNESS: 1 } },
+                    { text: "Secondary to maintaining inner hope and personal integrity.", scores: { HOPE: 2, RESILIENCE: 2 } }
+                ]
+            },
+            {
+                question: "You are thrust into a fierce competition where only one person can succeed.",
+                options: [
+                    { text: "Focus entirely on maximizing my own performance to conquer.", scores: { AMBITION: 3, ARROGANCE: 1 } },
+                    { text: "Execute my trained routine with calm, methodical focus.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
+                    { text: "Engage with daring strategies that put everything on the line.", scores: { COURAGE: 3, IMPATIENCE: 1 } },
+                    { text: "Analyze my competitors' moves to outmaneuver their choices.", scores: { AWARENESS: 3, VISION: 1 } },
+                    { text: "Compete honorably, maintaining respect for all participants.", scores: { LOYALTY: 2, PATIENCE: 2 } }
+                ]
+            },
+            {
+                question: "A major change disrupts all your established plans for the future.",
+                options: [
+                    { text: "Adapt instantly, formulating a revised trajectory forward.", scores: { VISION: 3, RESILIENCE: 1 } },
+                    { text: "Hold your ground, enduring the chaos until stability returns.", scores: { RESILIENCE: 3, PATIENCE: 1 } },
+                    { text: "Observe the shifting landscape carefully before committing.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
+                    { text: "Rally your community to navigate the transformation together.", scores: { UNITY: 3, LOYALTY: 1 } },
+                    { text: "View the disruption as a fresh opportunity to push boundaries.", scores: { AMBITION: 2, COURAGE: 2 } }
+                ]
+            },
+            {
+                question: "How do you treat your personal weaknesses?",
+                options: [
+                    { text: "Acknowledge them clearly without self-deception or denial.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
+                    { text: "Target them through rigorous, uncomfortable practice.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
+                    { text: "Accept that growth takes time and work patiently to fix them.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
+                    { text: "Compensate for them by surrounding myself with strong allies.", scores: { UNITY: 3, LOYALTY: 1 } },
+                    { text: "Refuse to let them limit my drive toward grand achievements.", scores: { AMBITION: 2, RESILIENCE: 2 } }
+                ]
+            },
+            {
+                question: "When facing an enemy or obstacle that instills deep fear:",
+                options: [
+                    { text: "Step forward regardless, using action to burn away fear.", scores: { COURAGE: 3, COWARDICE: 1 } },
+                    { text: "Rely on ingrained discipline so habits take over automatically.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
+                    { text: "Hold onto the light of future victory to keep moving.", scores: { HOPE: 3, HOPELESSNESS: 1 } },
+                    { text: "Stand shoulder-to-shoulder with allies; fear shrinks in unity.", scores: { UNITY: 2, LOYALTY: 2 } },
+                    { text: "Endure the terror, knowing no state of fear lasts forever.", scores: { RESILIENCE: 2, PATIENCE: 2 } }
+                ]
+            },
+            {
+                question: "What is the most vital element in maintaining long-term relationships?",
+                options: [
+                    { text: "Unbreakable loyalty through both prosperity and hardship.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
+                    { text: "Shared long-term direction and aligned core values.", scores: { VISION: 2, UNITY: 2 } },
+                    { text: "Patience with each other's flaws and slow growth.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
+                    { text: "Deep awareness and understanding of each other's reality.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
+                    { text: "Mutual encouragement to push each other to evolve.", scores: { AMBITION: 2, HOPE: 2 } }
+                ]
+            },
+            {
+                question: "You are standing at a crossroads with no clear safe choice.",
+                options: [
+                    { text: "Choose the path that demands maximum courage and risk.", scores: { COURAGE: 3, COWARDICE: 1 } },
+                    { text: "Project where each path leads and select the strategic option.", scores: { VISION: 3, BLINDNESS: 1 } },
+                    { text: "Trust your internal resilience to handle whichever path yields hardship.", scores: { RESILIENCE: 3, DESPAIR: 1 } },
+                    { text: "Consult with your group to ensure a unified choice.", scores: { UNITY: 3, DIVISION: 1 } },
+                    { text: "Pause calmly, gathering full situational awareness before acting.", scores: { AWARENESS: 2, PATIENCE: 2 } }
+                ]
+            },
+            {
+                question: "Looking back at your journey through the BLDS assessment, what essence drove your choices?",
+                options: [
+                    { text: "The desire to chart clear horizons and see what others miss.", scores: { VISION: 3, AWARENESS: 1 } },
+                    { text: "The relentless pursuit of growth, mastery, and higher peaks.", scores: { AMBITION: 2, DISCIPLINE: 2 } },
+                    { text: "Unwavering commitment to protect and stand alongside others.", scores: { LOYALTY: 2, UNITY: 2 } },
+                    { text: "The strength to endure, adapt, and rise despite all fires.", scores: { RESILIENCE: 2, COURAGE: 2 } },
+                    { text: "Quiet faith, patience, and clear awareness of inner truth.", scores: { HOPE: 2, PATIENCE: 2 } }
+                ]
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let AppState = {
+            participantId: null,
+            displayName: "",
+            normalizedName: "",
+            currentQuestionIndex: 0,
+            answers: [],
+            selectedOptionIndex: null,
+            flameScores: {},
+            shadowScores: {},
+            results: null
+        };
+
+        // --- INITIALIZATION ---
+        document.addEventListener("DOMContentLoaded", () => {
+            initScores();
+            loadProgress();
+        });
+
+        function initScores() {
+            Object.keys(FLAMES).forEach(key => AppState.flameScores[key] = 0);
+            Object.keys(SHADOWS).forEach(key => AppState.shadowScores[key] = 0);
+        }
+
+        // --- NAVIGATION & UI VIEWS ---
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            setTimeout(() => {
+                const target = document.getElementById(viewId);
+                if (target) target.classList.add('active');
+            }, 50);
+        }
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>◈</span> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // --- REGISTRATION & FIREBASE REST API ---
+        function normalizeName(name) {
+            return name.trim().toLowerCase().replace(/\s+/g, ' ');
+        }
+
+        async function handleNameCheck() {
+            const input = document.getElementById('participant-name');
+            const rawName = input.value.trim();
+            const statusDiv = document.getElementById('name-status');
+            const btn = document.getElementById('btn-check-name');
+
+            if (!rawName) {
+                showToast("IDENTITY REQUIRED", "error");
+                statusDiv.className = "status-msg error";
+                statusDiv.innerText = "⚠ IDENTITY REQUIRED";
+                return;
+            }
+
+            const norm = normalizeName(rawName);
+            btn.disabled = true;
+            statusDiv.className = "status-msg";
+            statusDiv.innerText = "Checking Core records...";
+
+            try {
+                // Query nameRegistry via REST API
+                const response = await fetch(`${DB_URL}nameRegistry/${encodeURIComponent(norm)}.json`);
+                if (!response.ok) throw new Error("Network response error");
+                
+                const existingEntry = await response.json();
+
+                if (existingEntry) {
+                    statusDiv.className = "status-msg warning";
+                    statusDiv.innerText = "⚠ RESONANCE ID ALREADY REGISTERED";
+                    showToast("RESONANCE ID ALREADY REGISTERED", "warning");
+                    btn.disabled = false;
+                } else {
+                    statusDiv.className = "status-msg success";
+                    statusDiv.innerText = "✓ RESONANCE ID AVAILABLE";
+                    
+                    AppState.displayName = rawName;
+                    AppState.normalizedName = norm;
+                    AppState.participantId = "SUB-" + Math.floor(100000 + Math.random() * 900000);
+                    
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        startAssessment();
+                    }, 800);
+                }
+            } catch (err) {
+                console.error(err);
+                statusDiv.className = "status-msg warning";
+                statusDiv.innerText = "⚠ CORE CONNECTION LOST - Proceeding Offline";
+                showToast("CORE CONNECTION LOST. OFFLINE MODE", "warning");
+                
+                // Allow offline proceed
+                AppState.displayName = rawName;
+                AppState.normalizedName = norm;
+                AppState.participantId = "OFF-" + Math.floor(100000 + Math.random() * 900000);
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    startAssessment();
+                }, 1000);
+            }
+        }
+
+        // --- ASSESSMENT CORE LOGIC ---
+        function startAssessment() {
+            if (AppState.answers.length === 0) {
+                AppState.currentQuestionIndex = 0;
+            }
+            saveProgress();
+            switchView('view-assessment');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const qIndex = AppState.currentQuestionIndex;
+            const q = QUESTIONS[qIndex];
+            
+            document.getElementById('question-tracker').innerText = `QUESTION ${String(qIndex + 1).padStart(2, '0')} / 30`;
+            document.getElementById('progress-bar').style.width = `${((qIndex + 1) / 30) * 100}%`;
+            document.getElementById('question-text').innerText = q.question;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D', 'E'];
+            AppState.selectedOptionIndex = AppState.answers[qIndex] !== undefined ? AppState.answers[qIndex] : null;
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn ${AppState.selectedOptionIndex === idx ? 'selected' : ''}`;
+                btn.onclick = () => selectOption(idx);
+                btn.innerHTML = `<span class="option-prefix">[${prefixes[idx]}]</span> <span>${opt.text}</span>`;
+                container.appendChild(btn);
+            });
+
+            document.getElementById('btn-next').disabled = AppState.selectedOptionIndex === null;
+        }
+
+        function selectOption(index) {
+            AppState.selectedOptionIndex = index;
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, idx) => {
+                if (idx === index) btn.classList.add('selected');
+                else btn.classList.remove('selected');
+            });
+            document.getElementById('btn-next').disabled = false;
+        }
+
+        function handleNextQuestion() {
+            if (AppState.selectedOptionIndex === null) return;
+
+            AppState.answers[AppState.currentQuestionIndex] = AppState.selectedOptionIndex;
+            saveProgress();
+
+            if (AppState.currentQuestionIndex < QUESTIONS.length - 1) {
+                AppState.currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                runCalibrationSequence();
+            }
+        }
+
+        // --- CALIBRATION & SCORING ---
+        function runCalibrationSequence() {
+            switchView('view-calibration');
+            const statuses = [
+                "CALIBRATING...",
+                "READING FRAGMENT...",
+                "ANALYZING RESONANCE...",
+                "CORE SIGNAL DETECTED",
+                "RESONANCE ESTABLISHED"
+            ];
+            
+            let step = 0;
+            const interval = setInterval(() => {
+                step++;
+                if (step < statuses.length) {
+                    document.getElementById('calibration-status').innerText = statuses[step];
+                } else {
+                    clearInterval(interval);
+                    calculateAndDisplayResults();
+                }
+            }, 800);
+        }
+
+        function calculateAndDisplayResults() {
+            initScores();
+
+            // Calculate raw scores
+            AppState.answers.forEach((ansIndex, qIndex) => {
+                const option = QUESTIONS[qIndex].options[ansIndex];
+                if (option && option.scores) {
+                    Object.keys(option.scores).forEach(key => {
+                        if (FLAMES[key]) {
+                            AppState.flameScores[key] += option.scores[key];
+                        }
+                        if (SHADOWS[key]) {
+                            AppState.shadowScores[key] += option.scores[key];
+                        }
+                    });
+                }
+            });
+
+            // Derive dependent shadow points if not directly assigned
+            Object.keys(FLAMES).forEach(flameKey => {
+                const shadowKey = FLAMES[flameKey].shadow;
+                // Shadow score builds partially from secondary choices
+                if (AppState.shadowScores[shadowKey] === 0) {
+                    AppState.shadowScores[shadowKey] = Math.round(AppState.flameScores[flameKey] * 0.4);
+                }
+            });
+
+            // Normalization (0.0 to 10.0)
+            const normalizedFlames = {};
+            const normalizedShadows = {};
+
+            // Max achievable score per flame is ~18-24. We divide by max benchmark (~20) * 10
+            Object.keys(FLAMES).forEach(k => {
+                let score = (AppState.flameScores[k] / 18) * 10;
+                normalizedFlames[k] = Math.min(10.0, Math.max(0.5, parseFloat(score.toFixed(1))));
+            });
+
+            Object.keys(SHADOWS).forEach(k => {
+                let score = (AppState.shadowScores[k] / 12) * 10;
+                normalizedShadows[k] = Math.min(10.0, Math.max(0.2, parseFloat(score.toFixed(1))));
+            });
+
+            // Rank Flames
+            const sortedFlames = Object.keys(normalizedFlames)
+                .map(k => ({ key: k, score: normalizedFlames[k], ...FLAMES[k] }))
+                .sort((a, b) => b.score - a.score);
+
+            // Rank Shadows
+            const sortedShadows = Object.keys(normalizedShadows)
+                .map(k => ({ key: k, score: normalizedShadows[k], ...SHADOWS[k] }))
+                .sort((a, b) => b.score - a.score);
+
+            const primaryFlame = sortedFlames[0];
+            const secondaryFlame = sortedFlames[1];
+            const tertiaryFlame = sortedFlames[2];
+            const primaryShadow = sortedShadows[0];
+
+            // Check Unstable Resonance
+            let isUnstable = false;
+            let unstableMessage = "";
+            
+            const assocShadowScore = normalizedShadows[primaryFlame.shadow] || 0;
+            if (primaryFlame.score >= 8.0 && assocShadowScore >= 7.0) {
+                isUnstable = true;
+                unstableMessage = UNSTABLE_MESSAGES[primaryFlame.key] || "High energy resonance distorting near shadow boundaries.";
+            }
+
+            AppState.results = {
+                primaryFlame,
+                secondaryFlame,
+                tertiaryFlame,
+                primaryShadow,
+                allFlames: sortedFlames,
+                allShadows: sortedShadows,
+                isUnstable,
+                unstableMessage
+            };
+
+            // Save to Firebase
+            saveToFirebase();
+
+            // Clear temporary progress
+            clearProgress();
+
+            // Populate Result UI
+            renderResultsUI();
+            switchView('view-result');
+        }
+
+        function getTier(score) {
+            if (score <= 1.9) return "DORMANT";
+            if (score <= 3.9) return "FAINT";
+            if (score <= 5.9) return "RESONANT";
+            if (score <= 7.9) return "STRONG";
+            if (score <= 9.4) return "DOMINANT";
+            return "ASCENDANT";
+        }
+
+        function renderResultsUI() {
+            const res = AppState.results;
+
+            document.getElementById('res-display-name').innerText = AppState.displayName.toUpperCase();
+            document.getElementById('res-participant-id').innerText = `ID: ${AppState.participantId}`;
+
+            // Unstable Resonance Warning
+            const warningEl = document.getElementById('unstable-warning');
+            if (res.isUnstable) {
+                warningEl.style.display = "block";
+                document.getElementById('unstable-text').innerText = res.unstableMessage;
+            } else {
+                warningEl.style.display = "none";
+            }
+
+            // Primary
+            document.getElementById('res-primary-symbol').innerText = res.primaryFlame.symbol;
+            document.getElementById('res-primary-name').innerText = res.primaryFlame.name;
+            document.getElementById('res-primary-score').innerText = `${res.primaryFlame.score.toFixed(1)} / 10`;
+            document.getElementById('res-primary-tier').innerText = getTier(res.primaryFlame.score);
+            document.getElementById('res-primary-desc').innerText = `"${res.primaryFlame.desc}"`;
+
+            // Secondary & Tertiary
+            document.getElementById('res-secondary-name').innerText = `${res.secondaryFlame.symbol} ${res.secondaryFlame.name}`;
+            document.getElementById('res-secondary-score').innerText = `${res.secondaryFlame.score.toFixed(1)} / 10`;
+            document.getElementById('res-secondary-tier').innerText = getTier(res.secondaryFlame.score);
+
+            document.getElementById('res-tertiary-name').innerText = `${res.tertiaryFlame.symbol} ${res.tertiaryFlame.name}`;
+            document.getElementById('res-tertiary-score').innerText = `${res.tertiaryFlame.score.toFixed(1)} / 10`;
+            document.getElementById('res-tertiary-tier').innerText = getTier(res.tertiaryFlame.score);
+
+            // Shadow
+            document.getElementById('res-shadow-name').innerText = `${res.primaryShadow.symbol} ${res.primaryShadow.name}`;
+            document.getElementById('res-shadow-score').innerText = `${res.primaryShadow.score.toFixed(1)} / 10`;
+            document.getElementById('res-shadow-desc').innerText = `"${res.primaryShadow.desc}"`;
+
+            // Full lists
+            renderFlameList('greater-flames-list', res.allFlames.filter(f => f.type === 'GREATER'));
+            renderFlameList('lesser-flames-list', res.allFlames.filter(f => f.type === 'LESSER'));
+            renderFlameList('shadow-flames-list', res.allShadows);
+        }
+
+        function renderFlameList(containerId, list) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            list.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'flame-item';
+                el.innerHTML = `
+                    <div class="flame-info">
+                        <span>${item.symbol} ${item.name}</span>
+                        <span>${item.score.toFixed(1)} / 10</span>
+                    </div>
+                    <div class="flame-bar-bg">
+                        <div class="flame-bar-fill" style="width: ${(item.score / 10) * 100}%"></div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function toggleDetails() {
+            const content = document.getElementById('details-content');
+            content.classList.toggle('open');
+        }
+
+        // --- FIREBASE API INTERACTION ---
+        async function saveToFirebase() {
+            if (!AppState.participantId || !AppState.results) return;
+
+            const res = AppState.results;
+            const payload = {
+                displayName: AppState.displayName,
+                normalizedName: AppState.normalizedName,
+                answers: AppState.answers,
+                primaryFlame: res.primaryFlame.name,
+                secondaryFlame: res.secondaryFlame.name,
+                tertiaryFlame: res.tertiaryFlame.name,
+                primaryShadow: res.primaryShadow.name,
+                flameScores: res.allFlames.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.score }), {}),
+                shadowScores: res.allShadows.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.score }), {}),
+                resonanceState: res.isUnstable ? "UNSTABLE" : "STABLE",
+                completed: true,
+                completedAt: new Date().toISOString()
+            };
+
+            try {
+                // Save Participant Data
+                await fetch(`${DB_URL}participants/${AppState.participantId}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // Reserve Name in Registry
+                await fetch(`${DB_URL}nameRegistry/${encodeURIComponent(AppState.normalizedName)}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ participantId: AppState.participantId, registeredAt: new Date().toISOString() })
+                });
+
+            } catch (err) {
+                console.error("Firebase sync error:", err);
+                showToast("CORE SYNC INTERRUPTED - LOCAL DATA RETAINED", "warning");
+            }
+        }
+
+        // --- LOCAL STORAGE PROGRESS ---
+        function saveProgress() {
+            const data = {
+                displayName: AppState.displayName,
+                normalizedName: AppState.normalizedName,
+                participantId: AppState.participantId,
+                currentQuestionIndex: AppState.currentQuestionIndex,
+                answers: AppState.answers
+            };
+            localStorage.setItem('BLDS_FLAME_PROGRESS', JSON.stringify(data));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('BLDS_FLAME_PROGRESS');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.answers && parsed.answers.length > 0) {
+                        AppState.displayName = parsed.displayName || "";
+                        AppState.normalizedName = parsed.normalizedName || "";
+                        AppState.participantId = parsed.participantId || null;
+                        AppState.currentQuestionIndex = parsed.currentQuestionIndex || 0;
+                        AppState.answers = parsed.answers || [];
+                        showToast("PREVIOUS RESONANCE SESSION RESTORED", "info");
+                    }
+                } catch (e) {
+                    console.error("Failed to parse local progress");
+                }
+            }
+        }
+
+        function clearProgress() {
+            localStorage.removeItem('BLDS_FLAME_PROGRESS');
+        }
+
+        function restartAssessment() {
+            AppState.currentQuestionIndex = 0;
+            AppState.answers = [];
+            AppState.selectedOptionIndex = null;
+            AppState.results = null;
+            initScores();
+            clearProgress();
+            switchView('view-landing');
+        }
+
+        // --- UTILITY: COPY RESULT ---
+        function copyResults() {
+            if (!AppState.results) return;
+
+            const res = AppState.results;
+            const text = `THE FLAME RESONANCE\nBLACKLIGHTDOMS\n\nName: ${AppState.displayName}\nID: ${AppState.participantId}\n\nPrimary Flame:\n${res.primaryFlame.name} — ${res.primaryFlame.score.toFixed(1)}/10 (${getTier(res.primaryFlame.score)})\n\nSecondary Flame:\n${res.secondaryFlame.name} — ${res.secondaryFlame.score.toFixed(1)}/10\n\nTertiary Flame:\n${res.tertiaryFlame.name} — ${res.tertiaryFlame.score.toFixed(1)}/10\n\nPrimary Shadow:\n${res.primaryShadow.name} — ${res.primaryShadow.score.toFixed(1)}/10\n\nResonance State:\n${res.isUnstable ? 'UNSTABLE RESONANCE' : 'STABLE'}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("RESULT COPIED TO CLIPBOARD", "info");
+            }).catch(() => {
+                showToast("FAILED TO COPY RESULT", "error");
+            });
+        }
+    </script>
+</body>
+</html>
