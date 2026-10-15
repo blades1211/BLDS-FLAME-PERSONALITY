@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,18 +16,13 @@
       theme: {
         extend: {
           colors: {
-            obsidian: '#080D15',
-            deepNavy: '#0C1524',
-            darkSurface: '#111B2A',
-            gold: '#D9AD55',
-            brightGold: '#FFE3A0',
-            arcaneBlue: '#527FDF',
-            crimson: '#C54D69',
-            violet: '#9B79DC',
-            cyanAccent: '#52C9DF',
-            primaryText: '#F4F5F8',
-            secondaryText: '#AAB4C4',
-            mutedText: '#778397',
+            obsidian: '#000000',
+            darkSurface: '#0A0A0A',
+            cardSurface: '#121212',
+            primaryText: '#FFFFFF',
+            secondaryText: '#A3A3A3',
+            mutedText: '#737373',
+            accentWhite: '#FFFFFF',
           },
           fontFamily: {
             cinzel: ['Cinzel', 'serif'],
@@ -38,76 +33,109 @@
     }
   </script>
   <style>
-    @layer utilities {
-      .logo-glow {
-        filter: drop-shadow(0 0 12px rgba(217, 173, 85, 0.40))
-                drop-shadow(0 0 28px rgba(217, 173, 85, 0.20));
-        animation: logoPulse 4s ease-in-out infinite;
-      }
-      .text-glow-gold {
-        text-shadow: 0 0 10px rgba(217, 173, 85, 0.45),
-                     0 0 26px rgba(217, 173, 85, 0.20);
-      }
-      .text-glow-crimson {
-        text-shadow: 0 0 10px rgba(197, 77, 105, 0.45),
-                     0 0 26px rgba(197, 77, 105, 0.20);
-      }
-      .text-glow-violet {
-        text-shadow: 0 0 10px rgba(155, 121, 220, 0.45),
-                     0 0 26px rgba(155, 121, 220, 0.20);
-      }
-      .glow-box {
-        box-shadow: 0 0 20px rgba(217, 173, 85, 0.12),
-                    inset 0 0 15px rgba(217, 173, 85, 0.05);
-      }
-      .glow-btn {
-        box-shadow: 0 0 15px rgba(217, 173, 85, 0.3);
-        transition: all 0.3s ease;
-      }
-      .glow-btn:hover {
-        box-shadow: 0 0 25px rgba(217, 173, 85, 0.55);
-        transform: translateY(-2px);
-      }
-    }
-    @keyframes logoPulse {
-      0%, 100% {
-        filter: drop-shadow(0 0 10px rgba(217, 173, 85, 0.35))
-                drop-shadow(0 0 24px rgba(217, 173, 85, 0.15));
-      }
-      50% {
-        filter: drop-shadow(0 0 16px rgba(255, 227, 160, 0.6))
-                drop-shadow(0 0 36px rgba(217, 173, 85, 0.3));
-      }
-    }
+    /* Efek Glow Global & Tipografi Hitam Putih Premium */
     body {
-      background-color: #080D15;
-      color: #F4F5F8;
+      background-color: #000000;
+      color: #FFFFFF;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.12);
     }
+    
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Cinzel', serif;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
     }
+
+    /* Animasi Logo Naik Turun Lambat (Floating Loop) */
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .logo-floating {
+      animation: floatLogo 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.45));
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .logo-floating:hover {
+      filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.8));
+    }
+
+    .text-glow-white {
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.6), 0 0 25px rgba(255, 255, 255, 0.25);
+    }
+
+    .glow-box {
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05), inset 0 0 15px rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glow-box:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.12), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+
+    .glow-btn {
+      background: #FFFFFF;
+      color: #000000;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glow-btn:hover {
+      background: #E5E5E5;
+      box-shadow: 0 0 35px rgba(255, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .glow-btn-outline {
+      background: transparent;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glow-btn-outline:hover {
+      border-color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Custom Scrollbar Hitam Putih */
     ::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #080D15;
+      background: #000000;
     }
     ::-webkit-scrollbar-thumb {
-      background: #111B2A;
-      border: 1px solid rgba(217, 173, 85, 0.2);
-      border-radius: 4px;
+      background: #262626;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #1A273D;
+      background: #404040;
+    }
+
+    /* Transisi Halus antar Halaman / Elemen */
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-obsidian text-primaryText antialiased selection:bg-gold/30 selection:text-brightGold">
+<body class="min-h-screen flex flex-col bg-obsidian text-primaryText antialiased">
 
   <!-- App Root Container -->
-  <div id="app" class="flex-1 flex flex-col"></div>
+  <div id="app" class="flex-1 flex flex-col fade-in"></div>
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
@@ -151,102 +179,30 @@
     // KATALOG RESMI 24 TRAIT (12 FLAMES & 12 SHADOW)
     // ==========================================
     const TRAITS_CATALOG = [
-      {
-        id: 'vision', nameEn: 'VISION', nameId: 'Penglihatan dan Arah', category: 'flame', pairId: 'pair_01', color: '#D9AD55',
-        description: 'Kemampuan melihat tujuan jangka panjang, memahami gambaran besar, menyusun arah, dan merencanakan langkah.'
-      },
-      {
-        id: 'blindness', nameEn: 'BLINDNESS', nameId: 'Kebutaan Arah', category: 'shadow', pairId: 'pair_01', color: '#8A7336',
-        description: 'Kecenderungan terpaku pada satu sudut pandang dan mengabaikan konteks atau petunjuk lain.'
-      },
-      {
-        id: 'discipline', nameEn: 'DISCIPLINE', nameId: 'Disiplin', category: 'flame', pairId: 'pair_02', color: '#527FDF',
-        description: 'Kecenderungan menjaga komitmen, mengatur waktu, bertanggung jawab, dan konsisten menjalankan langkah.'
-      },
-      {
-        id: 'indiscipline', nameEn: 'INDISCIPLINE', nameId: 'Ketidakteraturan', category: 'shadow', pairId: 'pair_02', color: '#345293',
-        description: 'Kecenderungan terdistraksi, menunda, atau kesulitan menjaga konsistensi rutinitas.'
-      },
-      {
-        id: 'loyalty', nameEn: 'LOYALTY', nameId: 'Kesetiaan', category: 'flame', pairId: 'pair_03', color: '#52C9DF',
-        description: 'Kecenderungan menjaga kepercayaan, komitmen, dan hubungan yang dianggap penting secara bertanggung jawab.'
-      },
-      {
-        id: 'betrayal', nameEn: 'BETRAYAL', nameId: 'Pengkhianatan', category: 'shadow', pairId: 'pair_03', color: '#36818F',
-        description: 'Kecenderungan mengabaikan kepercayaan atau komitmen demi keuntungan sesaat.'
-      },
-      {
-        id: 'ambition', nameEn: 'AMBITION', nameId: 'Ambisi', category: 'flame', pairId: 'pair_04', color: '#FFE3A0',
-        description: 'Dorongan untuk berkembang, menetapkan tujuan, mempelajari keterampilan, dan meningkatkan kemampuan.'
-      },
-      {
-        id: 'arrogance', nameEn: 'ARROGANCE', nameId: 'Keangkuhan', category: 'shadow', pairId: 'pair_04', color: '#A38F5F',
-        description: 'Kecenderungan merasa paling benar, meremehkan masukan, atau menolak kritik.'
-      },
-      {
-        id: 'resilience', nameEn: 'RESILIENCE', nameId: 'Ketangguhan', category: 'flame', pairId: 'pair_05', color: '#9B79DC',
-        description: 'Kecenderungan beradaptasi, belajar dari hambatan, dan mencoba melanjutkan langkah secara sehat.'
-      },
-      {
-        id: 'despair', nameEn: 'DESPAIR', nameId: 'Keputusasaan', category: 'shadow', pairId: 'pair_05', color: '#624D8C',
-        description: 'Kecenderungan sulit melihat jalan keluar atau merasa berat menghadapi hambatan (bukan diagnosis).'
-      },
-      {
-        id: 'hope', nameEn: 'HOPE', nameId: 'Harapan', category: 'flame', pairId: 'pair_06', color: '#C54D69',
-        description: 'Kecenderungan melihat peluang perbaikan dan membayangkan hasil yang lebih baik dengan realistis.'
-      },
-      {
-        id: 'hopelessness', nameEn: 'HOPELESSNESS', nameId: 'Kehilangan Harapan', category: 'shadow', pairId: 'pair_06', color: '#7D3143',
-        description: 'Kecenderungan sulit membayangkan perubahan atau hasil yang lebih baik saat menghadapi keadaan berat.'
-      },
-      {
-        id: 'awareness', nameEn: 'AWARENESS', nameId: 'Kesadaran', category: 'flame', pairId: 'pair_07', color: '#D9AD55',
-        description: 'Kepekaan terhadap situasi, emosi diri, konsekuensi tindakan, dan perspektif orang lain.'
-      },
-      {
-        id: 'unawareness', nameEn: 'UNAWARENESS', nameId: 'Kurang Menyadari Keadaan', category: 'shadow', pairId: 'pair_07', color: '#8A7336',
-        description: 'Kecenderungan melewatkan petunjuk penting, konteks, atau dampak perilaku sendiri.'
-      },
-      {
-        id: 'patience', nameEn: 'PATIENCE', nameId: 'Kesabaran', category: 'flame', pairId: 'pair_08', color: '#527FDF',
-        description: 'Kemampuan memberi waktu pada proses, menahan dorongan terburu-buru, dan menghadapi ketidakpastian.'
-      },
-      {
-        id: 'impatience', nameEn: 'IMPATIENCE', nameId: 'Ketidaksabaran', category: 'shadow', pairId: 'pair_08', color: '#345293',
-        description: 'Kecenderungan menuntut hasil segera, cepat frustrasi saat proses lambat, atau memutuskan terlalu cepat.'
-      },
-      {
-        id: 'courage', nameEn: 'COURAGE', nameId: 'Keberanian', category: 'flame', pairId: 'pair_09', color: '#52C9DF',
-        description: 'Kesediaan menghadapi tantangan, menyampaikan hal penting, dan bertindak meskipun ada rasa takut.'
-      },
-      {
-        id: 'cowardice', nameEn: 'COWARDICE', nameId: 'Sikap Menghindar karena Takut', category: 'shadow', pairId: 'pair_09', color: '#36818F',
-        description: 'Kecenderungan menghindari tantangan atau tanggung jawab karena rasa takut.'
-      },
-      {
-        id: 'unity', nameEn: 'UNITY', nameId: 'Persatuan', category: 'flame', pairId: 'pair_10', color: '#FFE3A0',
-        description: 'Kemampuan bekerja sama, menghargai perbedaan, membangun rasa memiliki, dan mencari tujuan bersama.'
-      },
-      {
-        id: 'division', nameEn: 'DIVISION', nameId: 'Perpecahan', category: 'shadow', pairId: 'pair_10', color: '#A38F5F',
-        description: 'Kecenderungan memperbesar perbedaan, membentuk kubu, atau mengutamakan konflik.'
-      },
-      {
-        id: 'compassion', nameEn: 'COMPASSION', nameId: 'Belas Kasih', category: 'flame', pairId: 'pair_11', color: '#9B79DC',
-        description: 'Kemampuan memahami kesulitan orang lain, merespons dengan kepedulian, dan membantu dengan batasan.'
-      },
-      {
-        id: 'cruelty', nameEn: 'CRUELTY', nameId: 'Kekejaman', category: 'shadow', pairId: 'pair_11', color: '#624D8C',
-        description: 'Kecenderungan mengabaikan penderitaan atau perasaan orang lain tanpa kepedulian.'
-      },
-      {
-        id: 'integrity', nameEn: 'INTEGRITY', nameId: 'Integritas', category: 'flame', pairId: 'pair_12', color: '#C54D69',
-        description: 'Keselarasan antara nilai, perkataan, dan tindakan; kejujuran; serta tanggung jawab atas keputusan.'
-      },
-      {
-        id: 'corruption', nameEn: 'CORRUPTION', nameId: 'Kerusakan Integritas', category: 'shadow', pairId: 'pair_12', color: '#7D3143',
-        description: 'Kecenderungan mengorbankan prinsip demi keuntungan atau memanipulasi kepercayaan.'
-      }
+      { id: 'vision', nameEn: 'VISION', nameId: 'Penglihatan dan Arah', category: 'flame', pairId: 'pair_01', description: 'Kemampuan melihat tujuan jangka panjang, memahami gambaran besar, menyusun arah, dan merencanakan langkah.' },
+      { id: 'blindness', nameEn: 'BLINDNESS', nameId: 'Kebutaan Arah', category: 'shadow', pairId: 'pair_01', description: 'Kecenderungan terpaku pada satu sudut pandang dan mengabaikan konteks atau petunjuk lain.' },
+      { id: 'discipline', nameEn: 'DISCIPLINE', nameId: 'Disiplin', category: 'flame', pairId: 'pair_02', description: 'Kecenderungan menjaga komitmen, mengatur waktu, bertanggung jawab, dan konsisten menjalankan langkah.' },
+      { id: 'indiscipline', nameEn: 'INDISCIPLINE', nameId: 'Ketidakteraturan', category: 'shadow', pairId: 'pair_02', description: 'Kecenderungan terdistraksi, menunda, atau kesulitan menjaga konsistensi rutinitas.' },
+      { id: 'loyalty', nameEn: 'LOYALTY', nameId: 'Kesetiaan', category: 'flame', pairId: 'pair_03', description: 'Kecenderungan menjaga kepercayaan, komitmen, dan hubungan yang dianggap penting secara bertanggung jawab.' },
+      { id: 'betrayal', nameEn: 'BETRAYAL', nameId: 'Pengkhianatan', category: 'shadow', pairId: 'pair_03', description: 'Kecenderungan mengabaikan kepercayaan atau komitmen demi keuntungan sesaat.' },
+      { id: 'ambition', nameEn: 'AMBITION', nameId: 'Ambisi', category: 'flame', pairId: 'pair_04', description: 'Dorongan untuk berkembang, menetapkan tujuan, mempelajari keterampilan, dan meningkatkan kemampuan.' },
+      { id: 'arrogance', nameEn: 'ARROGANCE', nameId: 'Keangkuhan', category: 'shadow', pairId: 'pair_04', description: 'Kecenderungan merasa paling benar, meremehkan masukan, atau menolak kritik.' },
+      { id: 'resilience', nameEn: 'RESILIENCE', nameId: 'Ketangguhan', category: 'flame', pairId: 'pair_05', description: 'Kecenderungan beradaptasi, belajar dari hambatan, dan mencoba melanjutkan langkah secara sehat.' },
+      { id: 'despair', nameEn: 'DESPAIR', nameId: 'Keputusasaan', category: 'shadow', pairId: 'pair_05', description: 'Kecenderungan sulit melihat jalan keluar atau merasa berat menghadapi hambatan.' },
+      { id: 'hope', nameEn: 'HOPE', nameId: 'Harapan', category: 'flame', pairId: 'pair_06', description: 'Kecenderungan melihat peluang perbaikan dan membayangkan hasil yang lebih baik dengan realistis.' },
+      { id: 'hopelessness', nameEn: 'HOPELESSNESS', nameId: 'Kehilangan Harapan', category: 'shadow', pairId: 'pair_06', description: 'Kecenderungan sulit membayangkan perubahan atau hasil yang lebih baik saat menghadapi keadaan berat.' },
+      { id: 'awareness', nameEn: 'AWARENESS', nameId: 'Kesadaran', category: 'flame', pairId: 'pair_07', description: 'Kepekaan terhadap situasi, emosi diri, konsekuensi tindakan, dan perspektif orang lain.' },
+      { id: 'unawareness', nameEn: 'UNAWARENESS', nameId: 'Kurang Menyadari Keadaan', category: 'shadow', pairId: 'pair_07', description: 'Kecenderungan melewatkan petunjuk penting, konteks, atau dampak perilaku sendiri.' },
+      { id: 'patience', nameEn: 'PATIENCE', nameId: 'Kesabaran', category: 'flame', pairId: 'pair_08', description: 'Kemampuan memberi waktu pada proses, menahan dorongan terburu-buru, dan menghadapi ketidakpastian.' },
+      { id: 'impatience', nameEn: 'IMPATIENCE', nameId: 'Ketidaksabaran', category: 'shadow', pairId: 'pair_08', description: 'Kecenderungan menuntut hasil segera, cepat frustrasi saat proses lambat, atau memutuskan terlalu cepat.' },
+      { id: 'courage', nameEn: 'COURAGE', nameId: 'Keberanian', category: 'flame', pairId: 'pair_09', description: 'Kesediaan menghadapi tantangan, menyampaikan hal penting, dan bertindak meskipun ada rasa takut.' },
+      { id: 'cowardice', nameEn: 'COWARDICE', nameId: 'Sikap Menghindar karena Takut', category: 'shadow', pairId: 'pair_09', description: 'Kecenderungan menghindari tantangan atau tanggung jawab karena rasa takut.' },
+      { id: 'unity', nameEn: 'UNITY', nameId: 'Persatuan', category: 'flame', pairId: 'pair_10', description: 'Kemampuan bekerja sama, menghargai perbedaan, membangun rasa memiliki, dan mencari tujuan bersama.' },
+      { id: 'division', nameEn: 'DIVISION', nameId: 'Perpecahan', category: 'shadow', pairId: 'pair_10', description: 'Kecenderungan memperbesar perbedaan, membentuk kubu, atau mengutamakan konflik.' },
+      { id: 'compassion', nameEn: 'COMPASSION', nameId: 'Belas Kasih', category: 'flame', pairId: 'pair_11', description: 'Kemampuan memahami kesulitan orang lain, merespons dengan kepedulian, dan membantu dengan batasan.' },
+      { id: 'cruelty', nameEn: 'CRUELTY', nameId: 'Kekejaman', category: 'shadow', pairId: 'pair_11', description: 'Kecenderungan mengabaikan penderitaan atau perasaan orang lain tanpa kepedulian.' },
+      { id: 'integrity', nameEn: 'INTEGRITY', nameId: 'Integritas', category: 'flame', pairId: 'pair_12', description: 'Keselarasan antara nilai, perkataan, dan tindakan; kejujuran; serta tanggung jawab atas keputusan.' },
+      { id: 'corruption', nameEn: 'CORRUPTION', nameId: 'Kerusakan Integritas', category: 'shadow', pairId: 'pair_12', description: 'Kecenderungan mengorbankan prinsip demi keuntungan atau memanipulasi kepercayaan.' }
     ];
 
     const FLAMES_LIST = TRAITS_CATALOG.filter(t => t.category === 'flame');
@@ -376,7 +332,7 @@
       {
         id: 14, text: "Seorang rekan mengalami kegagalan besar dan merasa terpukul hingga kehilangan motivasi. Bagaimana kamu mendukungnya?",
         options: [
-      { id: 'A', text: "Membantunya memetakan langkah-langkah kecil rasional untuk bangkit kembali.", scores: { hope: 3, resilience: 2, vision: 2 } },
+          { id: 'A', text: "Membantunya memetakan langkah-langkah kecil rasional untuk bangkit kembali.", scores: { hope: 3, resilience: 2, vision: 2 } },
           { id: 'B', text: "Menjadi pendengar yang baik penuh empati tanpa terburu-buru memberikan nasihat.", scores: { compassion: 3, patience: 3, awareness: 2 } },
           { id: 'C', text: "Mengingatkan kembali potensi dan keberhasilan yang pernah ia capai sebelumnya.", scores: { hope: 3, resilience: 2, loyalty: 2 } },
           { id: 'D', text: "Mengatakan bahwa kegagalannya adalah akibat kesalahannya sendiri dan menyuruhnya mandiri.", scores: { cruelty: 3, division: 2, arrogance: 1 } }
@@ -528,11 +484,6 @@
       }
     ];
 
-    // Validasi struktur data saat startup
-    if (QUESTIONS_LIST.length !== 30) {
-      console.error("PERINGATAN: Jumlah pertanyaan bukan 30!");
-    }
-
     // ==========================================
     // SCORING ENGINE DETERMINISTIK
     // ==========================================
@@ -557,7 +508,6 @@
         }
       });
 
-      // Hitung max & min possible scores per trait untuk normalisasi akurat 0-100
       const maxScores = {};
       const minScores = {};
       TRAITS_CATALOG.forEach(t => {
@@ -602,18 +552,14 @@
     // ==========================================
     // STATE & ROUTING MANAGEMENT (SPA)
     // ==========================================
-    let currentRoute = window.location.hash || '#/';
-    let currentUser = null;
-
-    // Toast Helper
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       if (!container) return;
       const toast = document.createElement('div');
-      toast.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 ${
-        type === 'success' ? 'bg-darkSurface/90 border-gold/40 text-gold glow-box' :
-        type === 'error' ? 'bg-darkSurface/90 border-crimson/40 text-crimson' :
-        'bg-darkSurface/90 border-arcaneBlue/40 text-arcaneBlue'
+      toast.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-medium shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 ${
+        type === 'success' ? 'bg-black border-white/40 text-white' :
+        type === 'error' ? 'bg-black border-red-500/50 text-red-400' :
+        'bg-black border-white/30 text-white'
       }`;
       toast.textContent = message;
       container.appendChild(toast);
@@ -624,7 +570,6 @@
       }, 3500);
     }
 
-    // Escape HTML untuk cegah XSS
     function escapeHTML(str) {
       if (!str) return '';
       return str.replace(/[&<>'"]/g, 
@@ -637,13 +582,13 @@
     // ==========================================
     function renderFooter() {
       return `
-        <footer class="w-full bg-darkSurface/90 border-t border-gold/20 py-10 px-6 mt-auto">
-          <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <footer class="w-full bg-black border-t border-white/20 py-12 px-6 mt-auto">
+          <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
             <div>
               <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
-                <span class="text-gold font-cinzel font-bold tracking-widest text-sm text-glow-gold">BLACKLIGHTDOMINIONS</span>
+                <span class="text-white font-cinzel font-bold tracking-widest text-sm text-glow-white">BLACKLIGHTDOMINIONS</span>
                 <span class="text-mutedText">•</span>
-                <span class="text-primaryText font-semibold text-xs">BLDS FLAMES</span>
+                <span class="text-secondaryText font-semibold text-xs">BLDS FLAMES</span>
               </div>
               <p class="text-[11px] text-mutedText max-w-md">
                 A BLACKLIGHTDOMINIONS Experience. Tes refleksi kepribadian fiktif untuk Dominioners. Bukan tes psikologi tervalidasi atau diagnosis medis.
@@ -658,9 +603,9 @@
                 href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&ilr=1"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-obsidian/80 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-500/10 hover:border-emerald-500/60 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black border border-white/30 text-white text-xs font-medium hover:bg-white/10 hover:border-white transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)]"
               >
-                <svg class="w-4 h-4 fill-emerald-400" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.612-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.612-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                 <span>WA Community</span>
               </a>
 
@@ -668,9 +613,9 @@
                 href="https://discord.gg/r4dM4QFteV"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-obsidian/80 border border-indigo-500/30 text-indigo-400 text-xs font-medium hover:bg-indigo-500/10 hover:border-indigo-500/60 transition-all shadow-[0_0_15px_rgba(99,102,241,0.1)]"
+                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black border border-white/30 text-white text-xs font-medium hover:bg-white/10 hover:border-white transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)]"
               >
-                <svg class="w-4 h-4 fill-indigo-400" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                 <span>Discord Community</span>
               </a>
             </div>
@@ -681,23 +626,23 @@
 
     function renderNavbar() {
       return `
-        <header class="w-full border-b border-gold/15 bg-obsidian/90 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+        <header class="w-full border-b border-white/20 bg-black/95 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-all duration-300">
           <a href="#/" class="flex items-center gap-3 group">
-            <div class="relative w-10 h-10 flex items-center justify-center">
-              <img src="./public/logo.png" alt="BLDS FLAMES" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-xs border border-gold/40 rounded-lg w-full h-full bg-darkSurface">BLDS</div>
+            <div class="relative w-11 h-11 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS FLAMES" class="w-full h-full object-contain logo-floating" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-white text-xs border border-white/50 rounded-lg w-full h-full bg-darkSurface shadow-[0_0_10px_rgba(255,255,255,0.3)]">BLDS</div>
             </div>
             <div>
-              <span class="font-cinzel font-bold tracking-widest text-gold text-sm block text-glow-gold">BLDS FLAMES</span>
+              <span class="font-cinzel font-bold tracking-widest text-white text-sm block text-glow-white">BLDS FLAMES</span>
               <span class="text-[9px] text-mutedText tracking-wider uppercase block">Blacklightdominions</span>
             </div>
           </a>
 
-          <div class="flex items-center gap-3">
-            <a href="#/start" class="px-4 py-2 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-semibold tracking-wide hover:bg-gold/20 transition-all glow-btn">
+          <div class="flex items-center gap-4">
+            <a href="#/start" class="px-5 py-2.5 rounded-xl glow-btn font-cinzel text-xs font-bold tracking-wider">
               Mulai Tes
             </a>
-            <a href="#/admin/login" class="text-xs text-mutedText hover:text-secondaryText transition-colors px-2 py-1">
+            <a href="#/admin/login" class="text-xs text-mutedText hover:text-white transition-colors px-2 py-1">
               Admin
             </a>
           </div>
@@ -713,55 +658,55 @@
         ${renderNavbar()}
         <main class="flex-1 flex flex-col items-center">
           <!-- Hero Section -->
-          <section class="w-full max-w-5xl mx-auto px-6 py-20 text-center flex flex-col items-center">
-            <div class="relative w-32 h-32 mb-6 flex items-center justify-center">
-              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-2xl border border-gold/40 rounded-2xl w-full h-full bg-darkSurface glow-box">BLDS</div>
+          <section class="w-full max-w-5xl mx-auto px-6 py-24 text-center flex flex-col items-center">
+            <div class="relative w-36 h-36 mb-8 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-floating" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-white text-2xl border border-white/40 rounded-2xl w-full h-full bg-darkSurface glow-box">BLDS</div>
             </div>
 
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-medium mb-6">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/20 text-white text-xs font-medium mb-6 shadow-[0_0_15px_rgba(255,255,255,0.08)]">
               <span>BLACKLIGHTDOMINIONS • Mystical Personality Archive</span>
             </div>
 
-            <h1 class="text-4xl md:text-6xl font-cinzel font-bold tracking-tight text-primaryText mb-6 text-glow-gold">
+            <h1 class="text-4xl md:text-6xl font-cinzel font-bold tracking-tight text-white mb-6 text-glow-white">
               Discover the Flames Within
             </h1>
 
-            <p class="text-base md:text-lg text-secondaryText max-w-2xl mb-10 leading-relaxed font-sans">
-              Masuki arsip rahasia BLACKLIGHTDOMINIONS. Temukan refleksi kepribadian mendalam melalui 12 Flames dan 12 Shadow Flames yang membentuk identitas Dominioners.
+            <p class="text-base md:text-lg text-secondaryText max-w-2xl mb-12 leading-relaxed font-sans">
+              Masuki arsip rahasia BLACKLIGHTDOMINIONS. Temukan refleksi kepribadian mendalam melalui 12 Flames dan 12 Shadow Flames dalam estetika monokromatik murni.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center gap-4">
-              <a href="#/start" class="px-8 py-4 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-sm tracking-wider hover:bg-brightGold transition-all flex items-center gap-3 glow-btn">
+              <a href="#/start" class="px-8 py-4 rounded-xl glow-btn font-cinzel font-bold text-sm tracking-wider flex items-center gap-3">
                 <span>Mulai Tes Sekarang</span>
-                <svg class="w-4 h-4 fill-obsidian" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
+                <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
               </a>
             </div>
           </section>
 
-          <!-- Preview Flames & Shadow Section -->
-          <section class="w-full max-w-6xl mx-auto px-6 py-16 border-t border-gold/15">
+          <!-- Preview Section -->
+          <section class="w-full max-w-6xl mx-auto px-6 py-16 border-t border-white/15">
             <div class="text-center mb-12">
-              <h2 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Dimensi Refleksi Diri</h2>
-              <p class="text-xs text-mutedText tracking-wider uppercase">12 Pasangan Sifat Utama • Refleksi Konstruktif & Tantangan</p>
+              <h2 class="text-2xl font-cinzel font-bold text-white mb-2 text-glow-white">Dimensi Refleksi Diri</h2>
+              <p class="text-xs text-mutedText tracking-wider uppercase">12 Pasangan Sifat Utama • Hitam & Putih Abadi</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               ${FLAMES_LIST.slice(0, 6).map(flame => {
                 const shadow = SHADOWS_LIST.find(s => s.pairId === flame.pairId);
                 return `
-                  <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 flex flex-col justify-between hover:border-gold/50 transition-all glow-box">
+                  <div class="glow-box rounded-2xl p-6 flex flex-col justify-between bg-cardSurface">
                     <div>
                       <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-cinzel font-bold text-gold tracking-widest uppercase">${escapeHTML(flame.nameEn)}</span>
-                        <span class="w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(217,173,85,0.8)]"></span>
+                        <span class="text-xs font-cinzel font-bold text-white tracking-widest uppercase text-glow-white">${escapeHTML(flame.nameEn)}</span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"></span>
                       </div>
-                      <h3 class="text-sm font-semibold text-primaryText mb-2">${escapeHTML(flame.nameId)}</h3>
+                      <h3 class="text-sm font-semibold text-white mb-2">${escapeHTML(flame.nameId)}</h3>
                       <p class="text-xs text-secondaryText mb-4 line-clamp-3">${escapeHTML(flame.description)}</p>
                     </div>
                     ${shadow ? `
-                      <div class="pt-3 border-t border-white/5 text-[11px] text-mutedText">
-                        <span class="text-crimson font-medium">Shadow:</span> ${escapeHTML(shadow.nameId)}
+                      <div class="pt-3 border-t border-white/10 text-[11px] text-mutedText">
+                        <span class="text-white font-medium">Shadow:</span> ${escapeHTML(shadow.nameId)}
                       </div>
                     ` : ''}
                   </div>
@@ -781,21 +726,21 @@
     function renderStartPage() {
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center justify-center px-6 py-12">
-          <div class="w-full max-w-md bg-darkSurface/80 border border-gold/30 rounded-3xl p-8 glow-box flex flex-col items-center text-center">
-            <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
-              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-lg border border-gold/40 rounded-xl w-full h-full bg-obsidian">BLDS</div>
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-16">
+          <div class="w-full max-w-md glow-box rounded-3xl p-8 bg-cardSurface flex flex-col items-center text-center">
+            <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-floating" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-white text-lg border border-white/50 rounded-xl w-full h-full bg-obsidian shadow-[0_0_15px_rgba(255,255,255,0.3)]">BLDS</div>
             </div>
 
-            <h1 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Identifikasi Dominioner</h1>
+            <h1 class="text-2xl font-cinzel font-bold text-white mb-2 text-glow-white">Identifikasi Dominioner</h1>
             <p class="text-xs text-secondaryText mb-8">
               Masukkan nama atau panggilanmu untuk memulai perjalanan refleksi kepribadian BLDS FLAMES.
             </p>
 
-            <form id="start-form" class="w-full space-y-4 text-left">
+            <form id="start-form" class="w-full space-y-5 text-left">
               <div>
-                <label class="block text-xs font-medium text-mutedText mb-1 uppercase tracking-wider">
+                <label class="block text-xs font-medium text-mutedText mb-2 uppercase tracking-wider">
                   Nama / Panggilan
                 </label>
                 <input
@@ -804,22 +749,22 @@
                   value="${escapeHTML(startNameInput)}"
                   placeholder="Contoh: Daren Akito"
                   maxlength="30"
-                  class="w-full bg-obsidian border border-gold/20 rounded-xl px-4 py-3 text-sm text-primaryText focus:outline-none focus:border-gold transition-colors"
+                  class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white transition-all shadow-[inset_0_0_10px_rgba(255,255,255,0.02)]"
                 />
-                <p id="name-error" class="text-xs text-crimson mt-1 hidden"></p>
+                <p id="name-error" class="text-xs text-red-400 mt-1.5 hidden"></p>
               </div>
 
               <button
                 type="submit"
-                class="w-full py-3.5 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-xs tracking-wider hover:bg-brightGold transition-all flex items-center justify-center gap-2 glow-btn"
+                class="w-full py-4 rounded-xl glow-btn font-cinzel font-bold text-xs tracking-wider flex items-center justify-center gap-2"
               >
                 <span>Mulai 30 Pertanyaan</span>
-                <svg class="w-4 h-4 fill-obsidian" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
+                <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
               </button>
             </form>
 
-            <div class="mt-6 flex items-center gap-2 text-[11px] text-mutedText">
-              <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <div class="mt-8 flex items-center gap-2 text-[11px] text-mutedText">
+              <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
               <span>Data disimpan secara aman untuk laporan kepribadian eksklusif.</span>
             </div>
           </div>
@@ -832,7 +777,7 @@
     // RENDER HALAMAN: TES (#/test)
     // ==========================================
     let currentTestIndex = 0;
-    let userAnswers = {}; // { questionId: optionId }
+    let userAnswers = {};
     let testParticipant = null;
 
     function renderTestPage() {
@@ -848,38 +793,38 @@
 
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center justify-center px-6 py-10 max-w-3xl mx-auto w-full">
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-12 max-w-3xl mx-auto w-full fade-in">
           <!-- Progress Header -->
           <div class="w-full mb-8">
             <div class="flex justify-between items-center text-xs text-mutedText mb-2">
-              <span class="font-semibold text-gold font-cinzel">Pertanyaan ${currentTestIndex + 1} dari ${totalQ}</span>
+              <span class="font-semibold text-white font-cinzel text-glow-white">Pertanyaan ${currentTestIndex + 1} dari ${totalQ}</span>
               <span>${Math.round(progressPct)}% Selesai</span>
             </div>
-            <div class="w-full h-1.5 bg-darkSurface rounded-full overflow-hidden border border-gold/20">
-              <div class="h-full bg-gold transition-all duration-300" style="width: ${progressPct}%"></div>
+            <div class="w-full h-2 bg-darkSurface rounded-full overflow-hidden border border-white/20">
+              <div class="h-full bg-white transition-all duration-300 shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="width: ${progressPct}%"></div>
             </div>
           </div>
 
           <!-- Question Card -->
-          <div class="w-full bg-darkSurface/80 border border-gold/30 rounded-3xl p-8 glow-box mb-8">
-            <h2 class="text-lg md:text-xl font-cinzel font-semibold text-primaryText mb-6 leading-relaxed">
+          <div class="w-full glow-box rounded-3xl p-8 bg-cardSurface mb-8">
+            <h2 class="text-lg md:text-xl font-cinzel font-semibold text-white mb-6 leading-relaxed text-glow-white">
               ${escapeHTML(currentQ.text)}
             </h2>
 
-            <div class="space-y-3">
+            <div class="space-y-3.5">
               ${currentQ.options.map(opt => {
                 const isSelected = selectedOpt === opt.id;
                 return `
                   <button
                     onclick="window.selectTestOption(${currentQ.id}, '${opt.id}')"
-                    class="w-full text-left p-4 rounded-xl border transition-all flex items-start gap-4 ${
+                    class="w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-start gap-4 ${
                       isSelected
-                        ? 'bg-gold/15 border-gold text-brightGold glow-box'
-                        : 'bg-obsidian/60 border-gold/15 text-secondaryText hover:border-gold/40 hover:text-primaryText'
+                        ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] font-medium scale-[1.01]'
+                        : 'bg-obsidian border-white/15 text-secondaryText hover:border-white/50 hover:text-white'
                     }"
                   >
                     <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 border ${
-                      isSelected ? 'bg-gold text-obsidian border-gold' : 'border-gold/30 text-gold'
+                      isSelected ? 'bg-black text-white border-black' : 'border-white/30 text-white'
                     }">
                       ${opt.id}
                     </span>
@@ -895,8 +840,8 @@
             <button
               onclick="window.prevTestQuestion()"
               ${currentTestIndex === 0 ? 'disabled' : ''}
-              class="px-5 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
-                currentTestIndex === 0 ? 'opacity-40 border-white/10 text-mutedText cursor-not-allowed' : 'border-gold/30 text-gold hover:bg-gold/10'
+              class="px-6 py-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                currentTestIndex === 0 ? 'opacity-30 border-white/10 text-mutedText cursor-not-allowed' : 'glow-btn-outline'
               }"
             >
               <span>Sebelumnya</span>
@@ -906,8 +851,8 @@
               <button
                 onclick="window.nextTestQuestion()"
                 ${!selectedOpt ? 'disabled' : ''}
-                class="px-6 py-2.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn ${
-                  !selectedOpt ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'bg-gold text-obsidian hover:bg-brightGold'
+                class="px-8 py-3 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all ${
+                  !selectedOpt ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'glow-btn'
                 }"
               >
                 <span>Lanjut</span>
@@ -916,8 +861,8 @@
               <button
                 onclick="window.goToReview()"
                 ${!selectedOpt ? 'disabled' : ''}
-                class="px-8 py-3 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn ${
-                  !selectedOpt ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'bg-gold text-obsidian hover:bg-brightGold'
+                class="px-8 py-3.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all ${
+                  !selectedOpt ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'glow-btn'
                 }"
               >
                 <span>Review & Selesai</span>
@@ -929,10 +874,8 @@
       `;
     }
 
-    // Global handlers untuk tes
     window.selectTestOption = function(qId, optId) {
       userAnswers[qId] = optId;
-      // Re-render untuk update UI
       const appDiv = document.getElementById('app');
       appDiv.innerHTML = renderTestPage();
     };
@@ -973,13 +916,13 @@
 
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-3xl mx-auto w-full">
-          <div class="w-full bg-darkSurface/90 border border-gold/30 rounded-3xl p-8 glow-box mb-8 text-center">
-            <h1 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Review Jawaban Dominioner</h1>
+        <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-3xl mx-auto w-full fade-in">
+          <div class="w-full glow-box rounded-3xl p-8 bg-cardSurface mb-8 text-center">
+            <h1 class="text-2xl font-cinzel font-bold text-white mb-2 text-glow-white">Review Jawaban Dominioner</h1>
             <p class="text-xs text-secondaryText">
               Pastikan seluruh 30 pertanyaan telah terjawab sebelum menghitung profil BLDS Flames milikmu.
             </p>
-            <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-xs font-semibold text-gold">
+            <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/35 text-xs font-semibold text-white">
               <span>Terjawab: ${answeredCount} dari 30</span>
             </div>
           </div>
@@ -988,16 +931,16 @@
             ${QUESTIONS_LIST.map((q, idx) => {
               const ans = userAnswers[q.id];
               return `
-                <div class="bg-darkSurface/60 border ${ans ? 'border-gold/20' : 'border-crimson/30'} rounded-2xl p-5 flex items-center justify-between gap-4">
+                <div class="glow-box rounded-2xl p-5 bg-cardSurface flex items-center justify-between gap-4">
                   <div>
                     <span class="text-[10px] text-mutedText uppercase tracking-wider block mb-1">Soal ${idx + 1}</span>
-                    <p class="text-xs text-primaryText font-medium line-clamp-1">${escapeHTML(q.text)}</p>
+                    <p class="text-xs text-white font-medium line-clamp-1">${escapeHTML(q.text)}</p>
                   </div>
                   <div class="flex items-center gap-3 shrink-0">
-                    <span class="px-3 py-1 rounded-lg text-xs font-bold ${ans ? 'bg-gold/20 text-gold border border-gold/40' : 'bg-crimson/20 text-crimson border border-crimson/40'}">
+                    <span class="px-3 py-1 rounded-lg text-xs font-bold ${ans ? 'bg-white/20 text-white border border-white/40' : 'bg-red-500/20 text-red-400 border border-red-500/40'}">
                       ${ans ? `Opsi ${ans}` : 'Belum'}
                     </span>
-                    <button onclick="window.jumpToQuestion(${idx})" class="text-xs text-gold underline hover:text-brightGold">Ubah</button>
+                    <button onclick="window.jumpToQuestion(${idx})" class="text-xs text-white underline hover:text-secondaryText transition-colors">Ubah</button>
                   </div>
                 </div>
               `;
@@ -1005,14 +948,14 @@
           </div>
 
           <div class="w-full flex items-center justify-between">
-            <a href="#/test" class="px-5 py-2.5 rounded-xl border border-gold/30 text-gold text-xs font-semibold hover:bg-gold/10 transition-all">
+            <a href="#/test" class="px-6 py-3 rounded-xl glow-btn-outline text-xs font-semibold transition-all">
               Kembali ke Tes
             </a>
             <button
               onclick="window.submitTestResult()"
               ${!isComplete ? 'disabled' : ''}
-              class="px-8 py-3.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn ${
-                !isComplete ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'bg-gold text-obsidian hover:bg-brightGold'
+              class="px-8 py-3.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all ${
+                !isComplete ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'glow-btn'
               }"
             >
               <span>Hitung & Lihat Profil Flames</span>
@@ -1047,10 +990,8 @@
         percentages
       };
 
-      // Simpan ke localStorage dulu sebagai fallback andalan
       localStorage.setItem(`blds_result_${resultId}`, JSON.stringify(participantResult));
 
-      // Coba simpan ke Firebase Realtime Database jika terinisialisasi
       if (isFirebaseInitialized && db) {
         try {
           await set(ref(db, `participants/${resultId}`), participantResult);
@@ -1071,7 +1012,6 @@
     // ==========================================
     function renderResultPage(resultId) {
       let resultData = null;
-      // Cek localStorage
       const local = localStorage.getItem(`blds_result_${resultId}`);
       if (local) {
         resultData = JSON.parse(local);
@@ -1079,22 +1019,22 @@
 
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-5xl mx-auto w-full">
+        <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-5xl mx-auto w-full fade-in">
           <div id="result-content" class="w-full flex flex-col items-center">
             ${!resultData ? `
-              <div class="w-full bg-darkSurface/90 border border-gold/30 rounded-3xl p-12 text-center glow-box">
-                <h1 class="text-2xl font-cinzel font-bold text-gold mb-2">Memuat Arsip Kepribadian...</h1>
+              <div class="w-full glow-box rounded-3xl p-12 text-center bg-cardSurface">
+                <h1 class="text-2xl font-cinzel font-bold text-white mb-2 text-glow-white">Memuat Arsip Kepribadian...</h1>
                 <p class="text-xs text-mutedText">Mencari data profil Dominioner dalam dimensi BLDS.</p>
               </div>
             ` : `
               <!-- Header Result -->
-              <div class="w-full bg-darkSurface/90 border border-gold/30 rounded-3xl p-8 glow-box text-center mb-10">
-                <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                  <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                  <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-lg border border-gold/40 rounded-xl w-full h-full bg-obsidian">BLDS</div>
+              <div class="w-full glow-box rounded-3xl p-8 bg-cardSurface text-center mb-10">
+                <div class="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                  <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-floating" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                  <div class="hidden items-center justify-center font-cinzel font-bold text-white text-lg border border-white/50 rounded-xl w-full h-full bg-obsidian shadow-[0_0_15px_rgba(255,255,255,0.3)]">BLDS</div>
                 </div>
-                <span class="text-xs text-gold font-cinzel tracking-widest uppercase block mb-1">Arsip Profil Resmi • BLDS FLAMES</span>
-                <h1 class="text-3xl font-cinzel font-bold text-primaryText mb-2 text-glow-gold">${escapeHTML(resultData.name)}</h1>
+                <span class="text-xs text-white font-cinzel tracking-widest uppercase block mb-1 text-glow-white">Arsip Profil Resmi • BLDS FLAMES</span>
+                <h1 class="text-3xl md:text-4xl font-cinzel font-bold text-white mb-3 text-glow-white">${escapeHTML(resultData.name)}</h1>
                 <p class="text-xs text-mutedText">
                   Diselesaikan pada ${new Date(resultData.completedAt).toLocaleDateString('id-ID', { dateStyle: 'full' })}
                 </p>
@@ -1102,11 +1042,11 @@
                 <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
                   <button
                     onclick="window.copyResultSummary('${resultId}')"
-                    class="px-5 py-2.5 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-semibold flex items-center gap-2 hover:bg-gold/20 transition-all glow-btn"
+                    class="px-6 py-3 rounded-xl glow-btn font-cinzel font-bold text-xs tracking-wider flex items-center gap-2"
                   >
                     <span>Salin Ringkasan Profil</span>
                   </button>
-                  <a href="#/" class="px-5 py-2.5 rounded-xl border border-gold/30 text-gold text-xs font-semibold hover:bg-gold/10 transition-all">
+                  <a href="#/" class="px-6 py-3 rounded-xl glow-btn-outline text-xs font-semibold transition-all">
                     Kembali ke Beranda
                   </a>
                 </div>
@@ -1114,23 +1054,23 @@
 
               <!-- 12 Flames Section -->
               <div class="w-full mb-12">
-                <h2 class="text-xl font-cinzel font-bold text-gold mb-6 text-glow-gold flex items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-gold shadow-[0_0_10px_rgba(217,173,85,0.9)]"></span>
+                <h2 class="text-xl font-cinzel font-bold text-white mb-6 text-glow-white flex items-center gap-3">
+                  <span class="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]"></span>
                   <span>12 FLAMES (Sisi Konstruktif)</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   ${FLAMES_LIST.map(flame => {
                     const pct = resultData.percentages[flame.id] || 0;
                     return `
-                      <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box flex flex-col justify-between">
+                      <div class="glow-box rounded-2xl p-6 bg-cardSurface flex flex-col justify-between">
                         <div>
                           <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-cinzel font-bold text-gold tracking-widest">${escapeHTML(flame.nameEn)}</span>
-                            <span class="text-sm font-bold text-brightGold">${pct}%</span>
+                            <span class="text-xs font-cinzel font-bold text-white tracking-widest text-glow-white">${escapeHTML(flame.nameEn)}</span>
+                            <span class="text-sm font-bold text-white">${pct}%</span>
                           </div>
-                          <h3 class="text-sm font-semibold text-primaryText mb-2">${escapeHTML(flame.nameId)}</h3>
-                          <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-gold/20 mb-3">
-                            <div class="h-full bg-gold transition-all duration-500" style="width: ${pct}%"></div>
+                          <h3 class="text-sm font-semibold text-secondaryText mb-3">${escapeHTML(flame.nameId)}</h3>
+                          <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-white/20 mb-3">
+                            <div class="h-full bg-white transition-all duration-500 shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="width: ${pct}%"></div>
                           </div>
                           <p class="text-xs text-secondaryText leading-relaxed">${escapeHTML(flame.description)}</p>
                         </div>
@@ -1142,23 +1082,23 @@
 
               <!-- 12 Shadow Flames Section -->
               <div class="w-full mb-12">
-                <h2 class="text-xl font-cinzel font-bold text-crimson mb-6 text-glow-crimson flex items-center gap-2">
-                  <span class="w-3 h-3 rounded-full bg-crimson shadow-[0_0_10px_rgba(197,77,105,0.9)]"></span>
+                <h2 class="text-xl font-cinzel font-bold text-white mb-6 text-glow-white flex items-center gap-3">
+                  <span class="w-3 h-3 rounded-full bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.4)]"></span>
                   <span>12 SHADOW FLAMES (Sisi Tantangan)</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   ${SHADOWS_LIST.map(shadow => {
                     const pct = resultData.percentages[shadow.id] || 0;
                     return `
-                      <div class="bg-darkSurface/60 border border-crimson/20 rounded-2xl p-6 flex flex-col justify-between">
+                      <div class="glow-box rounded-2xl p-6 bg-cardSurface flex flex-col justify-between">
                         <div>
                           <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-cinzel font-bold text-crimson tracking-widest">${escapeHTML(shadow.nameEn)}</span>
-                            <span class="text-sm font-bold text-primaryText">${pct}%</span>
+                            <span class="text-xs font-cinzel font-bold text-secondaryText tracking-widest">${escapeHTML(shadow.nameEn)}</span>
+                            <span class="text-sm font-bold text-white">${pct}%</span>
                           </div>
-                          <h3 class="text-sm font-semibold text-primaryText mb-2">${escapeHTML(shadow.nameId)}</h3>
-                          <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-crimson/20 mb-3">
-                            <div class="h-full bg-crimson transition-all duration-500" style="width: ${pct}%"></div>
+                          <h3 class="text-sm font-semibold text-secondaryText mb-3">${escapeHTML(shadow.nameId)}</h3>
+                          <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-white/20 mb-3">
+                            <div class="h-full bg-white/60 transition-all duration-500" style="width: ${pct}%"></div>
                           </div>
                           <p class="text-xs text-secondaryText leading-relaxed">${escapeHTML(shadow.description)}</p>
                         </div>
@@ -1189,42 +1129,42 @@
     function renderAdminLoginPage() {
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center justify-center px-6 py-12">
-          <div class="w-full max-w-md bg-darkSurface/90 border border-gold/30 rounded-3xl p-8 glow-box flex flex-col items-center text-center">
-            <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
-              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-lg border border-gold/40 rounded-xl w-full h-full bg-obsidian">BLDS</div>
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-16 fade-in">
+          <div class="w-full max-w-md glow-box rounded-3xl p-8 bg-cardSurface flex flex-col items-center text-center">
+            <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-floating" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-white text-lg border border-white/50 rounded-xl w-full h-full bg-obsidian shadow-[0_0_15px_rgba(255,255,255,0.3)]">BLDS</div>
             </div>
 
-            <h1 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Admin Portal</h1>
+            <h1 class="text-2xl font-cinzel font-bold text-white mb-2 text-glow-white">Admin Portal</h1>
             <p class="text-xs text-secondaryText mb-8">Autentikasi khusus pengelola arsip BLACKLIGHTDOMINIONS.</p>
 
-            <form id="admin-login-form" onsubmit="window.handleAdminLogin(event)" class="w-full space-y-4 text-left">
+            <form id="admin-login-form" onsubmit="window.handleAdminLogin(event)" class="w-full space-y-5 text-left">
               <div>
-                <label class="block text-xs font-medium text-mutedText mb-1 uppercase tracking-wider">Email Admin</label>
+                <label class="block text-xs font-medium text-mutedText mb-2 uppercase tracking-wider">Email Admin</label>
                 <input
                   type="email"
                   id="admin-email"
                   required
-                  class="w-full bg-obsidian border border-gold/20 rounded-xl px-4 py-3 text-sm text-primaryText focus:outline-none focus:border-gold"
+                  class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white shadow-[inset_0_0_10px_rgba(255,255,255,0.02)]"
                 />
               </div>
 
               <div>
-                <label class="block text-xs font-medium text-mutedText mb-1 uppercase tracking-wider">Password</label>
+                <label class="block text-xs font-medium text-mutedText mb-2 uppercase tracking-wider">Password</label>
                 <input
                   type="password"
                   id="admin-password"
                   required
-                  class="w-full bg-obsidian border border-gold/20 rounded-xl px-4 py-3 text-sm text-primaryText focus:outline-none focus:border-gold"
+                  class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white shadow-[inset_0_0_10px_rgba(255,255,255,0.02)]"
                 />
               </div>
 
-              <div id="login-error" class="text-xs text-crimson text-center hidden"></div>
+              <div id="login-error" class="text-xs text-red-400 text-center hidden"></div>
 
               <button
                 type="submit"
-                class="w-full py-3.5 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-xs tracking-wider hover:bg-brightGold transition-all flex items-center justify-center gap-2 glow-btn"
+                class="w-full py-4 rounded-xl glow-btn font-cinzel font-bold text-xs tracking-wider flex items-center justify-center gap-2"
               >
                 <span>Masuk Dashboard</span>
               </button>
@@ -1263,39 +1203,39 @@
     // ==========================================
     function renderAdminLayout(activeTab, contentHtml) {
       return `
-        <div class="min-h-screen bg-obsidian text-primaryText flex flex-col md:flex-row">
-          <aside class="w-full md:w-64 bg-darkSurface border-b md:border-b-0 md:border-r border-gold/20 flex flex-col">
-            <div class="p-6 border-b border-gold/10 flex items-center gap-3">
+        <div class="min-h-screen bg-obsidian text-primaryText flex flex-col md:flex-row fade-in">
+          <aside class="w-full md:w-64 bg-cardSurface border-b md:border-b-0 md:border-r border-white/20 flex flex-col">
+            <div class="p-6 border-b border-white/10 flex items-center gap-3">
               <div class="relative w-10 h-10 flex items-center justify-center">
-                <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-xs border border-gold/40 rounded-lg w-full h-full bg-obsidian">BLDS</div>
+                <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-floating" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                <div class="hidden items-center justify-center font-cinzel font-bold text-white text-xs border border-white/50 rounded-lg w-full h-full bg-obsidian">BLDS</div>
               </div>
               <div>
-                <h1 class="font-cinzel font-bold text-sm text-gold tracking-wider">BLDS ADMIN</h1>
+                <h1 class="font-cinzel font-bold text-sm text-white tracking-wider text-glow-white">BLDS ADMIN</h1>
                 <p class="text-[10px] text-mutedText">Dominioners Archive</p>
               </div>
             </div>
 
             <nav class="flex-1 p-4 space-y-1 font-sans">
-              <a href="#/admin" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'dashboard' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+              <a href="#/admin" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'dashboard' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">
                 <span>Dashboard</span>
               </a>
-              <a href="#/admin/participants" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'participants' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+              <a href="#/admin/participants" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'participants' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">
                 <span>Peserta</span>
               </a>
-              <a href="#/admin/statistics" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'statistics' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+              <a href="#/admin/statistics" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'statistics' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">
                 <span>Statistik</span>
               </a>
-              <a href="#/admin/settings" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'settings' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+              <a href="#/admin/settings" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'settings' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">
                 <span>Pengaturan</span>
               </a>
             </nav>
 
-            <div class="p-4 border-t border-gold/10 space-y-2">
-              <a href="#/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-mutedText hover:text-primaryText transition-colors">
+            <div class="p-4 border-t border-white/10 space-y-2">
+              <a href="#/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-mutedText hover:text-white transition-colors">
                 <span>Kembali ke Beranda</span>
               </a>
-              <button onclick="window.handleAdminLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-crimson hover:bg-crimson/10 transition-colors">
+              <button onclick="window.handleAdminLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-colors">
                 <span>Keluar</span>
               </button>
             </div>
@@ -1320,22 +1260,22 @@
       return renderAdminLayout('dashboard', `
         <div class="space-y-8">
           <div>
-            <h1 class="text-2xl font-cinzel font-bold text-gold mb-1 text-glow-gold">Dashboard Overview</h1>
+            <h1 class="text-2xl font-cinzel font-bold text-white mb-1 text-glow-white">Dashboard Overview</h1>
             <p class="text-xs text-mutedText">Statistik dan ringkasan aktivitas peserta BLDS FLAMES.</p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box">
+            <div class="glow-box rounded-2xl p-6 bg-cardSurface">
               <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Algoritma Versi</span>
-              <p class="text-3xl font-cinzel font-bold text-primaryText">v${ALGORITHM_VERSION}</p>
+              <p class="text-3xl font-cinzel font-bold text-white text-glow-white">v${ALGORITHM_VERSION}</p>
             </div>
-            <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box">
+            <div class="glow-box rounded-2xl p-6 bg-cardSurface">
               <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Bank Soal</span>
-              <p class="text-3xl font-cinzel font-bold text-primaryText">30 Soal</p>
+              <p class="text-3xl font-cinzel font-bold text-white text-glow-white">30 Soal</p>
             </div>
-            <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box">
+            <div class="glow-box rounded-2xl p-6 bg-cardSurface">
               <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Status Database</span>
-              <p class="text-sm font-semibold text-emerald-400 mt-2">${isFirebaseInitialized ? 'Terhubung' : 'Mode Lokal (Demo)'}</p>
+              <p class="text-sm font-semibold text-white mt-2">${isFirebaseInitialized ? 'Terhubung' : 'Mode Lokal (Demo)'}</p>
             </div>
           </div>
         </div>
@@ -1343,7 +1283,6 @@
     }
 
     function renderAdminParticipants() {
-      // Ambil data lokal untuk tabel admin
       const keys = Object.keys(localStorage).filter(k => k.startsWith('blds_result_'));
       const participants = keys.map(k => JSON.parse(localStorage.getItem(k)));
 
@@ -1351,33 +1290,33 @@
         <div class="space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 class="text-2xl font-cinzel font-bold text-gold mb-1 text-glow-gold">Kelola Peserta</h1>
+              <h1 class="text-2xl font-cinzel font-bold text-white mb-1 text-glow-white">Kelola Peserta</h1>
               <p class="text-xs text-mutedText">Daftar Dominioner yang telah menyelesaikan tes (Lokal / Cache).</p>
             </div>
           </div>
 
-          <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl overflow-hidden">
+          <div class="glow-box rounded-2xl overflow-hidden bg-cardSurface">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-gold/20 bg-obsidian/40 text-[11px] text-mutedText uppercase tracking-wider font-cinzel">
+                <tr class="border-b border-white/20 bg-obsidian/40 text-[11px] text-mutedText uppercase tracking-wider font-cinzel">
                   <th class="p-4">Nama</th>
                   <th class="p-4">Tanggal</th>
                   <th class="p-4">Status</th>
                   <th class="p-4 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-white/5 text-xs">
+              <tbody class="divide-y divide-white/10 text-xs">
                 ${participants.length === 0 ? `
                   <tr><td colspan="4" class="p-6 text-center text-mutedText">Belum ada data peserta tersimpan di perangkat ini.</td></tr>
                 ` : participants.map(p => `
                   <tr class="hover:bg-white/5 transition-colors">
-                    <td class="p-4 font-semibold text-primaryText">${escapeHTML(p.name)}</td>
+                    <td class="p-4 font-semibold text-white">${escapeHTML(p.name)}</td>
                     <td class="p-4 text-secondaryText">${new Date(p.completedAt).toLocaleDateString()}</td>
                     <td class="p-4">
-                      <span class="px-2.5 py-1 rounded-full text-[10px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">${p.status}</span>
+                      <span class="px-2.5 py-1 rounded-full text-[10px] bg-white/10 border border-white/30 text-white">${p.status}</span>
                     </td>
                     <td class="p-4 text-right space-x-2">
-                      <a href="#/result/${p.id}" class="inline-flex px-3 py-1 rounded-lg bg-gold/10 text-gold hover:bg-gold/25 transition-colors font-medium">Lihat</a>
+                      <a href="#/result/${p.id}" class="inline-flex px-3 py-1 rounded-lg bg-white text-black hover:bg-secondaryText transition-colors font-medium">Lihat</a>
                     </td>
                   </tr>
                 `).join('')}
@@ -1391,9 +1330,9 @@
     function renderAdminStatistics() {
       return renderAdminLayout('statistics', `
         <div class="space-y-6">
-          <h1 class="text-2xl font-cinzel font-bold text-gold text-glow-gold">Statistik Agregat</h1>
+          <h1 class="text-2xl font-cinzel font-bold text-white text-glow-white">Statistik Agregat</h1>
           <p class="text-xs text-mutedText">Analisis mendalam distribusi dimensi Flames dan Shadow Flames.</p>
-          <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-8 text-center text-mutedText">
+          <div class="glow-box rounded-2xl p-8 text-center text-mutedText bg-cardSurface">
             Statistik agregat aktif membaca rekam jejak arsip Dominioners.
           </div>
         </div>
@@ -1403,16 +1342,16 @@
     function renderAdminSettings() {
       return renderAdminLayout('settings', `
         <div class="space-y-6">
-          <h1 class="text-2xl font-cinzel font-bold text-gold text-glow-gold">Pengaturan Sistem</h1>
+          <h1 class="text-2xl font-cinzel font-bold text-white text-glow-white">Pengaturan Sistem</h1>
           <p class="text-xs text-mutedText">Konfigurasi Firebase Realtime Database & Versi Algoritma.</p>
-          <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 space-y-4">
+          <div class="glow-box rounded-2xl p-6 space-y-4 bg-cardSurface">
             <div>
               <span class="text-xs text-mutedText block uppercase">Database URL</span>
-              <span class="text-sm text-primaryText font-mono">https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app</span>
+              <span class="text-sm text-white font-mono">https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app</span>
             </div>
             <div>
               <span class="text-xs text-mutedText block uppercase">Algoritma Versi</span>
-              <span class="text-sm text-primaryText font-mono">v${ALGORITHM_VERSION}</span>
+              <span class="text-sm text-white font-mono">v${ALGORITHM_VERSION}</span>
             </div>
           </div>
         </div>
@@ -1422,10 +1361,10 @@
     function renderNotFound() {
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center justify-center px-6 text-center py-20">
-          <h1 class="text-3xl font-cinzel font-bold text-gold mb-2 text-glow-gold">404 • Dimensi Tidak Ditemukan</h1>
+        <main class="flex-1 flex flex-col items-center justify-center px-6 text-center py-20 fade-in">
+          <h1 class="text-3xl font-cinzel font-bold text-white mb-2 text-glow-white">404 • Dimensi Tidak Ditemukan</h1>
           <p class="text-xs text-secondaryText mb-8">Halaman yang kamu cari tidak berada dalam arsip rahasia BLDS.</p>
-          <a href="#/" class="px-6 py-3 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-xs tracking-wider hover:bg-brightGold transition-all glow-btn">
+          <a href="#/" class="px-6 py-3 rounded-xl glow-btn font-cinzel font-bold text-xs tracking-wider">
             Kembali ke Beranda
           </a>
         </main>
@@ -1441,7 +1380,6 @@
       const appDiv = document.getElementById('app');
       if (!appDiv) return;
 
-      // Handle submit form di start page
       setTimeout(() => {
         const startForm = document.getElementById('start-form');
         if (startForm) {
