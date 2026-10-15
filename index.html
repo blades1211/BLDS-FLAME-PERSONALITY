@@ -32,14 +32,12 @@
     }
   </script>
   <style>
-    /* Global Styles & Text Glow */
     body {
       background-color: #000000;
       color: #FFFFFF;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-      transition: background 0.3s ease;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -47,12 +45,14 @@
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.1);
     }
 
-    p, span, label, a {
-      transition: text-shadow 0.3s ease, color 0.3s ease;
+    /* Animasi Mengetik / Kemunculan Karakter */
+    @keyframes textAppear {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    p:hover, span:hover {
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    .typing-effect {
+      animation: textAppear 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     /* True Glow & Floating Animation untuk logo.png */
@@ -80,7 +80,6 @@
       filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 80px rgba(255, 255, 255, 0.5));
     }
 
-    /* Card Glow & Hover Transition */
     .glow-box {
       background: #121212;
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -94,7 +93,6 @@
       transform: translateY(-3px);
     }
 
-    /* Button Glow & Active Transitions */
     .glow-btn {
       background: #FFFFFF;
       color: #000000;
@@ -106,10 +104,6 @@
       background: #E5E5E5;
       box-shadow: 0 0 35px rgba(255, 255, 255, 0.65);
       transform: translateY(-2px) scale(1.01);
-    }
-
-    .glow-btn:active {
-      transform: translateY(1px) scale(0.98);
     }
 
     .glow-btn-outline {
@@ -127,7 +121,6 @@
       transform: translateY(-2px);
     }
 
-    /* Smooth Fade In */
     .fade-in {
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -136,106 +129,485 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #000000;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #262626;
-      border-radius: 3px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #404040;
-    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #000000; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; border: 1px solid rgba(255, 255, 255, 0.1); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-obsidian text-primaryText antialiased">
 
-  <!-- App Root Container -->
   <div id="app" class="flex-1 flex flex-col fade-in"></div>
-
-  <!-- Toast Notification Container -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- Script Aplikasi Lengkap -->
+  <!-- Modal Keluar Tes -->
+  <div id="exit-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden px-4">
+    <div class="glow-box rounded-3xl p-8 max-w-md w-full bg-cardSurface text-center">
+      <h3 class="text-xl font-cinzel font-bold text-white mb-3">Keluar dari Tes?</h3>
+      <p class="text-xs text-secondaryText mb-6 leading-relaxed">
+        Jika kamu keluar sekarang, persentase sementara akan dihitung berdasarkan pertanyaan yang sudah terjawab. Apakah kamu yakin ingin mengakhiri sesi ini?
+      </p>
+      <div class="flex items-center gap-3">
+        <button onclick="window.closeExitModal()" class="flex-1 py-3 rounded-xl glow-btn-outline text-xs font-semibold">Lanjutkan Tes</button>
+        <button onclick="window.confirmExitTest()" class="flex-1 py-3 rounded-xl bg-red-600 text-white font-cinzel font-bold text-xs hover:bg-red-700 transition-all shadow-[0_0_15px_rgba(220,38,38,0.4)]">Keluar & Lihat Hasil</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-    // Konfigurasi Firebase (Sesuaikan jika diperlukan)
-    const firebaseConfig = {
-      apiKey: "ISI_API_KEY_FIREBASE",
-      authDomain: "ISI_AUTH_DOMAIN_FIREBASE",
-      databaseURL: "https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "ISI_PROJECT_ID_FIREBASE",
-      storageBucket: "ISI_STORAGE_BUCKET_FIREBASE",
-      messagingSenderId: "ISI_MESSAGING_SENDER_ID_FIREBASE",
-      appId: "ISI_APP_ID_FIREBASE"
-    };
-
-    let app = null, db = null, auth = null, isFirebaseInitialized = false;
-    try {
-      if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "ISI_API_KEY_FIREBASE") {
-        app = initializeApp(firebaseConfig);
-        db = getDatabase(app);
-        auth = getAuth(app);
-        isFirebaseInitialized = true;
-      }
-    } catch (e) {
-      console.warn("Firebase running in local demo mode:", e);
-    }
-
-    // Katalog 24 Trait Resmi
+    // Katalog 24 Trait Lengkap dengan Pujian, Kritik Konstruktif, & Saran
     const TRAITS_CATALOG = [
-      { id: 'vision', nameEn: 'VISION', nameId: 'Penglihatan dan Arah', category: 'flame', pairId: 'pair_01', description: 'Kemampuan melihat tujuan jangka panjang, memahami gambaran besar, menyusun arah, dan merencanakan langkah.' },
-      { id: 'blindness', nameEn: 'BLINDNESS', nameId: 'Kebutaan Arah', category: 'shadow', pairId: 'pair_01', description: 'Kecenderungan terpaku pada satu sudut pandang dan mengabaikan konteks atau petunjuk lain.' },
-      { id: 'discipline', nameEn: 'DISCIPLINE', nameId: 'Disiplin', category: 'flame', pairId: 'pair_02', description: 'Kecenderungan menjaga komitmen, mengatur waktu, bertanggung jawab, dan konsisten menjalankan langkah.' },
-      { id: 'indiscipline', nameEn: 'INDISCIPLINE', nameId: 'Ketidakteraturan', category: 'shadow', pairId: 'pair_02', description: 'Kecenderungan terdistraksi, menunda, atau kesulitan menjaga konsistensi rutinitas.' },
-      { id: 'loyalty', nameEn: 'LOYALTY', nameId: 'Kesetiaan', category: 'flame', pairId: 'pair_03', description: 'Kecenderungan menjaga kepercayaan, komitmen, dan hubungan yang dianggap penting secara bertanggung jawab.' },
-      { id: 'betrayal', nameEn: 'BETRAYAL', nameId: 'Pengkhianatan', category: 'shadow', pairId: 'pair_03', description: 'Kecenderungan mengabaikan kepercayaan atau komitmen demi keuntungan sesaat.' },
-      { id: 'ambition', nameEn: 'AMBITION', nameId: 'Ambisi', category: 'flame', pairId: 'pair_04', description: 'Dorongan untuk berkembang, menetapkan tujuan, mempelajari keterampilan, dan meningkatkan kemampuan.' },
-      { id: 'arrogance', nameEn: 'ARROGANCE', nameId: 'Keangkuhan', category: 'shadow', pairId: 'pair_04', description: 'Kecenderungan merasa paling benar, meremehkan masukan, atau menolak kritik.' },
-      { id: 'resilience', nameEn: 'RESILIENCE', nameId: 'Ketangguhan', category: 'flame', pairId: 'pair_05', description: 'Kecenderungan beradaptasi, belajar dari hambatan, dan mencoba melanjutkan langkah secara sehat.' },
-      { id: 'despair', nameEn: 'DESPAIR', nameId: 'Keputusasaan', category: 'shadow', pairId: 'pair_05', description: 'Kecenderungan sulit melihat jalan keluar atau merasa berat menghadapi hambatan.' },
-      { id: 'hope', nameEn: 'HOPE', nameId: 'Harapan', category: 'flame', pairId: 'pair_06', description: 'Kecenderungan melihat peluang perbaikan dan membayangkan hasil yang lebih baik dengan realistis.' },
-      { id: 'hopelessness', nameEn: 'HOPELESSNESS', nameId: 'Kehilangan Harapan', category: 'shadow', pairId: 'pair_06', description: 'Kecenderungan sulit membayangkan perubahan atau hasil yang lebih baik saat menghadapi keadaan berat.' },
-      { id: 'awareness', nameEn: 'AWARENESS', nameId: 'Kesadaran', category: 'flame', pairId: 'pair_07', description: 'Kepekaan terhadap situasi, emosi diri, konsekuensi tindakan, dan perspektif orang lain.' },
-      { id: 'unawareness', nameEn: 'UNAWARENESS', nameId: 'Kurang Menyadari Keadaan', category: 'shadow', pairId: 'pair_07', description: 'Kecenderungan melewatkan petunjuk penting, konteks, atau dampak perilaku sendiri.' },
-      { id: 'patience', nameEn: 'PATIENCE', nameId: 'Kesabaran', category: 'flame', pairId: 'pair_08', description: 'Kemampuan memberi waktu pada proses, menahan dorongan terburu-buru, dan menghadapi ketidakpastian.' },
-      { id: 'impatience', nameEn: 'IMPATIENCE', nameId: 'Ketidaksabaran', category: 'shadow', pairId: 'pair_08', description: 'Kecenderungan menuntut hasil segera, cepat frustrasi saat proses lambat, atau memutuskan terlalu cepat.' },
-      { id: 'courage', nameEn: 'COURAGE', nameId: 'Keberanian', category: 'flame', pairId: 'pair_09', description: 'Kesediaan menghadapi tantangan, menyampaikan hal penting, dan bertindak meskipun ada rasa takut.' },
-      { id: 'cowardice', nameEn: 'COWARDICE', nameId: 'Sikap Menghindar karena Takut', category: 'shadow', pairId: 'pair_09', description: 'Kecenderungan menghindari tantangan atau tanggung jawab karena rasa takut.' },
-      { id: 'unity', nameEn: 'UNITY', nameId: 'Persatuan', category: 'flame', pairId: 'pair_10', description: 'Kemampuan bekerja sama, menghargai perbedaan, membangun rasa memiliki, dan mencari tujuan bersama.' },
-      { id: 'division', nameEn: 'DIVISION', nameId: 'Perpecahan', category: 'shadow', pairId: 'pair_10', description: 'Kecenderungan memperbesar perbedaan, membentuk kubu, atau mengutamakan konflik.' },
-      { id: 'compassion', nameEn: 'COMPASSION', nameId: 'Belas Kasih', category: 'flame', pairId: 'pair_11', description: 'Kemampuan memahami kesulitan orang lain, merespons dengan kepedulian, dan membantu dengan batasan.' },
-      { id: 'cruelty', nameEn: 'CRUELTY', nameId: 'Kekejaman', category: 'shadow', pairId: 'pair_11', description: 'Kecenderungan mengabaikan penderitaan atau perasaan orang lain tanpa kepedulian.' },
-      { id: 'integrity', nameEn: 'INTEGRITY', nameId: 'Integritas', category: 'flame', pairId: 'pair_12', description: 'Keselarasan antara nilai, perkataan, dan tindakan; kejujuran; serta tanggung jawab atas keputusan.' },
-      { id: 'corruption', nameEn: 'CORRUPTION', nameId: 'Kerusakan Integritas', category: 'shadow', pairId: 'pair_12', description: 'Kecenderungan mengorbankan prinsip demi keuntungan atau memanipulasi kepercayaan.' }
+      {
+        id: 'vision', nameEn: 'VISION', nameId: 'Penglihatan dan Arah', category: 'flame', pairId: 'pair_01',
+        description: 'Kemampuan melihat tujuan jangka panjang, memahami gambaran besar, menyusun arah, dan merencanakan langkah.',
+        praise: 'Kamu memiliki visi yang tajam dan mampu merumuskan arah masa depan dengan terarah.',
+        criticism: 'Waspadai kecenderungan terpaku terlalu kaku pada satu rencana hingga mengabaikan realitas tak terduga di lapangan.',
+        advice: 'Belajarlah untuk fleksibel dan libatkan masukan orang lain agar visi besarmu tidak berubah menjadi ego pribadi.'
+      },
+      {
+        id: 'blindness', nameEn: 'BLINDNESS', nameId: 'Kebutaan Arah', category: 'shadow', pairId: 'pair_01',
+        description: 'Kecenderungan terpaku pada satu sudut pandang dan mengabaikan konteks atau petunjuk lain.',
+        praise: 'Kesadaran akan bayangan ini menunjukkan bahwa kamu mulai terbuka mengevaluasi titik buta dalam berpikir.',
+        criticism: 'Skor tinggi di sini menandakan risiko mengabaikan detail penting atau masukan konstruktif dari lingkungan sekitar.',
+        advice: 'Biasakan diri berhenti sejenak, dengarkan sudut pandang berbeda sebelum mengambil keputusan mutlak.'
+      },
+      {
+        id: 'discipline', nameEn: 'DISCIPLINE', nameId: 'Disiplin', category: 'flame', pairId: 'pair_02',
+        description: 'Kecenderungan menjaga komitmen, mengatur waktu, bertanggung jawab, dan konsisten menjalankan langkah.',
+        praise: 'Keteguhan dan konsistensimu dalam memegang tanggung jawab adalah fondasi utama keberhasilan.',
+        criticism: 'Jangan biarkan disiplin berubah menjadi kaku atau menuntut orang lain secara berlebihan tanpa empati.',
+        advice: 'Seimbangkan ketaturan rutinitas dengan kelenturan hati dalam menghadapi dinamika sosial.'
+      },
+      {
+        id: 'indiscipline', nameEn: 'INDISCIPLINE', nameId: 'Ketidakteraturan', category: 'shadow', pairId: 'pair_02',
+        description: 'Kecenderungan terdistraksi, menunda, atau kesulitan menjaga konsistensi rutinitas.',
+        praise: 'Mengakui area ketidakteraturan adalah langkah awal yang sangat baik untuk membangun ulang ritme hidup.',
+        criticism: 'Penundaan yang berkelanjutan akan menggerogoti potensi besar yang sebenarnya kamu miliki.',
+        advice: 'Mulailah membuat target kecil harian yang realistis dan bangun akuntabilitas bersama teman.'
+      },
+      {
+        id: 'loyalty', nameEn: 'LOYALTY', nameId: 'Kesetiaan', category: 'flame', pairId: 'pair_03',
+        description: 'Kecenderungan menjaga kepercayaan, komitmen, dan hubungan yang dianggap penting secara bertanggung jawab.',
+        praise: 'Komitmen dan loyalitas tulus yang kamu berikan menciptakan rasa aman bagi orang di sekitarmu.',
+        criticism: 'Pastikan kesetiaanmu tidak menjerumuskanmu untuk membenarkan kesalahan orang lain secara membabi buta.',
+        advice: 'Tegakkan integritas moral di atas segalanya, bahkan dalam hubungan terdekat sekalipun.'
+      },
+      {
+        id: 'betrayal', nameEn: 'BETRAYAL', nameId: 'Pengkhianatan', category: 'shadow', pairId: 'pair_03',
+        description: 'Kecenderungan mengabaikan kepercayaan atau komitmen demi keuntungan sesaat.',
+        praise: 'Refleksi ini membantu menyadarkan betapa berharganya menjaga kepercayaan demi keharmonisan bersama.',
+        criticism: 'Mengorbankan kepercayaan demi kenyamanan atau keuntungan sesaat akan merusak reputasi jangka panjangmu.',
+        advice: 'Pegang teguh perkataanmu dan jadilah pribadi yang dapat diandalkan dalam situasi apa pun.'
+      },
+      {
+        id: 'ambition', nameEn: 'AMBITION', nameId: 'Ambisi', category: 'flame', pairId: 'pair_04',
+        description: 'Dorongan untuk berkembang, menetapkan tujuan, mempelajari keterampilan, dan meningkatkan kemampuan.',
+        praise: 'Semangat membara untuk terus belajar dan bertumbuh adalah motor penggerak yang luar biasa.',
+        criticism: 'Waspadai ambisi berlebihan yang membuatmu meremehkan proses atau menginjak pencapaian orang lain.',
+        advice: 'Rendah hatilah dalam mengejar mimpi, dan hargai setiap orang yang berproses bersama.'
+      },
+      {
+        id: 'arrogance', nameEn: 'ARROGANCE', nameId: 'Keangkuhan', category: 'shadow', pairId: 'pair_04',
+        description: 'Kecenderungan merasa paling benar, meremehkan masukan, atau menolak kritik.',
+        praise: 'Keberanian menatap bayangan arogansi menunjukkan kedewasaan mental untuk terus memperbaiki diri.',
+        criticism: 'Merasa paling unggul akan menutup pintu pembelajaran dan menjauhkan orang-orang tulus di sekitarmu.',
+        advice: 'Latihlah diri menerima kritik dengan senyuman dan anggap setiap kritik sebagai pupuk pertumbuhan.'
+      },
+      {
+        id: 'resilience', nameEn: 'RESILIENCE', nameId: 'Ketangguhan', category: 'flame', pairId: 'pair_05',
+        description: 'Kecenderungan beradaptasi, belajar dari hambatan, dan mencoba melanjutkan langkah secara sehat.',
+        praise: 'Kemampuan bangkit kembali setelah terjatuh membuktikan ketahanan mental yang sangat mengagumkan.',
+        criticism: 'Jangan memaksakan diri terus berdiri tanpa memberikan ruang bagi hatimu untuk beristirahat.',
+        advice: 'Ketangguhan sejati juga mencakup keberanian untuk mengakui kelelahan dan meminta bantuan.'
+      },
+      {
+        id: 'despair', nameEn: 'DESPAIR', nameId: 'Keputusasaan', category: 'shadow', pairId: 'pair_05',
+        description: 'Kecenderungan sulit melihat jalan keluar atau merasa berat menghadapi hambatan.',
+        praise: 'Menyadari rasa berat ini adalah bukti bahwa kamu masih memiliki harapan untuk mencari pertolongan.',
+        criticism: 'Perasaan putus asa yang dibiarkan tanpa kendali akan membutakanmu dari solusi sederhana di depan mata.',
+        advice: 'Pecah masalah besar menjadi langkah-langkah mikro, dan bicaralah kepada seseorang yang tepercaya.'
+      },
+      {
+        id: 'hope', nameEn: 'HOPE', nameId: 'Harapan', category: 'flame', pairId: 'pair_06',
+        description: 'Kecenderungan melihat peluang perbaikan dan membayangkan hasil yang lebih baik dengan realistis.',
+        praise: 'Pandangan konstruktif dan optimisme yang kamu miliki mampu menerangi situasi paling suram sekalipun.',
+        criticism: 'Pastikan harapanmu diimbangi dengan aksi nyata, bukan sekadar angan-angan pasif.',
+        advice: 'Teruslah menyalakan harapan di sekitarmu dengan tindakan kecil yang konsisten.'
+      },
+      {
+        id: 'hopelessness', nameEn: 'HOPELESSNESS', nameId: 'Kehilangan Harapan', category: 'shadow', pairId: 'pair_06',
+        description: 'Kecenderungan sulit membayangkan perubahan atau hasil yang lebih baik saat menghadapi keadaan berat.',
+        praise: 'Pengenalan terhadap rasa pesimis ini membuka peluang emas untuk membangun ulang mentalitas positif.',
+        criticism: 'Kehilangan harapan menghentikan potensi perubahan sebelum kamu benar-benar mencobanya.',
+        advice: 'Ingatlah kembali pencapaian-pencapaian kecil di masa lalu yang berhasil kamu lewati.'
+      },
+      {
+        id: 'awareness', nameEn: 'AWARENESS', nameId: 'Kesadaran', category: 'flame', pairId: 'pair_07',
+        description: 'Kepekaan terhadap situasi, emosi diri, konsekuensi tindakan, dan perspektif orang lain.',
+        praise: 'Kepekaan sosial dan emosional yang tinggi membuatmu menjadi pendengar serta pengamat yang bijak.',
+        criticism: 'Jangan sampai kepekaanmu tersita habis oleh kekhawatiran berlebihan terhadap penilaian orang lain.',
+        advice: 'Gunakan kesadaran ini untuk melindungi batasan dirimu sekaligus menebar empati yang sehat.'
+      },
+      {
+        id: 'unawareness', nameEn: 'UNAWARENESS', nameId: 'Kurang Menyadari Keadaan', category: 'shadow', pairId: 'pair_07',
+        description: 'Kecenderungan melewatkan petunjuk penting, konteks, atau dampak perilaku sendiri.',
+        praise: 'Refleksi ini melatihmu agar lebih hadir secara penuh (*mindful*) dalam setiap situasi.',
+        criticism: 'Kurang peka terhadap lingkungan dapat melukai perasaan orang lain tanpa kamu sadari.',
+        advice: 'Latihlah kebiasaan mengamati situasi secara utuh sebelum bereaksi tergesa-gesa.'
+      },
+      {
+        id: 'patience', nameEn: 'PATIENCE', nameId: 'Kesabaran', category: 'flame', pairId: 'pair_08',
+        description: 'Kemampuan memberi waktu pada proses, menahan dorongan terburu-buru, dan menghadapi ketidakpastian.',
+        praise: 'Ketenangan dan kesabaranmu dalam merajut proses menunjukkan kedewasaan jiwa yang matang.',
+        criticism: 'Jangan biarkan kesabaran berubah menjadi sikap pasif atau menunda tindakan saat urgensi menuntut.',
+        advice: 'Bedakan antara sabar menanti proses dan lambat merespons peluang penting.'
+      },
+      {
+        id: 'impatience', nameEn: 'IMPATIENCE', nameId: 'Ketidaksabaran', category: 'shadow', pairId: 'pair_08',
+        description: 'Kecenderungan menuntut hasil segera, cepat frustrasi saat proses lambat, atau memutuskan terlalu cepat.',
+        praise: 'Mengenali sisi tidak sabar membantumu mengerem keputusan impulsif yang merugikan.',
+        criticism: 'Menuntut hasil instan sering kali merusak kualitas karya dan membuatmu mudah stres sendiri.',
+        advice: 'Nikmati setiap tahapan proses belajar; hal-hal besar membutuhkan waktu untuk matang.'
+      },
+      {
+        id: 'courage', nameEn: 'COURAGE', nameId: 'Keberanian', category: 'flame', pairId: 'pair_09',
+        description: 'Kesediaan menghadapi tantangan, menyampaikan hal penting, dan bertindak meskipun ada rasa takut.',
+        praise: 'Keberanian moral yang kamu tunjukkan menjadi inspirasi bagi orang-orang di sekitarmu.',
+        criticism: 'Keberanian tanpa pertimbangan matang dapat berubah menjadi kenekatan yang membahayakan.',
+        advice: 'Padukan keberanian dengan kebijaksanaan dan analisis risiko yang rasional.'
+      },
+      {
+        id: 'cowardice', nameEn: 'COWARDICE', nameId: 'Sikap Menghindar karena Takut', category: 'shadow', pairId: 'pair_09',
+        description: 'Kecenderungan menghindari tantangan atau tanggung jawab karena rasa takut.',
+        praise: 'Kejujuran mengakui rasa takut adalah bentuk keberanian awal yang sangat terpuji.',
+        criticism: 'Terus-menerus menghindar dari tanggung jawab hanya akan memperbesar ketakutan di dalam kepalamu.',
+        advice: 'Hadapi ketakutan secara bertahap; rasa takut akan menyusut saat kamu mulai melangkah.'
+      },
+      {
+        id: 'unity', nameEn: 'UNITY', nameId: 'Persatuan', category: 'flame', pairId: 'pair_10',
+        description: 'Kemampuan bekerja sama, menghargai perbedaan, membangun rasa memiliki, dan mencari tujuan bersama.',
+        praise: 'Jiwa kolaboratifmu mampu merangkum berbagai perbedaan menjadi kekuatan kolektif yang solid.',
+        criticism: 'Jangan mengorbankan prinsip pribadi demi menyenangkan semua pihak dalam kelompok.',
+        advice: 'Bangun harmoni tanpa harus kehilangan jati diri dan integritas individumu.'
+      },
+      {
+        id: 'division', nameEn: 'DIVISION', nameId: 'Perpecahan', category: 'shadow', pairId: 'pair_10',
+        description: 'Kecenderungan memperbesar perbedaan, membentuk kubu, atau mengutamakan konflik.',
+        praise: 'Refleksi ini membimbingmu untuk kembali merekatkan jalinan komunikasi yang renggang.',
+        criticism: 'Memicu perpecahan demi ego atau kelompok eksklusif akan menghancurkan sinergi bersama.',
+        advice: 'Cari titik temu dan fokuslah pada tujuan bersama yang lebih besar.'
+      },
+      {
+        id: 'compassion', nameEn: 'COMPASSION', nameId: 'Belas Kasih', category: 'flame', pairId: 'pair_11',
+        description: 'Kemampuan memahami kesulitan orang lain, merespons dengan kepedulian, dan membantu dengan batasan.',
+        praise: 'Kepedulian dan kehangatan hatimu memberikan ketenangan bagi siapa saja yang sedang berkesusahan.',
+        criticism: 'Jangan biarkan rasa kasihan membuatmu mengorbankan kesejahteraan dirimu sendiri (*people pleasing*).',
+        advice: 'Terapkan belas kasih yang sehat dengan tetap menjaga batasan personal yang tegas.'
+      },
+      {
+        id: 'cruelty', nameEn: 'CRUELTY', nameId: 'Kekejaman', category: 'shadow', pairId: 'pair_11',
+        description: 'Kecenderungan mengabaikan penderitaan atau perasaan orang lain tanpa kepedulian.',
+        praise: 'Kesadaran mengevaluasi sisi ini menunjukkan bahwa nuranimu tetap terjaga dan peka.',
+        criticism: 'Mengabaikan penderitaan atau bersikap dingin pada sesama akan melahirkan luka mendalam.',
+        advice: 'Latihlah kepekaan batin dengan melihat segala sesuatu dari sudut pandang kemanusiaan.'
+      },
+      {
+        id: 'integrity', nameEn: 'INTEGRITY', nameId: 'Integritas', category: 'flame', pairId: 'pair_12',
+        description: 'Keselarasan antara nilai, perkataan, dan tindakan; kejujuran; serta tanggung jawab atas keputusan.',
+        praise: 'Integritas dan kejujuran yang konsisten membuatmu disegani dan dipercaya oleh siapa pun.',
+        criticism: 'Jangan bersikap menghakimi orang lain yang belum sejalan dengan standar integritasmu.',
+        advice: 'Jadilah teladan yang merangkul, bukan sekadar penasihat yang menghakimi.'
+      },
+      {
+        id: 'corruption', nameEn: 'CORRUPTION', nameId: 'Kerusakan Integritas', category: 'shadow', pairId: 'pair_12',
+        description: 'Kecenderungan mengorbankan prinsip demi keuntungan atau memanipulasi kepercayaan.',
+        praise: 'Merenungkan bayangan ini adalah benteng pertahanan terbaik untuk menjaga kemurnian prinsipmu.',
+        criticism: 'Kompromi kecil pada prinsip moral demi keuntungan instan akan menghancurkan kehormatanmu.',
+        advice: 'Pegang teguh komitmen moral, sebab harga diri jauh lebih mahal dari keuntungan sesaat.'
+      }
     ];
 
     const FLAMES_LIST = TRAITS_CATALOG.filter(t => t.category === 'flame');
     const SHADOWS_LIST = TRAITS_CATALOG.filter(t => t.category === 'shadow');
 
-    // 30 Pertanyaan Situasional
-    const QUESTIONS_LIST = Array.from({ length: 30 }, (_, i) => ({
-      id: i + 1,
-      text: `Pertanyaan Situasional Refleksi #${i + 1}: Bagaimana Dominioner menyikapi dinamika arah, prioritas, dan tanggung jawab dalam situasi ini?`,
-      options: [
-        { id: 'A', text: "Mengambil sudut pandang jangka panjang dan menyusun rencana terstruktur.", scores: { vision: 3, discipline: 2 } },
-        { id: 'B', text: "Menjaga konsistensi pelaksanaan tugas dan kedisiplinan harian secara teguh.", scores: { discipline: 3, resilience: 2 } },
-        { id: 'C', text: "Membangun komunikasi kolaboratif serta menghargai peran orang lain.", scores: { unity: 3, compassion: 2 } },
-        { id: 'D', text: "Bertindak secara impulsif atau menghindari tantangan demi kenyamanan sesaat.", scores: { impatience: 2, cowardice: 2, indiscipline: 1 } }
-      ]
-    }));
+    // 30 Pertanyaan Situasional Lengkap, Jelas, & Spesifik
+    const QUESTIONS_LIST = [
+      {
+        id: 1, text: "Kamu mempunyai target besar yang ingin dicapai dalam beberapa bulan ke depan, tetapi belum tahu persis cara memulainya. Apa langkah pertamamu?",
+        options: [
+          { id: 'A', text: "Menyusun arah besar, membayangkan kemungkinan hasil, dan merencanakan strategi utama.", scores: { vision: 3, discipline: 1, ambition: 2 } },
+          { id: 'B', text: "Memecah target besar tersebut menjadi jadwal harian dan rutinitas kecil yang teratur.", scores: { discipline: 3, vision: 1, resilience: 1 } },
+          { id: 'C', text: "Membicarakan target tersebut dengan rekan atau mentor yang dapat membantu mengarahkan.", scores: { unity: 3, compassion: 1, loyalty: 1 } },
+          { id: 'D', text: "Langsung memulai dari bagian yang paling menarik minat saat ini dan menyesuaikan sambil jalan.", scores: { impatience: 2, unawareness: 1, ambition: 1 } }
+        ]
+      },
+      {
+        id: 2, text: "Dalam diskusi kelompok, kamu menyadari bahwa tim melewatkan satu informasi krusial yang bisa mengubah keputusan. Apa yang kamu lakukan?",
+        options: [
+          { id: 'A', text: "Menyampaikan informasi tersebut secara terbuka dan menjelaskan konteks pentingnya.", scores: { awareness: 3, courage: 2, integrity: 2 } },
+          { id: 'B', text: "Memeriksa ulang detail data tersebut secara cermat sebelum mengangkatnya ke forum.", scores: { discipline: 2, awareness: 2, vision: 1 } },
+          { id: 'C', text: "Berbicara secara empatik kepada pimpinan atau anggota lain untuk mendengarkan sudut pandang mereka.", scores: { unity: 3, patience: 2, compassion: 1 } },
+          { id: 'D', text: "Membiarkan rencana berjalan dahulu karena nanti juga akan terlihat hasilnya.", scores: { blindness: 3, unawareness: 2, despair: 1 } }
+        ]
+      },
+      {
+        id: 3, text: "Seorang teman dekat meminta bantuan mendesak ketika kamu sedang fokus menyelesaikan tugas pentingmu sendiri. Bagaimana sikapmu?",
+        options: [
+          { id: 'A', text: "Membantu dengan batasan waktu yang jelas agar tugasmu dan bantuannya sama-sama selesai.", scores: { loyalty: 3, compassion: 2, discipline: 2 } },
+          { id: 'B', text: "Menyelesaikan prioritas utama saya terlebih dahulu, lalu menawarkan bantuan setelahnya.", scores: { discipline: 3, integrity: 2, ambition: 1 } },
+          { id: 'C', text: "Mendiskusikan bersama cara membagi beban tugas agar dapat diselesaikan bersama.", scores: { unity: 3, awareness: 2, compassion: 2 } },
+          { id: 'D', text: "Mengubah jadwal secara impulsif demi menolong teman tanpa memikirkan dampak pada tugas sendiri.", scores: { impatience: 2, indiscipline: 2, unawareness: 1 } }
+        ]
+      },
+      {
+        id: 4, text: "Kamu menerima kritik tajam terhadap hasil karya atau pekerjaan yang sudah kamu kerjakan dengan sungguh-sungguh. Responmu?",
+        options: [
+          { id: 'A', text: "Mencari bagian spesifik dari kritik tersebut yang bisa digunakan untuk memperbaiki diri.", scores: { resilience: 3, discipline: 2, integrity: 2 } },
+          { id: 'B', text: "Meminta contoh konkret agar benar-benar memahami maksud dari kritikan tersebut.", scores: { awareness: 3, patience: 2, vision: 1 } },
+          { id: 'C', text: "Mengambil jeda waktu sejenak untuk menenangkan diri dan mencerna masukan secara objektif.", scores: { patience: 3, resilience: 1, awareness: 2 } },
+          { id: 'D', text: "Merasa tersinggung, menolak masukan tersebut, dan mempertahankan argumen bahwa karyamu sudah benar.", scores: { arrogance: 3, blindness: 2, corruption: 1 } }
+        ]
+      },
+      {
+        id: 5, text: "Rencana matang yang sudah kamu susun mendadak berantakan karena perubahan situasi di luar kendali. Apa langkahmu?",
+        options: [
+          { id: 'A', text: "Segera menyusun rencana alternatif baru yang selaras dengan visi utama.", scores: { vision: 3, resilience: 2, discipline: 2 } },
+          { id: 'B', text: "Menjalankan bagian-bagian dari rencana lama yang masih bisa diselamatkan.", scores: { resilience: 3, discipline: 2, hope: 1 } },
+          { id: 'C', text: "Menghubungi semua pihak terkait untuk berdiskusi dan menyepakati penyesuaian bersama.", scores: { unity: 3, loyalty: 2, awareness: 2 } },
+          { id: 'D', text: "Merasa putus asa dan memilih menunda tindakan karena merasa semuanya sudah percuma.", scores: { despair: 3, hopelessness: 3, indiscipline: 2 } }
+        ]
+      },
+      {
+        id: 6, text: "Dalam kerja tim, kamu melihat ada anggota yang kontribusinya kurang terlihat atau diabaikan orang lain. Sikapmu?",
+        options: [
+          { id: 'A', text: "Membantu memperjelas pembagian peran agar kontribusi setiap orang tampak adil.", scores: { unity: 3, awareness: 2, integrity: 2 } },
+          { id: 'B', text: "Mengajak tim membicarakan dinamika kerja secara terbuka dalam pertemuan khusus.", scores: { courage: 3, unity: 2, compassion: 2 } },
+          { id: 'C', text: "Menanyakan langsung secara pribadi apakah ia membutuhkan dukungan atau mengalami kesulitan.", scores: { compassion: 3, loyalty: 2, awareness: 2 } },
+          { id: 'D', text: "Fokus saja pada bagian tugas saya sendiri dan mengabaikan urusan orang lain.", scores: { division: 2, unawareness: 2, arrogance: 1 } }
+        ]
+      },
+      {
+        id: 7, text: "Kamu harus menguasai sebuah keterampilan baru yang terkenal sangat sulit dan rumit. Bagaimana cara belajarmu?",
+        options: [
+          { id: 'A', text: "Memetakan tujuan akhir, membagi materi ke dalam tahapan logis, lalu mempelajarinya.", scores: { vision: 3, discipline: 3, ambition: 2 } },
+          { id: 'B', text: "Menetapkan jadwal latihan harian yang disiplin dan konsisten tanpa kompromi.", scores: { discipline: 3, resilience: 2, ambition: 1 } },
+          { id: 'C', text: "Mencari mentor, komunitas, atau sumber belajar terbaik yang bisa membimbing.", scores: { unity: 2, hope: 2, awareness: 2 } },
+          { id: 'D', text: "Mencoba-coba sendiri secara acak, lalu cepat menyerah jika hasilnya tidak instan.", scores: { impatience: 3, indiscipline: 3, despair: 1 } }
+        ]
+      },
+      {
+        id: 8, text: "Kamu melihat seseorang di lingkunganmu sedang disalahpahami dan disudutkan oleh mayoritas orang. Apa yang kamu lakukan?",
+        options: [
+          { id: 'A', text: "Menyampaikan sudut pandang atau konteks yang sebenarnya agar situasi menjadi jernih.", scores: { awareness: 3, courage: 2, compassion: 2 } },
+          { id: 'B', text: "Mengajak pihak-pihak berkonflik untuk duduk bersama dan saling mendengarkan.", scores: { unity: 3, compassion: 3, patience: 2 } },
+          { id: 'C', text: "Mendekati orang tersebut secara pribadi untuk menanyakan perasaan dan sudut pandangnya.", scores: { compassion: 3, awareness: 2, loyalty: 2 } },
+          { id: 'D', text: "Diam saja dan ikut menjauh agar tidak ikut terseret masalah mereka.", scores: { cowardice: 3, unawareness: 2, division: 1 } }
+        ]
+      },
+      {
+        id: 9, text: "Sebuah proyek yang kamu kerjakan ternyata memakan waktu jauh lebih lama dari perkiraan semula. Reaksimu?",
+        options: [
+          { id: 'A', text: "Menyesuaikan lini masa secara realistis dan memperbarui target pencapaian.", scores: { vision: 3, discipline: 2, resilience: 2 } },
+          { id: 'B', text: "Mempertahankan rutinitas kerja harian yang konsisten sampai selesai.", scores: { discipline: 3, resilience: 2, hope: 1 } },
+          { id: 'C', text: "Mengevaluasi metode kerja untuk mencari efisiensi baru.", scores: { awareness: 3, discipline: 2, ambition: 1 } },
+          { id: 'D', text: "Merasa frustrasi hebat, terburu-buru mengerjakannya secara asal, atau berniat meninggalkan proyek.", scores: { impatience: 3, indiscipline: 2, despair: 2 } }
+        ]
+      },
+      {
+        id: 10, text: "Kamu memiliki perbedaan prinsip atau pendapat yang tajam dengan figur yang sangat kamu hormati. Bagaimana cara menyikapinya?",
+        options: [
+          { id: 'A', text: "Menyampaikan argumenmu secara terbuka dengan alasan yang logis dan santun.", scores: { courage: 3, integrity: 2, awareness: 2 } },
+          { id: 'B', text: "Mencari titik temu atau nilai bersama yang bisa disepakati bersama.", scores: { unity: 3, vision: 2, compassion: 2 } },
+          { id: 'C', text: "Mendengarkan secara saksama penjelasan mereka terlebih dahulu sebelum merespons.", scores: { awareness: 3, patience: 3, respect: 2 } },
+          { id: 'D', text: "Menyimpan dendam, mencibir di belakang, atau langsung memutus hubungan secara sepihak.", scores: { division: 3, arrogance: 2, corruption: 1 } }
+        ]
+      },
+      {
+        id: 11, text: "Kamu melakukan kesalahan fatal yang berdampak buruk pada pekerjaan satu tim. Langkah tanggung jawabmu?",
+        options: [
+          { id: 'A', text: "Secara terbuka mengakui kesalahan di depan tim dan aktif mengusulkan solusi pemulihan.", scores: { integrity: 3, courage: 3, resilience: 2 } },
+          { id: 'B', text: "Menyelidiki akar penyebab kesalahan agar tidak pernah terulang kembali di masa depan.", scores: { awareness: 3, discipline: 2, resilience: 2 } },
+          { id: 'C', text: "Mengajak tim berdiskusi bersama untuk menyusun langkah korektif terbaik.", scores: { unity: 3, loyalty: 2, responsibility: 2 } },
+          { id: 'D', text: "Berusaha menutupi kesalahan, mencari kambing hitam, atau menyalahkan orang lain.", scores: { corruption: 3, cowardice: 3, betrayal: 2 } }
+        ]
+      },
+      {
+        id: 12, text: "Kamu diberi kesempatan memimpin proyek baru yang menantang. Aspek apa yang paling menarik perhatianmu?",
+        options: [
+          { id: 'A', text: "Visi besar dan dampak jangka panjang yang dapat diwujudkan melalui proyek ini.", scores: { vision: 3, ambition: 3, hope: 2 } },
+          { id: 'B', text: "Tanggung jawab pengaturan sistem kerja dan standar kualitas yang rapi.", scores: { discipline: 3, integrity: 2, ambition: 2 } },
+          { id: 'C', text: "Kesempatan untuk membimbing dan mengembangkan potensi anggota tim.", scores: { compassion: 3, unity: 2, ambition: 2 } },
+          { id: 'D', text: "Kekuasaan untuk mengatur orang lain dan memaksakan kehendakmu tanpa bantahan.", scores: { arrogance: 3, division: 2, cruelty: 1 } }
+        ]
+      },
+      {
+        id: 13, text: "Kamu menerima informasi mengejutkan yang kontradiktif dengan keyakinanmu selama ini. Apa tindakan pertamamu?",
+        options: [
+          { id: 'A', text: "Memverifikasi kredibilitas sumber informasi dan memeriksa konteks faktualnya.", scores: { awareness: 3, discipline: 2, vision: 1 } },
+          { id: 'B', text: "Memikirkan implikasi dan dampak jangka panjang jika informasi itu benar.", scores: { vision: 3, awareness: 2, discipline: 1 } },
+          { id: 'C', text: "Berdiskusi dengan pihak-pihak berpengalaman yang memahami situasi tersebut.", scores: { compassion: 3, unity: 2, awareness: 2 } },
+          { id: 'D', text: "Langsung menolak informasi tersebut mentah-mentah karena tidak sesuai dengan kemauanku.", scores: { blindness: 3, arrogance: 2, unawareness: 2 } }
+        ]
+      },
+      {
+        id: 14, text: "Seorang rekan mengalami kegagalan besar dan merasa terpukul hingga kehilangan motivasi. Bagaimana kamu mendukungnya?",
+        options: [
+          { id: 'A', text: "Membantunya memetakan langkah-langkah kecil rasional untuk bangkit kembali.", scores: { hope: 3, resilience: 2, vision: 2 } },
+          { id: 'B', text: "Menjadi pendengar yang baik penuh empati tanpa terburu-buru memberikan nasihat.", scores: { compassion: 3, patience: 3, awareness: 2 } },
+          { id: 'C', text: "Mengingatkan kembali potensi dan keberhasilan yang pernah ia capai sebelumnya.", scores: { hope: 3, resilience: 2, loyalty: 2 } },
+          { id: 'D', text: "Mengatakan bahwa kegagalannya adalah akibat kesalahannya sendiri dan menyuruhnya mandiri.", scores: { cruelty: 3, division: 2, arrogance: 1 } }
+        ]
+      },
+      {
+        id: 15, text: "Kamu dihadapkan pada pilihan: hasil cepat instan atau proses lebih lama yang menghasilkan kualitas jauh lebih baik. Pilihanmu?",
+        options: [
+          { id: 'A', text: "Memilih proses berkualitas tinggi demi menjaga nilai dan visi jangka panjang.", scores: { vision: 3, discipline: 2, integrity: 2 } },
+          { id: 'B', text: "Memperhitungkan sumber daya dan waktu secara rasional untuk efisiensi optimal.", scores: { discipline: 3, awareness: 2, ambition: 1 } },
+          { id: 'C', text: "Mempertimbangkan dampak dari pilihan tersebut terhadap kenyamanan orang lain.", scores: { compassion: 3, unity: 2, loyalty: 2 } },
+          { id: 'D', text: "Memilih jalan pintas tercepat meskipun melanggar aturan atau standar kualitas.", scores: { corruption: 3, impatience: 3, indiscipline: 2 } }
+        ]
+      },
+      {
+        id: 16, text: "Anggota timmu memiliki latar belakang dan gaya kerja yang sangat kontras satu sama lain. Bagaimana kamu menyatukan mereka?",
+        options: [
+          { id: 'A', text: "Menyepakati aturan kerja bersama dan menyelaraskan tujuan utama kelompok.", scores: { unity: 3, discipline: 2, vision: 2 } },
+          { id: 'B', text: "Membagi tugas secara struktural berdasarkan keahlian spesifik masing-masing.", scores: { discipline: 3, awareness: 2, unity: 2 } },
+          { id: 'C', text: "Mendengarkan aspirasi dan kebutuhan personal setiap anggota agar tercipta harmoni.", scores: { compassion: 3, unity: 3, awareness: 2 } },
+          { id: 'D', text: "Membiarkan mereka berkonflik atau membentuk kubu-kubu eksklusif.", scores: { division: 3, cruelty: 2, blindness: 1 } }
+        ]
+      },
+      {
+        id: 17, text: "Kamu mempunyai ide inovatif yang belum pernah dicoba di lingkunganmu. Langkah pertamamu?",
+        options: [
+          { id: 'A', text: "Mengembangkan konsep konseptual beserta argumen logis yang mendasarinya.", scores: { vision: 3, ambition: 2, courage: 2 } },
+          { id: 'B', text: "Merancang prototipe skala kecil yang bisa diuji coba secara nyata.", scores: { ambition: 3, discipline: 2, resilience: 2 } },
+          { id: 'C', text: "Mencari rekan tepercaya untuk dimintai masukan dan evaluasi awal.", scores: { unity: 3, awareness: 2, hope: 2 } },
+          { id: 'D', text: "Menyembunyikan ide tersebut karena takut dicuri atau ditertawakan orang lain.", scores: { cowardice: 3, blindness: 2, despair: 1 } }
+        ]
+      },
+      {
+        id: 18, text: "Seseorang memberi tahu bahwa perkataan atau sikapmu secara tidak sengaja membuatnya tersinggung. Reaksimu?",
+        options: [
+          { id: 'A', text: "Mendengarkan penjelasannya dengan tenang tanpa langsung membela diri.", scores: { awareness: 3, compassion: 3, patience: 2 } },
+          { id: 'B', text: "Meminta contoh spesifik agar paham betul bagian mana yang menimbulkan ketidaknyamanan.", scores: { awareness: 3, integrity: 2, courage: 2 } },
+          { id: 'C', text: "Mengakui jika ada kekeliruan dan menyampaikan permintaan maaf yang tulus.", scores: { integrity: 3, courage: 2, compassion: 2 } },
+          { id: 'D', text: "Marah dan menuduhnya baper (bawa perasaan) serta terlalu sensitif.", scores: { arrogance: 3, cruelty: 2, unawareness: 2 } }
+        ]
+      },
+      {
+        id: 19, text: "Kamu menghadapi tumpukan tugas mendesak yang datang secara bersamaan. Bagaimana cara menyelesaikannya?",
+        options: [
+          { id: 'A', text: "Membuat skala prioritas berdasarkan tingkat urgensi dan dampak terbesar.", scores: { vision: 3, discipline: 2, ambition: 2 } },
+          { id: 'B', text: "Menyusun jadwal per jam secara disiplin dan sistematis.", scores: { discipline: 3, vision: 2, resilience: 1 } },
+          { id: 'C', text: "Meminta klarifikasi kepada pemberi tugas mengenai batas waktu yang paling esensial.", scores: { awareness: 3, discipline: 2, integrity: 1 } },
+          { id: 'D', text: "Panik, menunda pekerjaan, atau mengerjakan hal-hal sepele yang tidak penting.", scores: { indiscipline: 3, impatience: 2, despair: 2 } }
+        ]
+      },
+      {
+        id: 20, text: "Kamu menemukan peluang menggiurkan namun memiliki risiko tinggi dan belum sepenuhnya transparan. Sikapmu?",
+        options: [
+          { id: 'A', text: "Melakukan riset mendalam untuk mengukur setiap probabilitas risiko dan konsekuensinya.", scores: { vision: 3, awareness: 3, discipline: 2 } },
+          { id: 'B', text: "Menyiapkan batasan kerugian (risk limit) dan rencana cadangan yang ketat.", scores: { discipline: 3, resilience: 2, vision: 2 } },
+          { id: 'C', text: "Berkonsultasi dengan orang yang ahli dan berpengalaman dalam bidang tersebut.", scores: { awareness: 3, unity: 2, hope: 2 } },
+          { id: 'D', text: "Terjun bebas secara buta demi mengejar keuntungan cepat tanpa perhitungan.", scores: { blindness: 3, impatience: 3, corruption: 1 } }
+        ]
+      },
+      {
+        id: 21, text: "Rekan satu tim berulang kali tidak menepati komitmen atau tenggat waktu yang disepakati. Tindakanmu?",
+        options: [
+          { id: 'A', text: "Mengajaknya bicara empat mata secara tegas, jujur, dan profesional.", scores: { courage: 3, integrity: 3, loyalty: 2 } },
+          { id: 'B', text: "Meninjau ulang pembagian beban tugas dan menyesuaikan jadwal tim.", scores: { discipline: 3, vision: 2, awareness: 2 } },
+          { id: 'C', text: "Menanyakan apakah ia sedang menghadapi kendala pribadi yang belum diketahui.", scores: { compassion: 3, awareness: 3, loyalty: 2 } },
+          { id: 'D', text: "Membiarkannya merusak tim atau memfitnahnya di belakang tanpa konfirmasi.", scores: { betrayal: 3, division: 3, cruelty: 2 } }
+        ]
+      },
+      {
+        id: 22, text: "Kamu harus menyampaikan pendapat kontroversial yang kemungkinan besar akan ditolak oleh mayoritas kelompok. Caramu?",
+        options: [
+          { id: 'A', text: "Menyampaikannya dengan landasan data, argumen logis, dan keberanian moral.", scores: { courage: 3, integrity: 3, vision: 2 } },
+          { id: 'B', text: "Memilih waktu, tempat, dan pendekatan komunikasi yang paling kondusif.", scores: { awareness: 3, patience: 2, discipline: 2 } },
+          { id: 'C', text: "Mendengarkan tanggapan dan kekhawatiran mereka terlebih dahulu secara terbuka.", scores: { awareness: 3, patience: 3, unity: 2 } },
+          { id: 'D', text: "Mengurungkan niat karena takut dibenci atau langsung menyerang orang yang berbeda pendapat.", scores: { cowardice: 3, division: 2, arrogance: 2 } }
+        ]
+      },
+      {
+        id: 23, text: "Sebuah rencana besar yang kamu yakini akan berhasil ternyata mengalami kegagalan total. Apa langkah evaluasimu?",
+        options: [
+          { id: 'A', text: "Menganalisis faktor penyebab kegagalan secara objektif untuk strategi masa depan.", scores: { resilience: 3, awareness: 3, discipline: 2 } },
+          { id: 'B', text: "Mengambil jeda istirahat sejenak untuk memulihkan mental sebelum merintis kembali.", scores: { patience: 3, resilience: 3, hope: 2 } },
+          { id: 'C', text: "Mengadakan evaluasi bersama seluruh tim untuk mendengarkan pelajaran dari setiap orang.", scores: { unity: 3, awareness: 2, integrity: 2 } },
+          { id: 'D', text: "Menyalahkan nasib sial, menyumpahi keadaan, dan bersumpah tidak mau mencoba lagi.", scores: { despair: 3, hopelessness: 3, cowardice: 2 } }
+        ]
+      },
+      {
+        id: 24, text: "Seseorang meminta bantuan mendesak kepadamu, namun waktumu sendiri sangat terbatas dan padat. Keputusanmu?",
+        options: [
+          { id: 'A', text: "Memberikan bantuan sebatas kapasitas dan waktu luang yang benar-benar kamu miliki.", scores: { compassion: 3, loyalty: 2, integrity: 2 } },
+          { id: 'B', text: "Menanyakan bagian mana yang paling mendesak agar bisa dibantu secara efisien.", scores: { awareness: 3, compassion: 3, discipline: 1 } },
+          { id: 'C', text: "Membantunya terhubung dengan sumber atau orang lain yang lebih senggang.", scores: { unity: 3, compassion: 2, vision: 2 } },
+          { id: 'D', text: "Menolak dengan kasar atau berbohong bahwa kamu sibuk padahal sebenarnya malas.", scores: { cruelty: 3, corruption: 2, betrayal: 1 } }
+        ]
+      },
+      {
+        id: 25, text: "Dua rekan kerja terlibat perdebatan sengit dan saling serang tanpa ada yang mau mendengarkan. Peranmu?",
+        options: [
+          { id: 'A', text: "Menjadi penengah netral dengan merangkum inti perbedaan pendapat mereka secara objektif.", scores: { awareness: 3, unity: 3, patience: 2 } },
+          { id: 'B', text: "Mengingatkan mereka kembali pada tujuan utama kolaborasi yang sedang dikerjakan.", scores: { vision: 3, unity: 2, discipline: 2 } },
+          { id: 'C', text: "Memberikan waktu dan kesempatan bergantian kepada masing-masing pihak untuk berbicara.", scores: { patience: 3, compassion: 2, awareness: 2 } },
+          { id: 'D', text: "Menonton perdebatan tersebut sambil menikmati drama atau bahkan memperkeruh suasana.", scores: { cruelty: 3, division: 3, corruption: 2 } }
+        ]
+      },
+      {
+        id: 26, text: "Kamu mulai menyadari berdasarkan bukti baru bahwa keyakinan kuat yang kamu pegang selama ini ternyata keliru. Sikapmu?",
+        options: [
+          { id: 'A', text: "Terbuka menerima fakta baru dan merevisi pemahaman lama tanpa rasa malu.", scores: { awareness: 3, integrity: 3, discipline: 2 } },
+          { id: 'B', text: "Merenungkan kembali proses berpikir yang membuatmu keliru di masa lalu.", scores: { awareness: 3, vision: 2, patience: 1 } },
+          { id: 'C', text: "Berdiskusi dengan pihak yang memiliki pandangan berbeda untuk memperkaya wawasan.", scores: { unity: 3, courage: 2, awareness: 2 } },
+          { id: 'D', text: "Tetap mempertahankan keyakinan salah tersebut demi menjaga gengsi dan harga diri.", scores: { arrogance: 3, blindness: 3, corruption: 2 } }
+        ]
+      },
+      {
+        id: 27, text: "Kamu harus mengambil keputusan penting di bawah tekanan waktu yang sangat sempit tanpa informasi lengkap. Pedomanmu?",
+        options: [
+          { id: 'A', text: "Berpegang pada visi dan tujuan utama sebagai kompas penentu arah.", scores: { vision: 3, discipline: 2, integrity: 2 } },
+          { id: 'B', text: "Memilih opsi yang didukung oleh data atau indikator paling dapat dipercaya saat itu.", scores: { awareness: 3, discipline: 2, integrity: 2 } },
+          { id: 'C', text: "Mempertimbangkan keselamatan dan dampak psikologis bagi orang-orang terdampak.", scores: { compassion: 3, unity: 2, loyalty: 2 } },
+          { id: 'D', text: "Memilih secara asal tebak lempar koin karena malas berpikir kritis.", scores: { blindness: 3, indiscipline: 3, unawareness: 2 } }
+        ]
+      },
+      {
+        id: 28, text: "Seseorang terang-terangan mengambil pujian atau kredit atas kerja keras yang sebenarnya kamu lakukan. Reaksimu?",
+        options: [
+          { id: 'A', text: "Menjelaskan kontribusi fakta sebenarnya secara profesional dan tenang kepada pihak berwenang.", scores: { integrity: 3, courage: 2, awareness: 2 } },
+          { id: 'B', text: "Membicarakan masalah tersebut secara pribadi kepada orang bersangkutan untuk meluruskan.", scores: { courage: 3, loyalty: 2, compassion: 2 } },
+          { id: 'C', text: "Mengusulkan sistem pencatatan kontribusi transparan agar tidak terjadi lagi ke depannya.", scores: { discipline: 3, unity: 2, vision: 2 } },
+          { id: 'D', text: "Membalas dengan melakukan sabotase pekerjaan orang tersebut secara diam-diam.", scores: { corruption: 3, cruelty: 3, betrayal: 3 } }
+        ]
+      },
+      {
+        id: 29, text: "Kamu sedang mencoba membangun kebiasaan positif baru, namun sudah beberapa kali gagal dan terlewat. Evaluasimu?",
+        options: [
+          { id: 'A', text: "Memperbaiki sistem pemicu pengingat dan mengevaluasi kembali strategi rutinitas.", scores: { discipline: 3, vision: 2, resilience: 2 } },
+          { id: 'B', text: "Menurunkan target menjadi lebih kecil dan realistis agar bisa konsisten dijalankan.", scores: { resilience: 3, patience: 2, awareness: 2 } },
+          { id: 'C', text: "Meminta dukungan atau akuntabilitas dari teman untuk saling menyemangati.", scores: { unity: 3, loyalty: 2, hope: 2 } },
+          { id: 'D', text: "Langsung menyerah total dan menganggap diriku memang ditakdirkan tidak bisa disiplin.", scores: { despair: 3, hopelessness: 3, indiscipline: 3 } }
+        ]
+      },
+      {
+        id: 30, text: "Ketika menghadapi situasi krisis atau masa-masa paling sulit dalam hidupmu, jangkar utama apa yang paling kamu pegang?",
+        options: [
+          { id: 'A', text: "Keyakinan bahwa masa depan dan tujuan hidup yang jelas akan selalu ada jika diperjuangkan.", scores: { vision: 3, ambition: 2, hope: 2 } },
+          { id: 'B', text: "Komitmen teguh untuk terus menjalankan tanggung jawab harian dengan konsisten.", scores: { discipline: 3, integrity: 3, resilience: 2 } },
+          { id: 'C', text: "Ikatan kepercayaan, cinta, dan dukungan tulus dari orang-orang terdekat di sekitar.", scores: { loyalty: 3, unity: 3, compassion: 2 } },
+          { id: 'D', text: "Keinginan untuk melarikan diri dari kenyataan dan menyalahkan takdir semesta.", scores: { despair: 3, hopelessness: 3, cowardice: 3 } }
+        ]
+      }
+    ];
 
     function calculateScores(answers) {
       const rawScores = {};
       TRAITS_CATALOG.forEach(t => { rawScores[t.id] = 0; });
+      const answeredCount = Object.keys(answers).length || 1;
+      
       QUESTIONS_LIST.forEach(q => {
         const optId = answers[q.id];
         if (optId) {
@@ -247,10 +619,14 @@
           }
         }
       });
+
       const percentages = {};
       TRAITS_CATALOG.forEach(t => {
         const raw = rawScores[t.id] || 0;
-        percentages[t.id] = Math.min(100, Math.max(0, Math.round((raw / 30) * 100)));
+        // Normalisasi fleksibel berdasarkan jumlah soal yang terjawab agar akurat walau keluar di tengah jalan
+        const maxPossible = answeredCount * 3;
+        let pct = maxPossible > 0 ? (raw / maxPossible) * 100 : 0;
+        percentages[t.id] = Math.min(100, Math.max(0, Math.round(pct)));
       });
       return { rawScores, percentages };
     }
@@ -259,7 +635,7 @@
       const container = document.getElementById('toast-container');
       if (!container) return;
       const toast = document.createElement('div');
-      toast.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-medium shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 ${
+      toast.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-medium shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 typing-effect ${
         type === 'success' ? 'bg-black border-white/40 text-white shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-black border-red-500/50 text-red-400'
       }`;
       toast.textContent = message;
@@ -276,7 +652,6 @@
       return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
 
-    // Komponen Logo dengan file logo.png & True Glow Animasi
     function renderLogo(sizeClass = 'w-11 h-11') {
       return `
         <div class="relative ${sizeClass} flex items-center justify-center">
@@ -320,13 +695,12 @@
           <a href="#/" class="flex items-center gap-3 group">
             ${renderLogo('w-10 h-10')}
             <div>
-              <span class="font-cinzel font-bold tracking-widest text-white text-sm block" style="text-shadow: 0 0 12px rgba(255,255,255,0.6);">BLDS FLAMES</span>
+              <span class="font-cinzel font-bold tracking-widest text-white text-sm block typing-effect" style="text-shadow: 0 0 12px rgba(255,255,255,0.6);">BLDS FLAMES</span>
               <span class="text-[9px] text-mutedText tracking-wider uppercase block">Blacklightdominions</span>
             </div>
           </a>
           <div class="flex items-center gap-4">
             <a href="#/start" class="px-5 py-2.5 rounded-xl glow-btn font-cinzel text-xs font-bold tracking-wider">Mulai Tes</a>
-            <a href="#/admin/login" class="text-xs text-mutedText hover:text-white transition-colors px-2 py-1">Admin</a>
           </div>
         </header>
       `;
@@ -339,13 +713,13 @@
         <main class="flex-1 flex flex-col items-center fade-in">
           <section class="w-full max-w-5xl mx-auto px-6 py-24 text-center flex flex-col items-center">
             <div class="mb-6">${renderLogo('w-32 h-32')}</div>
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/20 text-white text-xs font-medium mb-6 shadow-[0_0_15px_rgba(255,255,255,0.08)]">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/20 text-white text-xs font-medium mb-6 shadow-[0_0_15px_rgba(255,255,255,0.08)] typing-effect">
               <span>BLACKLIGHTDOMINIONS • Mystical Personality Archive</span>
             </div>
-            <h1 class="text-4xl md:text-6xl font-cinzel font-bold tracking-tight text-white mb-6" style="text-shadow: 0 0 25px rgba(255,255,255,0.7);">
+            <h1 class="text-4xl md:text-6xl font-cinzel font-bold tracking-tight text-white mb-6 typing-effect" style="text-shadow: 0 0 25px rgba(255,255,255,0.7);">
               Discover the Flames Within
             </h1>
-            <p class="text-base md:text-lg text-secondaryText max-w-2xl mb-12 leading-relaxed">
+            <p class="text-base md:text-lg text-secondaryText max-w-2xl mb-12 leading-relaxed typing-effect">
               Masuki arsip rahasia BLACKLIGHTDOMINIONS. Temukan refleksi kepribadian mendalam melalui 12 Flames dan 12 Shadow Flames dalam estetika monokromatik murni.
             </p>
             <a href="#/start" class="px-8 py-4 rounded-xl glow-btn font-cinzel font-bold text-sm tracking-wider flex items-center gap-3">
@@ -395,7 +769,7 @@
             <form id="start-form" class="w-full space-y-5 text-left">
               <div>
                 <label class="block text-xs font-medium text-mutedText mb-2 uppercase tracking-wider">Nama / Panggilan</label>
-                <input type="text" id="participant-name" value="${escapeHTML(startNameInput)}" placeholder="Contoh: Daren Akito" maxlength="30" class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white transition-all shadow-[inset_0_0_10px_rgba(255,255,255,0.02)]" />
+                <input type="text" id="participant-name" value="${escapeHTML(startNameInput)}" placeholder="Contoh: Daren Akito" maxlength="30" class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white transition-all shadow-[inset_0_0_10px_rgba(255,255,255,0.02)] typing-effect" />
                 <p id="name-error" class="text-xs text-red-400 mt-1.5 hidden"></p>
               </div>
               <button type="submit" class="w-full py-4 rounded-xl glow-btn font-cinzel font-bold text-xs tracking-wider flex items-center justify-center gap-2">Mulai 30 Pertanyaan</button>
@@ -406,7 +780,7 @@
       `;
     }
 
-    // Test Page
+    // Test Page dengan Tombol Keluar di Pojok Kanan Atas
     let currentTestIndex = 0;
     let userAnswers = {};
     let testParticipant = null;
@@ -420,7 +794,14 @@
 
       return `
         ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center justify-center px-6 py-12 max-w-3xl mx-auto w-full fade-in">
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-10 max-w-3xl mx-auto w-full fade-in relative">
+          <!-- Tombol Keluar di Pojok Kanan Atas -->
+          <div class="w-full flex justify-end mb-4">
+            <button onclick="window.openExitModal()" class="px-4 py-1.5 rounded-lg border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/10 transition-all">
+              Keluar Tes
+            </button>
+          </div>
+
           <div class="w-full mb-8">
             <div class="flex justify-between items-center text-xs text-mutedText mb-2">
               <span class="font-semibold text-white font-cinzel">Pertanyaan ${currentTestIndex + 1} dari ${totalQ}</span>
@@ -430,20 +811,22 @@
               <div class="h-full bg-white transition-all duration-300 shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="width: ${progressPct}%"></div>
             </div>
           </div>
+          
           <div class="w-full glow-box rounded-3xl p-8 mb-8">
-            <h2 class="text-lg md:text-xl font-cinzel font-semibold text-white mb-6 leading-relaxed">${escapeHTML(currentQ.text)}</h2>
+            <h2 class="text-lg md:text-xl font-cinzel font-semibold text-white mb-6 leading-relaxed typing-effect">${escapeHTML(currentQ.text)}</h2>
             <div class="space-y-3.5">
               ${currentQ.options.map(opt => {
                 const isSelected = selectedOpt === opt.id;
                 return `
                   <button onclick="window.selectTestOption(${currentQ.id}, '${opt.id}')" class="w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-start gap-4 ${isSelected ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] font-medium scale-[1.01]' : 'bg-obsidian border-white/15 text-secondaryText hover:border-white/50 hover:text-white'}">
                     <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 border ${isSelected ? 'bg-black text-white border-black' : 'border-white/30 text-white'}">${opt.id}</span>
-                    <span class="text-sm pt-0.5">${escapeHTML(opt.text)}</span>
+                    <span class="text-sm pt-0.5 typing-effect">${escapeHTML(opt.text)}</span>
                   </button>
                 `;
               }).join('')}
             </div>
           </div>
+          
           <div class="w-full flex items-center justify-between">
             <button onclick="window.prevTestQuestion()" ${currentTestIndex === 0 ? 'disabled' : ''} class="px-6 py-3 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${currentTestIndex === 0 ? 'opacity-30 border-white/10 text-mutedText cursor-not-allowed' : 'glow-btn-outline'}">Sebelumnya</button>
             ${currentTestIndex < totalQ - 1 ? `
@@ -456,6 +839,13 @@
         ${renderFooter()}
       `;
     }
+
+    window.openExitModal = () => { document.getElementById('exit-modal').classList.remove('hidden'); };
+    window.closeExitModal = () => { document.getElementById('exit-modal').classList.add('hidden'); };
+    window.confirmExitTest = () => {
+      document.getElementById('exit-modal').classList.add('hidden');
+      window.submitTestResult();
+    };
 
     window.selectTestOption = (qId, optId) => { userAnswers[qId] = optId; document.getElementById('app').innerHTML = renderTestPage(); };
     window.nextTestQuestion = () => { if (currentTestIndex < QUESTIONS_LIST.length - 1) { currentTestIndex++; window.scrollTo({top:0, behavior:'smooth'}); document.getElementById('app').innerHTML = renderTestPage(); } };
@@ -472,7 +862,7 @@
         <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-3xl mx-auto w-full fade-in">
           <div class="w-full glow-box rounded-3xl p-8 mb-8 text-center">
             <h1 class="text-2xl font-cinzel font-bold text-white mb-2">Review Jawaban Dominioner</h1>
-            <p class="text-xs text-secondaryText">Pastikan seluruh 30 pertanyaan telah terjawab sebelum menghitung profil.</p>
+            <p class="text-xs text-secondaryText">Pastikan seluruh jawaban telah diperiksa sebelum menghitung profil.</p>
             <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/35 text-xs font-semibold text-white">Terjawab: ${answeredCount} dari 30</div>
           </div>
           <div class="w-full space-y-4 mb-8">
@@ -494,7 +884,7 @@
           </div>
           <div class="w-full flex items-center justify-between">
             <a href="#/test" class="px-6 py-3 rounded-xl glow-btn-outline text-xs font-semibold transition-all">Kembali ke Tes</a>
-            <button onclick="window.submitTestResult()" ${!isComplete ? 'disabled' : ''} class="px-8 py-3.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all ${!isComplete ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'glow-btn'}">Hitung & Lihat Profil</button>
+            <button onclick="window.submitTestResult()" class="px-8 py-3.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn">Hitung & Lihat Profil</button>
           </div>
         </main>
         ${renderFooter()}
@@ -508,14 +898,11 @@
       const resultId = 'res_' + Math.random().toString(36).substring(2, 12);
       const participantResult = { id: resultId, participantId: testParticipant.id, name: testParticipant.name, createdAt: testParticipant.createdAt, completedAt: Date.now(), status: 'completed', answers: userAnswers, rawScores, percentages };
       localStorage.setItem(`blds_result_${resultId}`, JSON.stringify(participantResult));
-      if (isFirebaseInitialized && db) {
-        try { await set(ref(db, `participants/${resultId}`), participantResult); } catch (e) { console.error(e); }
-      }
       showToast('Profil berhasil dihitung dan disimpan!', 'success');
       window.location.hash = `#/result/${resultId}`;
     };
 
-    // Result Page
+    // Result Page dengan Pujian, Kritik Konstruktif, & Saran di setiap Trait
     function renderResultPage(resultId) {
       const local = localStorage.getItem(`blds_result_${resultId}`);
       const resultData = local ? JSON.parse(local) : null;
@@ -533,36 +920,70 @@
                 <a href="#/" class="px-6 py-3 rounded-xl glow-btn-outline text-xs font-semibold">Kembali ke Beranda</a>
               </div>
             </div>
+
+            <!-- 12 Flames Section -->
             <div class="w-full mb-12">
-              <h2 class="text-xl font-cinzel font-bold text-white mb-6 flex items-center gap-3"><span class="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]"></span><span>12 FLAMES (Sisi Konstruktif)</span></h2>
+              <h2 class="text-xl font-cinzel font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]"></span>
+                <span>12 FLAMES (Sisi Konstruktif)</span>
+              </h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 ${FLAMES_LIST.map(flame => {
                   const pct = resultData.percentages[flame.id] || 0;
                   return `
                     <div class="glow-box rounded-2xl p-6 flex flex-col justify-between">
                       <div>
-                        <div class="flex justify-between items-center mb-2"><span class="text-xs font-cinzel font-bold text-white tracking-widest">${escapeHTML(flame.nameEn)}</span><span class="text-sm font-bold text-white">${pct}%</span></div>
+                        <div class="flex justify-between items-center mb-2">
+                          <span class="text-xs font-cinzel font-bold text-white tracking-widest">${escapeHTML(flame.nameEn)}</span>
+                          <span class="text-sm font-bold text-white">${pct}%</span>
+                        </div>
                         <h3 class="text-sm font-semibold text-secondaryText mb-3">${escapeHTML(flame.nameId)}</h3>
-                        <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-white/20 mb-3"><div class="h-full bg-white transition-all duration-500 shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="width: ${pct}%"></div></div>
-                        <p class="text-xs text-secondaryText leading-relaxed">${escapeHTML(flame.description)}</p>
+                        <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-white/20 mb-3">
+                          <div class="h-full bg-white transition-all duration-500 shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="width: ${pct}%"></div>
+                        </div>
+                        <p class="text-xs text-secondaryText leading-relaxed mb-4">${escapeHTML(flame.description)}</p>
+                        
+                        <!-- Pujian, Kritik & Saran -->
+                        <div class="space-y-2 pt-3 border-t border-white/10 text-[11px]">
+                          <div class="text-white"><strong class="font-cinzel text-xs text-white">✨ Pujian:</strong> ${escapeHTML(flame.praise)}</div>
+                          <div class="text-red-300"><strong class="font-cinzel text-xs text-red-400">⚠️ Catatan/Kritik:</strong> ${escapeHTML(flame.criticism)}</div>
+                          <div class="text-emerald-300"><strong class="font-cinzel text-xs text-emerald-400">💡 Saran:</strong> ${escapeHTML(flame.advice)}</div>
+                        </div>
                       </div>
                     </div>
                   `;
                 }).join('')}
               </div>
             </div>
+
+            <!-- 12 Shadow Flames Section -->
             <div class="w-full mb-12">
-              <h2 class="text-xl font-cinzel font-bold text-white mb-6 flex items-center gap-3"><span class="w-3 h-3 rounded-full bg-white/40"></span><span>12 SHADOW FLAMES (Sisi Tantangan)</span></h2>
+              <h2 class="text-xl font-cinzel font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-white/40"></span>
+                <span>12 SHADOW FLAMES (Sisi Tantangan)</span>
+              </h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 ${SHADOWS_LIST.map(shadow => {
                   const pct = resultData.percentages[shadow.id] || 0;
                   return `
                     <div class="glow-box rounded-2xl p-6 flex flex-col justify-between">
                       <div>
-                        <div class="flex justify-between items-center mb-2"><span class="text-xs font-cinzel font-bold text-secondaryText tracking-widest">${escapeHTML(shadow.nameEn)}</span><span class="text-sm font-bold text-white">${pct}%</span></div>
+                        <div class="flex justify-between items-center mb-2">
+                          <span class="text-xs font-cinzel font-bold text-secondaryText tracking-widest">${escapeHTML(shadow.nameEn)}</span>
+                          <span class="text-sm font-bold text-white">${pct}%</span>
+                        </div>
                         <h3 class="text-sm font-semibold text-secondaryText mb-3">${escapeHTML(shadow.nameId)}</h3>
-                        <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-white/20 mb-3"><div class="h-full bg-white/60 transition-all duration-500" style="width: ${pct}%"></div></div>
-                        <p class="text-xs text-secondaryText leading-relaxed">${escapeHTML(shadow.description)}</p>
+                        <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-white/20 mb-3">
+                          <div class="h-full bg-white/60 transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                        <p class="text-xs text-secondaryText leading-relaxed mb-4">${escapeHTML(shadow.description)}</p>
+                        
+                        <!-- Pujian, Kritik & Saran untuk Shadow -->
+                        <div class="space-y-2 pt-3 border-t border-white/10 text-[11px]">
+                          <div class="text-white"><strong class="font-cinzel text-xs text-white">✨ Catatan Refleksi:</strong> ${escapeHTML(shadow.praise)}</div>
+                          <div class="text-red-300"><strong class="font-cinzel text-xs text-red-400">⚠️ Risiko Pola:</strong> ${escapeHTML(shadow.criticism)}</div>
+                          <div class="text-emerald-300"><strong class="font-cinzel text-xs text-emerald-400">💡 Solusi:</strong> ${escapeHTML(shadow.advice)}</div>
+                        </div>
                       </div>
                     </div>
                   `;
@@ -583,168 +1004,9 @@
       showToast('Ringkasan profil berhasil disalin!', 'success');
     };
 
-    // Admin Login Page & Demo Login Notice
-    function renderAdminLoginPage() {
-      return `
-        ${renderNavbar()}
-        <main class="flex-1 flex flex-col items-center justify-center px-6 py-16 fade-in">
-          <div class="w-full max-w-md glow-box rounded-3xl p-8 flex flex-col items-center text-center">
-            <div class="mb-6">${renderLogo('w-24 h-24')}</div>
-            <h1 class="text-2xl font-cinzel font-bold text-white mb-2">Admin Portal</h1>
-            <p class="text-xs text-secondaryText mb-6">Autentikasi pengelola arsip BLACKLIGHTDOMINIONS.</p>
-            
-            <div class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left text-xs text-secondaryText">
-              <span class="font-semibold text-white block mb-1">💡 Info Akses Admin:</span>
-              Gunakan email & password dari Firebase Authentication, atau klik <b>Demo Admin</b> di bawah untuk langsung mencoba dashboard.
-            </div>
-
-            <form id="admin-login-form" onsubmit="window.handleAdminLogin(event)" class="w-full space-y-4 text-left">
-              <div>
-                <label class="block text-xs font-medium text-mutedText mb-2 uppercase tracking-wider">Email Admin</label>
-                <input type="email" id="admin-email" value="admin@blds.com" required class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white" />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-mutedText mb-2 uppercase tracking-wider">Password</label>
-                <input type="password" id="admin-password" value="blds2026" required class="w-full bg-obsidian border border-white/20 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-white" />
-              </div>
-              <div id="login-error" class="text-xs text-red-400 text-center hidden"></div>
-              <button type="submit" class="w-full py-4 rounded-xl glow-btn font-cinzel font-bold text-xs tracking-wider">Masuk Dashboard</button>
-              <button type="button" onclick="window.bypassAdminDemo()" class="w-full py-3 rounded-xl glow-btn-outline font-cinzel text-xs font-bold tracking-wider">⚡ Masuk Mode Demo Admin</button>
-            </form>
-          </div>
-        </main>
-        ${renderFooter()}
-      `;
+    function renderNotFound() {
+      return `${renderNavbar()}<main class="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center"><h1 class="text-3xl font-cinzel font-bold text-white mb-2">404 • Dimensi Tidak Ditemukan</h1><a href="#/" class="px-6 py-3 rounded-xl glow-btn font-cinzel text-xs font-bold">Kembali ke Beranda</a></main>${renderFooter()}`;
     }
-
-    let isAdminDemoBypassed = false;
-    window.bypassAdminDemo = () => {
-      isAdminDemoBypassed = true;
-      showToast('Masuk ke Dashboard sebagai Demo Admin!', 'success');
-      window.location.hash = '#/admin';
-    };
-
-    window.handleAdminLogin = async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('admin-email').value;
-      const password = document.getElementById('admin-password').value;
-      if (isFirebaseInitialized && auth) {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          showToast('Login admin berhasil!', 'success');
-          window.location.hash = '#/admin';
-          return;
-        } catch (err) { console.error(err); }
-      }
-      // Fallback demo login
-      if (email === 'admin@blds.com' && password === 'blds2026') {
-        isAdminDemoBypassed = true;
-        showToast('Login Admin Demo Berhasil!', 'success');
-        window.location.hash = '#/admin';
-      } else {
-        document.getElementById('login-error').textContent = "Login gagal. Gunakan mode Demo Admin.";
-        document.getElementById('login-error').classList.remove('hidden');
-      }
-    };
-
-    // Admin Dashboard Layout
-    function renderAdminLayout(activeTab, contentHtml) {
-      return `
-        <div class="min-h-screen bg-obsidian text-primaryText flex flex-col md:flex-row fade-in">
-          <aside class="w-full md:w-64 bg-cardSurface border-b md:border-b-0 md:border-r border-white/20 flex flex-col">
-            <div class="p-6 border-b border-white/10 flex items-center gap-3">
-              ${renderLogo('w-10 h-10')}
-              <div>
-                <h1 class="font-cinzel font-bold text-sm text-white tracking-wider">BLDS ADMIN</h1>
-                <p class="text-[10px] text-mutedText">Dominioners Archive</p>
-              </div>
-            </div>
-            <nav class="flex-1 p-4 space-y-1 font-sans">
-              <a href="#/admin" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'dashboard' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">Dashboard</a>
-              <a href="#/admin/participants" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'participants' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">Peserta</a>
-              <a href="#/admin/statistics" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'statistics' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">Statistik</a>
-              <a href="#/admin/settings" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'settings' ? 'bg-white text-black font-semibold shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'text-secondaryText hover:bg-white/5 hover:text-white'}">Pengaturan</a>
-            </nav>
-            <div class="p-4 border-t border-white/10 space-y-2">
-              <a href="#/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-mutedText hover:text-white transition-colors">Kembali ke Beranda</a>
-              <button onclick="window.handleAdminLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-red-400 hover:bg-red-500/10 transition-colors">Keluar</button>
-            </div>
-          </aside>
-          <main class="flex-1 p-6 md:p-10 overflow-y-auto">${contentHtml}</main>
-        </div>
-      `;
-    }
-
-    window.handleAdminLogout = async () => {
-      isAdminDemoBypassed = false;
-      if (auth) await signOut(auth);
-      showToast('Berhasil keluar.', 'success');
-      window.location.hash = '#/admin/login';
-    };
-
-    function renderAdminDashboard() {
-      if (!isAdminDemoBypassed && isFirebaseInitialized && !auth?.currentUser) {
-        window.location.hash = '#/admin/login'; return '';
-      }
-      return renderAdminLayout('dashboard', `
-        <div class="space-y-8">
-          <div>
-            <h1 class="text-2xl font-cinzel font-bold text-white mb-1">Dashboard Overview</h1>
-            <p class="text-xs text-mutedText">Statistik dan ringkasan aktivitas peserta BLDS FLAMES.</p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glow-box rounded-2xl p-6">
-              <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Algoritma Versi</span>
-              <p class="text-3xl font-cinzel font-bold text-white">v1.0.0</p>
-            </div>
-            <div class="glow-box rounded-2xl p-6">
-              <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Bank Soal</span>
-              <p class="text-3xl font-cinzel font-bold text-white">30 Soal</p>
-            </div>
-            <div class="glow-box rounded-2xl p-6">
-              <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Status Database</span>
-              <p class="text-sm font-semibold text-white mt-2">${isFirebaseInitialized ? 'Terhubung' : 'Mode Demo'}</p>
-            </div>
-          </div>
-        </div>
-      `);
-    }
-
-    function renderAdminParticipants() {
-      const keys = Object.keys(localStorage).filter(k => k.startsWith('blds_result_'));
-      const participants = keys.map(k => JSON.parse(localStorage.getItem(k)));
-      return renderAdminLayout('participants', `
-        <div class="space-y-6">
-          <h1 class="text-2xl font-cinzel font-bold text-white mb-1">Kelola Peserta</h1>
-          <div class="glow-box rounded-2xl overflow-hidden">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-white/20 bg-obsidian/40 text-[11px] text-mutedText uppercase tracking-wider font-cinzel">
-                  <th class="p-4">Nama</th>
-                  <th class="p-4">Tanggal</th>
-                  <th class="p-4">Status</th>
-                  <th class="p-4 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/10 text-xs">
-                ${participants.length === 0 ? `<tr><td colspan="4" class="p-6 text-center text-mutedText">Belum ada data peserta tersimpan.</td></tr>` : participants.map(p => `
-                  <tr class="hover:bg-white/5 transition-colors">
-                    <td class="p-4 font-semibold text-white">${escapeHTML(p.name)}</td>
-                    <td class="p-4 text-secondaryText">${new Date(p.completedAt).toLocaleDateString()}</td>
-                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-[10px] bg-white/10 border border-white/30 text-white">${p.status}</span></td>
-                    <td class="p-4 text-right"><a href="#/result/${p.id}" class="inline-flex px-3 py-1 rounded-lg bg-white text-black font-medium">Lihat</a></td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      `);
-    }
-
-    function renderAdminStatistics() { return renderAdminLayout('statistics', `<div class="space-y-6"><h1 class="text-2xl font-cinzel font-bold text-white">Statistik Agregat</h1><div class="glow-box rounded-2xl p-8 text-center text-mutedText">Analisis dimensi Flames aktif.</div></div>`); }
-    function renderAdminSettings() { return renderAdminLayout('settings', `<div class="space-y-6"><h1 class="text-2xl font-cinzel font-bold text-white">Pengaturan Sistem</h1><div class="glow-box rounded-2xl p-6 space-y-4"><span class="text-xs text-mutedText block uppercase">Database URL: Realtime Database</span></div></div>`); }
-    function renderNotFound() { return `${renderNavbar()}<main class="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center"><h1 class="text-3xl font-cinzel font-bold text-white mb-2">404 • Dimensi Tidak Ditemukan</h1><a href="#/" class="px-6 py-3 rounded-xl glow-btn font-cinzel text-xs font-bold">Kembali ke Beranda</a></main>${renderFooter()}`; }
 
     // Router
     function router() {
@@ -773,11 +1035,6 @@
       else if (hash === '#/test') appDiv.innerHTML = renderTestPage();
       else if (hash === '#/review') appDiv.innerHTML = renderReviewPage();
       else if (hash.startsWith('#/result/')) appDiv.innerHTML = renderResultPage(hash.replace('#/result/', ''));
-      else if (hash === '#/admin/login') appDiv.innerHTML = renderAdminLoginPage();
-      else if (hash === '#/admin') appDiv.innerHTML = renderAdminDashboard();
-      else if (hash === '#/admin/participants') appDiv.innerHTML = renderAdminParticipants();
-      else if (hash === '#/admin/statistics') appDiv.innerHTML = renderAdminStatistics();
-      else if (hash === '#/admin/settings') appDiv.innerHTML = renderAdminSettings();
       else appDiv.innerHTML = renderNotFound();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
