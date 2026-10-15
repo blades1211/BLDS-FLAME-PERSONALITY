@@ -1,1735 +1,1507 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE FLAME RESONANCE ASSESSMENT // BLDS ARCHIVE</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --bg-void: #040405;
-            --bg-surface: #0a0a0d;
-            --bg-card: rgba(15, 15, 20, 0.65);
-            --bg-card-hover: rgba(25, 25, 35, 0.75);
-            
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(255, 255, 255, 0.2);
-            --border-active: rgba(255, 255, 255, 0.6);
-
-            --text-primary: #f0f2f5;
-            --text-secondary: #8c92a0;
-            --text-dim: #4a505e;
-
-            --flame-warm-glow: rgba(255, 255, 255, 0.12);
-            --accent-flame: #ffffff;
-            --warning-amber: #d97706;
-            --shadow-red: #e11d48;
-
-            --font-heading: 'Chakra Petch', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-
-            --max-width: 860px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            background-color: var(--bg-void);
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Ambient Layering & Atmospheric Effects */
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 100vh;
-            position: relative;
-            background-image: 
-                radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
-                radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.8) 0%, var(--bg-void) 100%);
-        }
-
-        /* Subtle Grid Pattern Overlay */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Faint Vignette & Scanline */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.7) 100%),
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 100%, 100% 4px;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .container {
-            width: 100%;
-            max-width: var(--max-width);
-            padding: 24px 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            z-index: 10;
-            margin: 0 auto;
-        }
-
-        /* Header Navigation Minimalist */
-        header {
-            width: 100%;
-            max-width: var(--max-width);
-            padding: 20px 20px 0 20px;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            padding-bottom: 12px;
-        }
-
-        .header-brand {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header-brand span {
-            color: var(--text-secondary);
-            font-weight: 300;
-        }
-
-        .header-tag {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-        }
-
-        /* Typography */
-        h1, h2, h3, h4 {
-            font-family: var(--font-heading);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1.2;
-        }
-
-        .eyebrow {
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .eyebrow::before {
-            content: "◈";
-            color: var(--text-primary);
-            font-size: 0.8rem;
-        }
-
-        .hero-title {
-            font-size: clamp(2rem, 6vw, 3.2rem);
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .hero-subtitle {
-            font-style: italic;
-            color: var(--text-secondary);
-            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
-            margin-bottom: 32px;
-            font-family: var(--font-mono);
-            letter-spacing: 0.5px;
-        }
-
-        /* Panels & Cards */
-        .panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 24px;
-            border-radius: 4px;
-            margin-bottom: 24px;
-            position: relative;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .panel::before {
-            content: "";
-            position: absolute;
-            top: -1px; left: 10%; right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-        }
-
-        /* Custom Futuristic Button */
-        .btn {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-primary);
-            border: 1px solid var(--border-glow);
-            padding: 16px 28px;
-            font-family: var(--font-heading);
-            font-size: 0.95rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            width: 100%;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            outline: none;
-            position: relative;
-            border-radius: 2px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn:hover:not(:disabled) {
-            border-color: var(--border-active);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .btn:active:not(:disabled) {
-            transform: translateY(1px);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-        }
-
-        .btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            border-color: var(--border-subtle);
-        }
-
-        /* Input Fields */
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .text-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-glow);
-            color: var(--text-primary);
-            padding: 14px 16px;
-            font-family: var(--font-mono);
-            font-size: 1rem;
-            border-radius: 2px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .text-input:focus {
-            border-color: var(--text-primary);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-            background: rgba(10, 10, 15, 0.8);
-        }
-
-        /* Status Indicators */
-        .status-msg {
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            min-height: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-msg.success { color: #10b981; }
-        .status-msg.error { color: #f43f5e; }
-        .status-msg.warning { color: var(--warning-amber); }
-
-        /* Compact System Status Box */
-        .system-status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-subtle);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 28px;
-            letter-spacing: 1px;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background-color: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
-            animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* CORE RESONANCE ANIMATED SVG VISUAL */
-        .core-visual-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0 32px 0;
-            position: relative;
-        }
-
-        .core-svg {
-            width: 140px;
-            height: 140px;
-            overflow: visible;
-        }
-
-        .core-ring {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.15);
-            stroke-width: 1;
-            transform-origin: center;
-        }
-
-        .core-ring-1 {
-            animation: rotateClockwise 20s linear infinite;
-            stroke-dasharray: 4 8 12 8;
-        }
-
-        .core-ring-2 {
-            animation: rotateCounterClockwise 15s linear infinite;
-            stroke-dasharray: 20 10 5 10;
-            stroke: rgba(255, 255, 255, 0.25);
-        }
-
-        .core-diamond {
-            fill: rgba(255, 255, 255, 0.05);
-            stroke: #ffffff;
-            stroke-width: 1.5;
-            transform-origin: center;
-            animation: pulseCore 4s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
-        }
-
-        @keyframes rotateClockwise {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes rotateCounterClockwise {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
-        }
-
-        @keyframes pulseCore {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.7)); }
-        }
-
-        /* View Switching */
-        .view {
-            display: none;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .view.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Assessment Question UI */
-        .progress-container {
-            margin-bottom: 24px;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            letter-spacing: 1.5px;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar-bg {
-            width: 100%;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--text-primary);
-            width: 0%;
-            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        .question-text {
-            font-family: var(--font-heading);
-            font-size: clamp(1.1rem, 3.5vw, 1.35rem);
-            font-weight: 400;
-            line-height: 1.5;
-            margin-bottom: 28px;
-            color: var(--text-primary);
-        }
-
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .option-btn {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-subtle);
-            padding: 16px 18px;
-            text-align: left;
-            color: var(--text-secondary);
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            line-height: 1.5;
-            border-radius: 2px;
-        }
-
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .option-btn.selected {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
-            border-color: var(--text-primary);
-            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05), 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .option-prefix {
-            font-weight: 700;
-            color: var(--text-dim);
-            flex-shrink: 0;
-            font-family: var(--font-heading);
-        }
-
-        .option-btn.selected .option-prefix {
-            color: var(--text-primary);
-        }
-
-        /* Calibration Reveal UI */
-        .calibration-screen {
-            text-align: center;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .calibration-text {
-            font-family: var(--font-heading);
-            font-size: 0.95rem;
-            letter-spacing: 3px;
-            color: var(--text-secondary);
-            height: 24px;
-            text-transform: uppercase;
-            margin-top: 20px;
-        }
-
-        /* Results Display */
-        .result-header {
-            text-align: center;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 20px;
-            margin-bottom: 24px;
-        }
-
-        .primary-card {
-            border: 1px solid var(--border-glow);
-            padding: 28px 20px;
-            text-align: center;
-            margin-bottom: 24px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 4px;
-            position: relative;
-            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.02);
-        }
-
-        .symbol-large {
-            font-size: 2.8rem;
-            margin-bottom: 12px;
-            display: block;
-            color: var(--text-primary);
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .tier-badge {
-            display: inline-block;
-            font-family: var(--font-heading);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            padding: 4px 12px;
-            border: 1px solid var(--border-glow);
-            color: var(--text-primary);
-            margin-top: 10px;
-            text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .resonance-warning {
-            border: 1px solid var(--warning-amber);
-            background: rgba(217, 119, 6, 0.06);
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            font-size: 0.85rem;
-            color: #fcd34d;
-            line-height: 1.6;
-            border-radius: 2px;
-        }
-
-        .flame-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 12px;
-        }
-
-        .flame-item {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .flame-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
-
-        .flame-bar-bg {
-            height: 4px;
-            background: rgba(255,255,255,0.05);
-            width: 100%;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .flame-bar-fill {
-            height: 100%;
-            background: var(--text-primary);
-            width: 0%;
-            transition: width 0.8s ease;
-        }
-
-        .details-toggle {
-            cursor: pointer;
-            user-select: none;
-            padding: 14px;
-            border: 1px solid var(--border-subtle);
-            text-align: center;
-            font-family: var(--font-heading);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-            transition: background 0.2s ease;
-            color: var(--text-secondary);
-        }
-
-        .details-toggle:hover {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-primary);
-        }
-
-        .details-content {
-            display: none;
-            margin-bottom: 24px;
-        }
-
-        .details-content.open {
-            display: block;
-        }
-
-        /* Disclaimer & Footer */
-        .disclaimer-card {
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            line-height: 1.5;
-            margin-top: 12px;
-            margin-bottom: 24px;
-            text-align: center;
-            padding: 12px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 2px;
-        }
-
-        footer {
-            width: 100%;
-            max-width: var(--max-width);
-            padding: 24px 20px 32px 20px;
-            border-top: 1px solid var(--border-subtle);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .footer-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            border: 1px solid var(--border-subtle);
-            padding: 10px 20px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-heading);
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            border-radius: 2px;
-        }
-
-        .footer-link:hover {
-            border-color: var(--border-glow);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Custom Toast Notification */
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: calc(100vw - 40px);
-        }
-
-        .toast {
-            background: rgba(12, 12, 16, 0.95);
-            border: 1px solid var(--border-glow);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-radius: 2px;
-            backdrop-filter: blur(8px);
-            animation: slideIn 0.3s ease forwards;
-        }
-
-        .toast.error { border-color: #f43f5e; }
-        .toast.warning { border-color: var(--warning-amber); }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Accessibility: Respect Reduced Motion */
-        @media (prefers-reduced-motion: reduce) {
-            *, ::before, ::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        /* Mobile First Breakpoints */
-        @media (max-width: 600px) {
-            .container { padding: 16px 16px; }
-            .panel { padding: 18px 16px; margin-bottom: 18px; }
-            .btn { padding: 14px 18px; font-size: 0.85rem; }
-            .option-btn { padding: 14px 14px; font-size: 0.85rem; gap: 10px; }
-            header { padding: 16px 16px 12px 16px; }
-            footer { padding: 20px 16px 28px 16px; }
-            .footer-links { flex-direction: column; }
-            .footer-link { width: 100%; justify-content: center; }
-            .core-svg { width: 110px; height: 110px; }
-            .hero-title { font-size: 2.1rem; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLDS FLAMES — Blacklightdominions</title>
+  <link rel="icon" type="image/png" href="./public/logo.png" />
+  <!-- Google Fonts: Cinzel & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#080D15',
+            deepNavy: '#0C1524',
+            darkSurface: '#111B2A',
+            gold: '#D9AD55',
+            brightGold: '#FFE3A0',
+            arcaneBlue: '#527FDF',
+            crimson: '#C54D69',
+            violet: '#9B79DC',
+            cyanAccent: '#52C9DF',
+            primaryText: '#F4F5F8',
+            secondaryText: '#AAB4C4',
+            mutedText: '#778397',
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @layer utilities {
+      .logo-glow {
+        filter: drop-shadow(0 0 12px rgba(217, 173, 85, 0.40))
+                drop-shadow(0 0 28px rgba(217, 173, 85, 0.20));
+        animation: logoPulse 4s ease-in-out infinite;
+      }
+      .text-glow-gold {
+        text-shadow: 0 0 10px rgba(217, 173, 85, 0.45),
+                     0 0 26px rgba(217, 173, 85, 0.20);
+      }
+      .text-glow-crimson {
+        text-shadow: 0 0 10px rgba(197, 77, 105, 0.45),
+                     0 0 26px rgba(197, 77, 105, 0.20);
+      }
+      .text-glow-violet {
+        text-shadow: 0 0 10px rgba(155, 121, 220, 0.45),
+                     0 0 26px rgba(155, 121, 220, 0.20);
+      }
+      .glow-box {
+        box-shadow: 0 0 20px rgba(217, 173, 85, 0.12),
+                    inset 0 0 15px rgba(217, 173, 85, 0.05);
+      }
+      .glow-btn {
+        box-shadow: 0 0 15px rgba(217, 173, 85, 0.3);
+        transition: all 0.3s ease;
+      }
+      .glow-btn:hover {
+        box-shadow: 0 0 25px rgba(217, 173, 85, 0.55);
+        transform: translateY(-2px);
+      }
+    }
+    @keyframes logoPulse {
+      0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(217, 173, 85, 0.35))
+                drop-shadow(0 0 24px rgba(217, 173, 85, 0.15));
+      }
+      50% {
+        filter: drop-shadow(0 0 16px rgba(255, 227, 160, 0.6))
+                drop-shadow(0 0 36px rgba(217, 173, 85, 0.3));
+      }
+    }
+    body {
+      background-color: #080D15;
+      color: #F4F5F8;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Cinzel', serif;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080D15;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #111B2A;
+      border: 1px solid rgba(217, 173, 85, 0.2);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #1A273D;
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col bg-obsidian text-primaryText antialiased selection:bg-gold/30 selection:text-brightGold">
 
-    <header>
-        <div class="header-brand">
-            BLDS <span>/ RESONANCE DIVISION</span>
-        </div>
-        <div class="header-tag">ARCHIVE // 2026</div>
-    </header>
+  <!-- App Root Container -->
+  <div id="app" class="flex-1 flex flex-col"></div>
 
-    <div class="container">
-        
-        <div id="view-landing" class="view active">
-            <div style="text-align: center; margin-top: 10px;">
-                <div class="eyebrow" style="justify-content: center;">BLDS ARCHIVE // RESONANCE SYSTEM</div>
-                <h1 class="hero-title">THE FLAME<br>RESONANCE</h1>
-                <p class="hero-subtitle">"Every Fragment reflects something within you."</p>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-                <div class="core-visual-container">
-                    <svg class="core-svg" viewBox="0 0 100 100">
-                        <circle class="core-ring core-ring-1" cx="50" cy="50" r="42" />
-                        <circle class="core-ring core-ring-2" cx="50" cy="50" r="32" />
-                        <polygon class="core-diamond" points="50,22 72,50 50,78 28,50" />
-                        <circle cx="50" cy="50" r="2" fill="#ffffff" />
-                    </svg>
-                </div>
+  <!-- Firebase Modular SDK & App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, set, child, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-                <div class="system-status-pill">
-                    <span class="status-dot"></span>
-                    <span>CORE CONNECTION — STABLE</span>
-                </div>
-            </div>
+    // ==========================================
+    // FIREBASE CONFIGURATION (ISI SESUAI CONSOLE)
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "ISI_API_KEY_FIREBASE",
+      authDomain: "ISI_AUTH_DOMAIN_FIREBASE",
+      databaseURL: "https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "ISI_PROJECT_ID_FIREBASE",
+      storageBucket: "ISI_STORAGE_BUCKET_FIREBASE",
+      messagingSenderId: "ISI_MESSAGING_SENDER_ID_FIREBASE",
+      appId: "ISI_APP_ID_FIREBASE"
+    };
 
-            <div class="panel">
-                <div class="eyebrow">CORE RECORD</div>
-                <p style="font-size: 0.88rem; color: var(--text-primary); margin-bottom: 20px; line-height: 1.7;">
-                    The Core emits Fragments. Fragments yield Flames. The nature of your inner drive determines which Flame resonates with your soul.
-                </p>
-                
-                <button class="btn" onclick="switchView('view-register')">
-                    <span>◈ BEGIN RESONANCE</span>
-                </button>
-            </div>
+    let app = null;
+    let db = null;
+    let auth = null;
+    let isFirebaseInitialized = false;
 
-            <div class="disclaimer-card">
-                This is a fictional personality-based assessment created for the BLDS universe. It is not a clinical psychological test or professional diagnosis.
-            </div>
-        </div>
+    try {
+      if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "ISI_API_KEY_FIREBASE") {
+        app = initializeApp(firebaseConfig);
+        db = getDatabase(app);
+        auth = getAuth(app);
+        isFirebaseInitialized = true;
+      }
+    } catch (e) {
+      console.warn("Firebase initialization skipped or running in local demo mode:", e);
+    }
 
-        <div id="view-register" class="view">
-            <div class="eyebrow">IDENTIFICATION PROTOCOL</div>
-            <div class="panel">
-                <div class="input-group">
-                    <label for="participant-name">ENTER SUBJECT NAME / DESIGNATION</label>
-                    <input type="text" id="participant-name" class="text-input" autocomplete="off" placeholder="e.g. Michael" maxlength="30">
-                    <div id="name-status" class="status-msg"></div>
-                </div>
+    // ==========================================
+    // KATALOG RESMI 24 TRAIT (12 FLAMES & 12 SHADOW)
+    // ==========================================
+    const TRAITS_CATALOG = [
+      {
+        id: 'vision', nameEn: 'VISION', nameId: 'Penglihatan dan Arah', category: 'flame', pairId: 'pair_01', color: '#D9AD55',
+        description: 'Kemampuan melihat tujuan jangka panjang, memahami gambaran besar, menyusun arah, dan merencanakan langkah.'
+      },
+      {
+        id: 'blindness', nameEn: 'BLINDNESS', nameId: 'Kebutaan Arah', category: 'shadow', pairId: 'pair_01', color: '#8A7336',
+        description: 'Kecenderungan terpaku pada satu sudut pandang dan mengabaikan konteks atau petunjuk lain.'
+      },
+      {
+        id: 'discipline', nameEn: 'DISCIPLINE', nameId: 'Disiplin', category: 'flame', pairId: 'pair_02', color: '#527FDF',
+        description: 'Kecenderungan menjaga komitmen, mengatur waktu, bertanggung jawab, dan konsisten menjalankan langkah.'
+      },
+      {
+        id: 'indiscipline', nameEn: 'INDISCIPLINE', nameId: 'Ketidakteraturan', category: 'shadow', pairId: 'pair_02', color: '#345293',
+        description: 'Kecenderungan terdistraksi, menunda, atau kesulitan menjaga konsistensi rutinitas.'
+      },
+      {
+        id: 'loyalty', nameEn: 'LOYALTY', nameId: 'Kesetiaan', category: 'flame', pairId: 'pair_03', color: '#52C9DF',
+        description: 'Kecenderungan menjaga kepercayaan, komitmen, dan hubungan yang dianggap penting secara bertanggung jawab.'
+      },
+      {
+        id: 'betrayal', nameEn: 'BETRAYAL', nameId: 'Pengkhianatan', category: 'shadow', pairId: 'pair_03', color: '#36818F',
+        description: 'Kecenderungan mengabaikan kepercayaan atau komitmen demi keuntungan sesaat.'
+      },
+      {
+        id: 'ambition', nameEn: 'AMBITION', nameId: 'Ambisi', category: 'flame', pairId: 'pair_04', color: '#FFE3A0',
+        description: 'Dorongan untuk berkembang, menetapkan tujuan, mempelajari keterampilan, dan meningkatkan kemampuan.'
+      },
+      {
+        id: 'arrogance', nameEn: 'ARROGANCE', nameId: 'Keangkuhan', category: 'shadow', pairId: 'pair_04', color: '#A38F5F',
+        description: 'Kecenderungan merasa paling benar, meremehkan masukan, atau menolak kritik.'
+      },
+      {
+        id: 'resilience', nameEn: 'RESILIENCE', nameId: 'Ketangguhan', category: 'flame', pairId: 'pair_05', color: '#9B79DC',
+        description: 'Kecenderungan beradaptasi, belajar dari hambatan, dan mencoba melanjutkan langkah secara sehat.'
+      },
+      {
+        id: 'despair', nameEn: 'DESPAIR', nameId: 'Keputusasaan', category: 'shadow', pairId: 'pair_05', color: '#624D8C',
+        description: 'Kecenderungan sulit melihat jalan keluar atau merasa berat menghadapi hambatan (bukan diagnosis).'
+      },
+      {
+        id: 'hope', nameEn: 'HOPE', nameId: 'Harapan', category: 'flame', pairId: 'pair_06', color: '#C54D69',
+        description: 'Kecenderungan melihat peluang perbaikan dan membayangkan hasil yang lebih baik dengan realistis.'
+      },
+      {
+        id: 'hopelessness', nameEn: 'HOPELESSNESS', nameId: 'Kehilangan Harapan', category: 'shadow', pairId: 'pair_06', color: '#7D3143',
+        description: 'Kecenderungan sulit membayangkan perubahan atau hasil yang lebih baik saat menghadapi keadaan berat.'
+      },
+      {
+        id: 'awareness', nameEn: 'AWARENESS', nameId: 'Kesadaran', category: 'flame', pairId: 'pair_07', color: '#D9AD55',
+        description: 'Kepekaan terhadap situasi, emosi diri, konsekuensi tindakan, dan perspektif orang lain.'
+      },
+      {
+        id: 'unawareness', nameEn: 'UNAWARENESS', nameId: 'Kurang Menyadari Keadaan', category: 'shadow', pairId: 'pair_07', color: '#8A7336',
+        description: 'Kecenderungan melewatkan petunjuk penting, konteks, atau dampak perilaku sendiri.'
+      },
+      {
+        id: 'patience', nameEn: 'PATIENCE', nameId: 'Kesabaran', category: 'flame', pairId: 'pair_08', color: '#527FDF',
+        description: 'Kemampuan memberi waktu pada proses, menahan dorongan terburu-buru, dan menghadapi ketidakpastian.'
+      },
+      {
+        id: 'impatience', nameEn: 'IMPATIENCE', nameId: 'Ketidaksabaran', category: 'shadow', pairId: 'pair_08', color: '#345293',
+        description: 'Kecenderungan menuntut hasil segera, cepat frustrasi saat proses lambat, atau memutuskan terlalu cepat.'
+      },
+      {
+        id: 'courage', nameEn: 'COURAGE', nameId: 'Keberanian', category: 'flame', pairId: 'pair_09', color: '#52C9DF',
+        description: 'Kesediaan menghadapi tantangan, menyampaikan hal penting, dan bertindak meskipun ada rasa takut.'
+      },
+      {
+        id: 'cowardice', nameEn: 'COWARDICE', nameId: 'Sikap Menghindar karena Takut', category: 'shadow', pairId: 'pair_09', color: '#36818F',
+        description: 'Kecenderungan menghindari tantangan atau tanggung jawab karena rasa takut.'
+      },
+      {
+        id: 'unity', nameEn: 'UNITY', nameId: 'Persatuan', category: 'flame', pairId: 'pair_10', color: '#FFE3A0',
+        description: 'Kemampuan bekerja sama, menghargai perbedaan, membangun rasa memiliki, dan mencari tujuan bersama.'
+      },
+      {
+        id: 'division', nameEn: 'DIVISION', nameId: 'Perpecahan', category: 'shadow', pairId: 'pair_10', color: '#A38F5F',
+        description: 'Kecenderungan memperbesar perbedaan, membentuk kubu, atau mengutamakan konflik.'
+      },
+      {
+        id: 'compassion', nameEn: 'COMPASSION', nameId: 'Belas Kasih', category: 'flame', pairId: 'pair_11', color: '#9B79DC',
+        description: 'Kemampuan memahami kesulitan orang lain, merespons dengan kepedulian, dan membantu dengan batasan.'
+      },
+      {
+        id: 'cruelty', nameEn: 'CRUELTY', nameId: 'Kekejaman', category: 'shadow', pairId: 'pair_11', color: '#624D8C',
+        description: 'Kecenderungan mengabaikan penderitaan atau perasaan orang lain tanpa kepedulian.'
+      },
+      {
+        id: 'integrity', nameEn: 'INTEGRITY', nameId: 'Integritas', category: 'flame', pairId: 'pair_12', color: '#C54D69',
+        description: 'Keselarasan antara nilai, perkataan, dan tindakan; kejujuran; serta tanggung jawab atas keputusan.'
+      },
+      {
+        id: 'corruption', nameEn: 'CORRUPTION', nameId: 'Kerusakan Integritas', category: 'shadow', pairId: 'pair_12', color: '#7D3143',
+        description: 'Kecenderungan mengorbankan prinsip demi keuntungan atau memanipulasi kepercayaan.'
+      }
+    ];
 
-                <button id="btn-check-name" class="btn" onclick="handleNameCheck()">
-                    <span>[ CHECK RESONANCE ID ]</span>
-                </button>
-            </div>
+    const FLAMES_LIST = TRAITS_CATALOG.filter(t => t.category === 'flame');
+    const SHADOWS_LIST = TRAITS_CATALOG.filter(t => t.category === 'shadow');
 
-            <button class="btn" style="border-color: transparent; background: transparent; box-shadow: none;" onclick="switchView('view-landing')">
-                ← BACK TO TERMINAL
-            </button>
-        </div>
+    // ==========================================
+    // BANK 30 PERTANYAAN SITUASIONAL LENGKAP
+    // ==========================================
+    const QUESTIONS_LIST = [
+      {
+        id: 1, text: "Kamu mempunyai tujuan besar yang ingin dicapai dalam beberapa bulan ke depan, tetapi belum tahu persis cara memulainya. Apa langkah pertamamu?",
+        options: [
+          { id: 'A', text: "Menyusun arah besar, membayangkan kemungkinan hasil, dan merencanakan strategi utama.", scores: { vision: 3, discipline: 1, ambition: 2 } },
+          { id: 'B', text: "Memecah target besar tersebut menjadi jadwal harian dan rutinitas kecil yang teratur.", scores: { discipline: 3, vision: 1, resilience: 1 } },
+          { id: 'C', text: "Membicarakan target tersebut dengan rekan atau mentor yang dapat membantu mengarahkan.", scores: { unity: 3, compassion: 1, loyalty: 1 } },
+          { id: 'D', text: "Langsung memulai dari bagian yang paling menarik minat saat ini dan menyesuaikan sambil jalan.", scores: { impatience: 2, unawareness: 1, ambition: 1 } }
+        ]
+      },
+      {
+        id: 2, text: "Dalam diskusi kelompok, kamu menyadari bahwa tim melewatkan satu informasi krusial yang bisa mengubah keputusan. Apa yang kamu lakukan?",
+        options: [
+          { id: 'A', text: "Menyampaikan informasi tersebut secara terbuka dan menjelaskan konteks pentingnya.", scores: { awareness: 3, courage: 2, integrity: 2 } },
+          { id: 'B', text: "Memeriksa ulang detail data tersebut secara cermat sebelum mengangkatnya ke forum.", scores: { discipline: 2, awareness: 2, vision: 1 } },
+          { id: 'C', text: "Berbicara secara empatik kepada pimpinan atau anggota lain untuk mendengarkan sudut pandang mereka.", scores: { unity: 3, patience: 2, compassion: 1 } },
+          { id: 'D', text: "Membiarkan rencana berjalan dahulu karena nanti juga akan terlihat hasilnya.", scores: { blindness: 3, unawareness: 2, despair: 1 } }
+        ]
+      },
+      {
+        id: 3, text: "Seorang teman dekat meminta bantuan mendesak ketika kamu sedang fokus menyelesaikan tugas pentingmu sendiri. Bagaimana sikapmu?",
+        options: [
+          { id: 'A', text: "Membantu dengan batasan waktu yang jelas agar tugasmu dan bantuannya sama-sama selesai.", scores: { loyalty: 3, compassion: 2, discipline: 2 } },
+          { id: 'B', text: "Menyelesaikan prioritas utama saya terlebih dahulu, lalu menawarkan bantuan setelahnya.", scores: { discipline: 3, integrity: 2, ambition: 1 } },
+          { id: 'C', text: "Mendiskusikan bersama cara membagi beban tugas agar dapat diselesaikan bersama.", scores: { unity: 3, awareness: 2, compassion: 2 } },
+          { id: 'D', text: "Mengubah jadwal secara impulsif demi menolong teman tanpa memikirkan dampak pada tugas sendiri.", scores: { impatience: 2, indiscipline: 2, unawareness: 1 } }
+        ]
+      },
+      {
+        id: 4, text: "Kamu menerima kritik tajam terhadap hasil karya atau pekerjaan yang sudah kamu kerjakan dengan sungguh-sungguh. Responmu?",
+        options: [
+          { id: 'A', text: "Mencari bagian spesifik dari kritik tersebut yang bisa digunakan untuk memperbaiki diri.", scores: { resilience: 3, discipline: 2, integrity: 2 } },
+          { id: 'B', text: "Meminta contoh konkret agar benar-benar memahami maksud dari kritikan tersebut.", scores: { awareness: 3, patience: 2, vision: 1 } },
+          { id: 'C', text: "Mengambil jeda waktu sejenak untuk menenangkan diri dan mencerna masukan secara objektif.", scores: { patience: 3, resilience: 1, awareness: 2 } },
+          { id: 'D', text: "Merasa tersinggung, menolak masukan tersebut, dan mempertahankan argumen bahwa karyamu sudah benar.", scores: { arrogance: 3, blindness: 2, corruption: 1 } }
+        ]
+      },
+      {
+        id: 5, text: "Rencana matang yang sudah kamu susun mendadak berantakan karena perubahan situasi di luar kendali. Apa langkahmu?",
+        options: [
+          { id: 'A', text: "Segera menyusun rencana alternatif baru yang selaras dengan visi utama.", scores: { vision: 3, resilience: 2, discipline: 2 } },
+          { id: 'B', text: "Menjalankan bagian-bagian dari rencana lama yang masih bisa diselamatkan.", scores: { resilience: 3, discipline: 2, hope: 1 } },
+          { id: 'C', text: "Menghubungi semua pihak terkait untuk berdiskusi dan menyepakati penyesuaian bersama.", scores: { unity: 3, loyalty: 2, awareness: 2 } },
+          { id: 'D', text: "Merasa putus asa dan memilih menunda tindakan karena merasa semuanya sudah percuma.", scores: { despair: 3, hopelessness: 3, indiscipline: 2 } }
+        ]
+      },
+      {
+        id: 6, text: "Dalam kerja tim, kamu melihat ada anggota yang kontribusinya kurang terlihat atau diabaikan orang lain. Sikapmu?",
+        options: [
+          { id: 'A', text: "Membantu memperjelas pembagian peran agar kontribusi setiap orang tampak adil.", scores: { unity: 3, awareness: 2, integrity: 2 } },
+          { id: 'B', text: "Mengajak tim membicarakan dinamika kerja secara terbuka dalam pertemuan khusus.", scores: { courage: 3, unity: 2, compassion: 2 } },
+          { id: 'C', text: "Menanyakan langsung secara pribadi apakah ia membutuhkan dukungan atau mengalami kesulitan.", scores: { compassion: 3, loyalty: 2, awareness: 2 } },
+          { id: 'D', text: "Fokus saja pada bagian tugas saya sendiri dan mengabaikan urusan orang lain.", scores: { division: 2, unawareness: 2, arrogance: 1 } }
+        ]
+      },
+      {
+        id: 7, text: "Kamu harus menguasai sebuah keterampilan baru yang terkenal sangat sulit dan rumit. Bagaimana cara belajarmu?",
+        options: [
+          { id: 'A', text: "Memetakan tujuan akhir, membagi materi ke dalam tahapan logis, lalu mempelajarinya.", scores: { vision: 3, discipline: 3, ambition: 2 } },
+          { id: 'B', text: "Menetapkan jadwal latihan harian yang disiplin dan konsisten tanpa kompromi.", scores: { discipline: 3, resilience: 2, ambition: 1 } },
+          { id: 'C', text: "Mencari mentor, komunitas, atau sumber belajar terbaik yang bisa membimbing.", scores: { unity: 2, hope: 2, awareness: 2 } },
+          { id: 'D', text: "Mencoba-coba sendiri secara acak, lalu cepat menyerah jika hasilnya tidak instan.", scores: { impatience: 3, indiscipline: 3, despair: 1 } }
+        ]
+      },
+      {
+        id: 8, text: "Kamu melihat seseorang di lingkunganmu sedang disalahpahami dan disudutkan oleh mayoritas orang. Apa yang kamu lakukan?",
+        options: [
+          { id: 'A', text: "Menyampaikan sudut pandang atau konteks yang sebenarnya agar situasi menjadi jernih.", scores: { awareness: 3, courage: 2, compassion: 2 } },
+          { id: 'B', text: "Mengajak pihak-pihak berkonflik untuk duduk bersama dan saling mendengarkan.", scores: { unity: 3, compassion: 3, patience: 2 } },
+          { id: 'C', text: "Mendekati orang tersebut secara pribadi untuk menanyakan perasaan dan sudut pandangnya.", scores: { compassion: 3, awareness: 2, loyalty: 2 } },
+          { id: 'D', text: "Diam saja dan ikut menjauh agar tidak ikut terseret masalah mereka.", scores: { cowardice: 3, unawareness: 2, division: 1 } }
+        ]
+      },
+      {
+        id: 9, text: "Sebuah proyek yang kamu kerjakan ternyata memakan waktu jauh lebih lama dari perkiraan semula. Reaksimu?",
+        options: [
+          { id: 'A', text: "Menyesuaikan lini masa secara realistis dan memperbarui target pencapaian.", scores: { vision: 3, discipline: 2, resilience: 2 } },
+          { id: 'B', text: "Mempertahankan rutinitas kerja harian yang konsisten sampai selesai.", scores: { discipline: 3, resilience: 2, hope: 1 } },
+          { id: 'C', text: "Mengevaluasi metode kerja untuk mencari efisiensi baru.", scores: { awareness: 3, discipline: 2, ambition: 1 } },
+          { id: 'D', text: "Merasa frustrasi hebat, terburu-buru mengerjakannya secara asal, atau berniat meninggalkan proyek.", scores: { impatience: 3, indiscipline: 2, despair: 2 } }
+        ]
+      },
+      {
+        id: 10, text: "Kamu memiliki perbedaan prinsip atau pendapat yang tajam dengan figur yang sangat kamu hormati. Bagaimana cara menyikapinya?",
+        options: [
+          { id: 'A', text: "Menyampaikan argumenmu secara terbuka dengan alasan yang logis dan santun.", scores: { courage: 3, integrity: 2, awareness: 2 } },
+          { id: 'B', text: "Mencari titik temu atau nilai bersama yang bisa disepakati bersama.", scores: { unity: 3, vision: 2, compassion: 2 } },
+          { id: 'C', text: "Mendengarkan secara saksama penjelasan mereka terlebih dahulu sebelum merespons.", scores: { awareness: 3, patience: 3, respect: 2 } },
+          { id: 'D', text: "Menyimpan dendam, mencibir di belakang, atau langsung memutus hubungan secara sepihak.", scores: { division: 3, arrogance: 2, corruption: 1 } }
+        ]
+      },
+      {
+        id: 11, text: "Kamu melakukan kesalahan fatal yang berdampak buruk pada pekerjaan satu tim. Langkah tanggung jawabmu?",
+        options: [
+          { id: 'A', text: "Secara terbuka mengakui kesalahan di depan tim dan aktif mengusulkan solusi pemulihan.", scores: { integrity: 3, courage: 3, resilience: 2 } },
+          { id: 'B', text: "Menyelidiki akar penyebab kesalahan agar tidak pernah terulang kembali di masa depan.", scores: { awareness: 3, discipline: 2, resilience: 2 } },
+          { id: 'C', text: "Mengajak tim berdiskusi bersama untuk menyusun langkah korektif terbaik.", scores: { unity: 3, loyalty: 2, responsibility: 2 } },
+          { id: 'D', text: "Berusaha menutupi kesalahan, mencari kambing hitam, atau menyalahkan orang lain.", scores: { corruption: 3, cowardice: 3, betrayal: 2 } }
+        ]
+      },
+      {
+        id: 12, text: "Kamu diberi kesempatan memimpin proyek baru yang menantang. Aspek apa yang paling menarik perhatianmu?",
+        options: [
+          { id: 'A', text: "Visi besar dan dampak jangka panjang yang dapat diwujudkan melalui proyek ini.", scores: { vision: 3, ambition: 3, hope: 2 } },
+          { id: 'B', text: "Tanggung jawab pengaturan sistem kerja dan standar kualitas yang rapi.", scores: { discipline: 3, integrity: 2, ambition: 2 } },
+          { id: 'C', text: "Kesempatan untuk membimbing dan mengembangkan potensi anggota tim.", scores: { compassion: 3, unity: 2, ambition: 2 } },
+          { id: 'D', text: "Kekuasaan untuk mengatur orang lain dan memaksakan kehendakmu tanpa bantahan.", scores: { arrogance: 3, division: 2, cruelty: 1 } }
+        ]
+      },
+      {
+        id: 13, text: "Kamu menerima informasi mengejutkan yang kontradiktif dengan keyakinanmu selama ini. Apa tindakan pertamamu?",
+        options: [
+          { id: 'A', text: "Memverifikasi kredibilitas sumber informasi dan memeriksa konteks faktualnya.", scores: { awareness: 3, discipline: 2, vision: 1 } },
+          { id: 'B', text: "Memikirkan implikasi dan dampak jangka panjang jika informasi itu benar.", scores: { vision: 3, awareness: 2, discipline: 1 } },
+          { id: 'C', text: "Berdiskusi dengan pihak-pihak berpengalaman yang memahami situasi tersebut.", scores: { compassion: 3, unity: 2, awareness: 2 } },
+          { id: 'D', text: "Langsung menolak informasi tersebut mentah-mentah karena tidak sesuai dengan kemauanku.", scores: { blindness: 3, arrogance: 2, unawareness: 2 } }
+        ]
+      },
+      {
+        id: 14, text: "Seorang rekan mengalami kegagalan besar dan merasa terpukul hingga kehilangan motivasi. Bagaimana kamu mendukungnya?",
+        options: [
+      { id: 'A', text: "Membantunya memetakan langkah-langkah kecil rasional untuk bangkit kembali.", scores: { hope: 3, resilience: 2, vision: 2 } },
+          { id: 'B', text: "Menjadi pendengar yang baik penuh empati tanpa terburu-buru memberikan nasihat.", scores: { compassion: 3, patience: 3, awareness: 2 } },
+          { id: 'C', text: "Mengingatkan kembali potensi dan keberhasilan yang pernah ia capai sebelumnya.", scores: { hope: 3, resilience: 2, loyalty: 2 } },
+          { id: 'D', text: "Mengatakan bahwa kegagalannya adalah akibat kesalahannya sendiri dan menyuruhnya mandiri.", scores: { cruelty: 3, division: 2, arrogance: 1 } }
+        ]
+      },
+      {
+        id: 15, text: "Kamu dihadapkan pada pilihan: hasil cepat instan atau proses lebih lama yang menghasilkan kualitas jauh lebih baik. Pilihanmu?",
+        options: [
+          { id: 'A', text: "Memilih proses berkualitas tinggi demi menjaga nilai dan visi jangka panjang.", scores: { vision: 3, discipline: 2, integrity: 2 } },
+          { id: 'B', text: "Memperhitungkan sumber daya dan waktu secara rasional untuk efisiensi optimal.", scores: { discipline: 3, awareness: 2, ambition: 1 } },
+          { id: 'C', text: "Mempertimbangkan dampak dari pilihan tersebut terhadap kenyamanan orang lain.", scores: { compassion: 3, unity: 2, loyalty: 2 } },
+          { id: 'D', text: "Memilih jalan pintas tercepat meskipun melanggar aturan atau standar kualitas.", scores: { corruption: 3, impatience: 3, indiscipline: 2 } }
+        ]
+      },
+      {
+        id: 16, text: "Anggota timmu memiliki latar belakang dan gaya kerja yang sangat kontras satu sama lain. Bagaimana kamu menyatukan mereka?",
+        options: [
+          { id: 'A', text: "Menyepakati aturan kerja bersama dan menyelaraskan tujuan utama kelompok.", scores: { unity: 3, discipline: 2, vision: 2 } },
+          { id: 'B', text: "Membagi tugas secara struktural berdasarkan keahlian spesifik masing-masing.", scores: { discipline: 3, awareness: 2, unity: 2 } },
+          { id: 'C', text: "Mendengarkan aspirasi dan kebutuhan personal setiap anggota agar tercipta harmoni.", scores: { compassion: 3, unity: 3, awareness: 2 } },
+          { id: 'D', text: "Membiarkan mereka berkonflik atau membentuk kubu-kubu eksklusif.", scores: { division: 3, cruelty: 2, blindness: 1 } }
+        ]
+      },
+      {
+        id: 17, text: "Kamu mempunyai ide inovatif yang belum pernah dicoba di lingkunganmu. Langkah pertamamu?",
+        options: [
+          { id: 'A', text: "Mengembangkan konsep konseptual beserta argumen logis yang mendasarinya.", scores: { vision: 3, ambition: 2, courage: 2 } },
+          { id: 'B', text: "Merancang prototipe skala kecil yang bisa diuji coba secara nyata.", scores: { ambition: 3, discipline: 2, resilience: 2 } },
+          { id: 'C', text: "Mencari rekan tepercaya untuk dimintai masukan dan evaluasi awal.", scores: { unity: 3, awareness: 2, hope: 2 } },
+          { id: 'D', text: "Menyembunyikan ide tersebut karena takut dicuri atau ditertawakan orang lain.", scores: { cowardice: 3, blindness: 2, despair: 1 } }
+        ]
+      },
+      {
+        id: 18, text: "Seseorang memberi tahu bahwa perkataan atau sikapmu secara tidak sengaja membuatnya tersinggung. Reaksimu?",
+        options: [
+          { id: 'A', text: "Mendengarkan penjelasannya dengan tenang tanpa langsung membela diri.", scores: { awareness: 3, compassion: 3, patience: 2 } },
+          { id: 'B', text: "Meminta contoh spesifik agar paham betul bagian mana yang menimbulkan ketidaknyamanan.", scores: { awareness: 3, integrity: 2, courage: 2 } },
+          { id: 'C', text: "Mengakui jika ada kekeliruan dan menyampaikan permintaan maaf yang tulus.", scores: { integrity: 3, courage: 2, compassion: 2 } },
+          { id: 'D', text: "Marah dan menuduhnya baper (bawa perasaan) serta terlalu sensitif.", scores: { arrogance: 3, cruelty: 2, unawareness: 2 } }
+        ]
+      },
+      {
+        id: 19, text: "Kamu menghadapi tumpukan tugas mendesak yang datang secara bersamaan. Bagaimana cara menyelesaikannya?",
+        options: [
+          { id: 'A', text: "Membuat skala prioritas berdasarkan tingkat urgensi dan dampak terbesar.", scores: { vision: 3, discipline: 2, ambition: 2 } },
+          { id: 'B', text: "Menyusun jadwal per jam secara disiplin dan sistematis.", scores: { discipline: 3, vision: 2, resilience: 1 } },
+          { id: 'C', text: "Meminta klarifikasi kepada pemberi tugas mengenai batas waktu yang paling esensial.", scores: { awareness: 3, discipline: 2, integrity: 1 } },
+          { id: 'D', text: "Panik, menunda pekerjaan, atau mengerjakan hal-hal sepele yang tidak penting.", scores: { indiscipline: 3, impatience: 2, despair: 2 } }
+        ]
+      },
+      {
+        id: 20, text: "Kamu menemukan peluang menggiurkan namun memiliki risiko tinggi dan belum sepenuhnya transparan. Sikapmu?",
+        options: [
+          { id: 'A', text: "Melakukan riset mendalam untuk mengukur setiap probabilitas risiko dan konsekuensinya.", scores: { vision: 3, awareness: 3, discipline: 2 } },
+          { id: 'B', text: "Menyiapkan batasan kerugian (risk limit) dan rencana cadangan yang ketat.", scores: { discipline: 3, resilience: 2, vision: 2 } },
+          { id: 'C', text: "Berkonsultasi dengan orang yang ahli dan berpengalaman dalam bidang tersebut.", scores: { awareness: 3, unity: 2, hope: 2 } },
+          { id: 'D', text: "Terjun bebas secara buta demi mengejar keuntungan cepat tanpa perhitungan.", scores: { blindness: 3, impatience: 3, corruption: 1 } }
+        ]
+      },
+      {
+        id: 21, text: "Rekan satu tim berulang kali tidak menepati komitmen atau tenggat waktu yang disepakati. Tindakanmu?",
+        options: [
+          { id: 'A', text: "Mengajaknya bicara empat mata secara tegas, jujur, dan profesional.", scores: { courage: 3, integrity: 3, loyalty: 2 } },
+          { id: 'B', text: "Meninjau ulang pembagian beban tugas dan menyesuaikan jadwal tim.", scores: { discipline: 3, vision: 2, awareness: 2 } },
+          { id: 'C', text: "Menanyakan apakah ia sedang menghadapi kendala pribadi yang belum diketahui.", scores: { compassion: 3, awareness: 3, loyalty: 2 } },
+          { id: 'D', text: "Membiarkannya merusak tim atau memfitnahnya di belakang tanpa konfirmasi.", scores: { betrayal: 3, division: 3, cruelty: 2 } }
+        ]
+      },
+      {
+        id: 22, text: "Kamu harus menyampaikan pendapat kontroversial yang kemungkinan besar akan ditolak oleh mayoritas kelompok. Caramu?",
+        options: [
+          { id: 'A', text: "Menyampaikannya dengan landasan data, argumen logis, dan keberanian moral.", scores: { courage: 3, integrity: 3, vision: 2 } },
+          { id: 'B', text: "Memilih waktu, tempat, dan pendekatan komunikasi yang paling kondusif.", scores: { awareness: 3, patience: 2, discipline: 2 } },
+          { id: 'C', text: "Mendengarkan tanggapan dan kekhawatiran mereka terlebih dahulu secara terbuka.", scores: { awareness: 3, patience: 3, unity: 2 } },
+          { id: 'D', text: "Mengurungkan niat karena takut dibenci atau langsung menyerang orang yang berbeda pendapat.", scores: { cowardice: 3, division: 2, arrogance: 2 } }
+        ]
+      },
+      {
+        id: 23, text: "Sebuah rencana besar yang kamu yakini akan berhasil ternyata mengalami kegagalan total. Apa langkah evaluasimu?",
+        options: [
+          { id: 'A', text: "Menganalisis faktor penyebab kegagalan secara objektif untuk strategi masa depan.", scores: { resilience: 3, awareness: 3, discipline: 2 } },
+          { id: 'B', text: "Mengambil jeda istirahat sejenak untuk memulihkan mental sebelum merintis kembali.", scores: { patience: 3, resilience: 3, hope: 2 } },
+          { id: 'C', text: "Mengadakan evaluasi bersama seluruh tim untuk mendengarkan pelajaran dari setiap orang.", scores: { unity: 3, awareness: 2, integrity: 2 } },
+          { id: 'D', text: "Menyalahkan nasib sial, menyumpahi keadaan, dan bersumpah tidak mau mencoba lagi.", scores: { despair: 3, hopelessness: 3, cowardice: 2 } }
+        ]
+      },
+      {
+        id: 24, text: "Seseorang meminta bantuan mendesak kepadamu, namun waktumu sendiri sangat terbatas dan padat. Keputusanmu?",
+        options: [
+          { id: 'A', text: "Memberikan bantuan sebatas kapasitas dan waktu luang yang benar-benar kamu miliki.", scores: { compassion: 3, loyalty: 2, integrity: 2 } },
+          { id: 'B', text: "Menanyakan bagian mana yang paling mendesak agar bisa dibantu secara efisien.", scores: { awareness: 3, compassion: 3, discipline: 1 } },
+          { id: 'C', text: "Membantunya terhubung dengan sumber atau orang lain yang lebih senggang.", scores: { unity: 3, compassion: 2, vision: 2 } },
+          { id: 'D', text: "Menolak dengan kasar atau berbohong bahwa kamu sibuk padahal sebenarnya malas.", scores: { cruelty: 3, corruption: 2, betrayal: 1 } }
+        ]
+      },
+      {
+        id: 25, text: "Dua rekan kerja terlibat perdebatan sengit dan saling serang tanpa ada yang mau mendengarkan. Peranmu?",
+        options: [
+          { id: 'A', text: "Menjadi penengah netral dengan merangkum inti perbedaan pendapat mereka secara objektif.", scores: { awareness: 3, unity: 3, patience: 2 } },
+          { id: 'B', text: "Mengingatkan mereka kembali pada tujuan utama kolaborasi yang sedang dikerjakan.", scores: { vision: 3, unity: 2, discipline: 2 } },
+          { id: 'C', text: "Memberikan waktu dan kesempatan bergantian kepada masing-masing pihak untuk berbicara.", scores: { patience: 3, compassion: 2, awareness: 2 } },
+          { id: 'D', text: "Menonton perdebatan tersebut sambil menikmati drama atau bahkan memperkeruh suasana.", scores: { cruelty: 3, division: 3, corruption: 2 } }
+        ]
+      },
+      {
+        id: 26, text: "Kamu mulai menyadari berdasarkan bukti baru bahwa keyakinan kuat yang kamu pegang selama ini ternyata keliru. Sikapmu?",
+        options: [
+          { id: 'A', text: "Terbuka menerima fakta baru dan merevisi pemahaman lama tanpa rasa malu.", scores: { awareness: 3, integrity: 3, discipline: 2 } },
+          { id: 'B', text: "Merenungkan kembali proses berpikir yang membuatmu keliru di masa lalu.", scores: { awareness: 3, vision: 2, patience: 1 } },
+          { id: 'C', text: "Berdiskusi dengan pihak yang memiliki pandangan berbeda untuk memperkaya wawasan.", scores: { unity: 3, courage: 2, awareness: 2 } },
+          { id: 'D', text: "Tetap mempertahankan keyakinan salah tersebut demi menjaga gengsi dan harga diri.", scores: { arrogance: 3, blindness: 3, corruption: 2 } }
+        ]
+      },
+      {
+        id: 27, text: "Kamu harus mengambil keputusan penting di bawah tekanan waktu yang sangat sempit tanpa informasi lengkap. Pedomanmu?",
+        options: [
+          { id: 'A', text: "Berpegang pada visi dan tujuan utama sebagai kompas penentu arah.", scores: { vision: 3, discipline: 2, integrity: 2 } },
+          { id: 'B', text: "Memilih opsi yang didukung oleh data atau indikator paling dapat dipercaya saat itu.", scores: { awareness: 3, discipline: 2, integrity: 2 } },
+          { id: 'C', text: "Mempertimbangkan keselamatan dan dampak psikologis bagi orang-orang terdampak.", scores: { compassion: 3, unity: 2, loyalty: 2 } },
+          { id: 'D', text: "Memilih secara asal tebak lempar koin karena malas berpikir kritis.", scores: { blindness: 3, indiscipline: 3, unawareness: 2 } }
+        ]
+      },
+      {
+        id: 28, text: "Seseorang terang-terangan mengambil pujian atau kredit atas kerja keras yang sebenarnya kamu lakukan. Reaksimu?",
+        options: [
+          { id: 'A', text: "Menjelaskan kontribusi fakta sebenarnya secara profesional dan tenang kepada pihak berwenang.", scores: { integrity: 3, courage: 2, awareness: 2 } },
+          { id: 'B', text: "Membicarakan masalah tersebut secara pribadi kepada orang bersangkutan untuk meluruskan.", scores: { courage: 3, loyalty: 2, compassion: 2 } },
+          { id: 'C', text: "Mengusulkan sistem pencatatan kontribusi transparan agar tidak terjadi lagi ke depannya.", scores: { discipline: 3, unity: 2, vision: 2 } },
+          { id: 'D', text: "Membalas dengan melakukan sabotase pekerjaan orang tersebut secara diam-diam.", scores: { corruption: 3, cruelty: 3, betrayal: 3 } }
+        ]
+      },
+      {
+        id: 29, text: "Kamu sedang mencoba membangun kebiasaan positif baru, namun sudah beberapa kali gagal dan terlewat. Evaluasimu?",
+        options: [
+          { id: 'A', text: "Memperbaiki sistem pemicu pengingat dan mengevaluasi kembali strategi rutinitas.", scores: { discipline: 3, vision: 2, resilience: 2 } },
+          { id: 'B', text: "Menurunkan target menjadi lebih kecil dan realistis agar bisa konsisten dijalankan.", scores: { resilience: 3, patience: 2, awareness: 2 } },
+          { id: 'C', text: "Meminta dukungan atau akuntabilitas dari teman untuk saling menyemangati.", scores: { unity: 3, loyalty: 2, hope: 2 } },
+          { id: 'D', text: "Langsung menyerah total dan menganggap diriku memang ditakdirkan tidak bisa disiplin.", scores: { despair: 3, hopelessness: 3, indiscipline: 3 } }
+        ]
+      },
+      {
+        id: 30, text: "Ketika menghadapi situasi krisis atau masa-masa paling sulit dalam hidupmu, jangkar utama apa yang paling kamu pegang?",
+        options: [
+          { id: 'A', text: "Keyakinan bahwa masa depan dan tujuan hidup yang jelas akan selalu ada jika diperjuangkan.", scores: { vision: 3, ambition: 2, hope: 2 } },
+          { id: 'B', text: "Komitmen teguh untuk terus menjalankan tanggung jawab harian dengan konsisten.", scores: { discipline: 3, integrity: 3, resilience: 2 } },
+          { id: 'C', text: "Ikatan kepercayaan, cinta, dan dukungan tulus dari orang-orang terdekat di sekitar.", scores: { loyalty: 3, unity: 3, compassion: 2 } },
+          { id: 'D', text: "Keinginan untuk melarikan diri dari kenyataan dan menyalahkan takdir semesta.", scores: { despair: 3, hopelessness: 3, cowardice: 3 } }
+        ]
+      }
+    ];
 
-        <div id="view-assessment" class="view">
-            <div class="progress-container">
-                <div class="progress-header">
-                    <span>◈ FLAME RESONANCE SYSTEM</span>
-                    <span id="question-tracker">QUESTION 01 / 30</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div id="progress-bar" class="progress-bar-fill"></div>
-                </div>
-            </div>
+    // Validasi struktur data saat startup
+    if (QUESTIONS_LIST.length !== 30) {
+      console.error("PERINGATAN: Jumlah pertanyaan bukan 30!");
+    }
 
-            <div class="panel">
-                <div id="question-text" class="question-text">Loading query...</div>
-                <div id="options-container" class="options-container"></div>
-                
-                <button id="btn-next" class="btn" disabled onclick="handleNextQuestion()">
-                    <span>CONTINUE →</span>
-                </button>
-            </div>
-        </div>
+    // ==========================================
+    // SCORING ENGINE DETERMINISTIK
+    // ==========================================
+    const ALGORITHM_VERSION = '1.0.0';
+    const QUESTION_SET_VERSION = '1.0.0';
 
-        <div id="view-calibration" class="view">
-            <div class="panel calibration-screen">
-                <div class="core-visual-container" style="margin: 0 0 20px 0;">
-                    <svg class="core-svg" viewBox="0 0 100 100" style="width: 90px; height: 90px;">
-                        <circle class="core-ring core-ring-1" cx="50" cy="50" r="40" />
-                        <polygon class="core-diamond" points="50,25 68,50 50,75 32,50" />
-                    </svg>
-                </div>
-                <div id="calibration-status" class="calibration-text">CALIBRATING...</div>
-            </div>
-        </div>
+    function calculateScores(answers) {
+      const rawScores = {};
+      TRAITS_CATALOG.forEach(t => { rawScores[t.id] = 0; });
 
-        <div id="view-result" class="view">
-            <div class="result-header">
-                <div class="eyebrow" style="justify-content: center;">RESONANCE PROFILE ESTABLISHED</div>
-                <h1 style="font-size: 1.8rem; margin-bottom: 4px;" id="res-display-name">SUBJECT NAME</h1>
-                <div style="font-size: 0.75rem; color: var(--text-dim); letter-spacing: 2px;" id="res-participant-id">ID: 00000000</div>
-            </div>
+      QUESTIONS_LIST.forEach(q => {
+        const selectedOptId = answers[q.id];
+        if (selectedOptId) {
+          const opt = q.options.find(o => o.id === selectedOptId);
+          if (opt && opt.scores) {
+            Object.entries(opt.scores).forEach(([traitId, weight]) => {
+              if (rawScores[traitId] !== undefined) {
+                rawScores[traitId] += weight;
+              }
+            });
+          }
+        }
+      });
 
-            <div id="unstable-warning" class="resonance-warning" style="display: none;">
-                ⚠ UNSTABLE RESONANCE DETECTED: <span id="unstable-text"></span>
-            </div>
+      // Hitung max & min possible scores per trait untuk normalisasi akurat 0-100
+      const maxScores = {};
+      const minScores = {};
+      TRAITS_CATALOG.forEach(t => {
+        maxScores[t.id] = 0;
+        minScores[t.id] = 0;
+      });
 
-            <div class="primary-card">
-                <div class="eyebrow" style="justify-content: center; margin-bottom: 12px;">PRIMARY RESONANCE</div>
-                <span id="res-primary-symbol" class="symbol-large">◇</span>
-                <h2 id="res-primary-name" style="font-size: 1.6rem; letter-spacing: 3px; font-weight: 600;">FLAME</h2>
-                <div id="res-primary-score" style="font-size: 1.2rem; color: var(--text-secondary); margin: 6px 0;">0.0 / 10</div>
-                <div id="res-primary-tier" class="tier-badge">DORMANT</div>
-                <p id="res-primary-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 16px; font-style: italic;"></p>
-            </div>
-
-            <div class="panel">
-                <div class="eyebrow">SECONDARY RESONANCE</div>
-                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                    <span id="res-secondary-name" style="font-size: 1.1rem; font-family: var(--font-heading);">-</span>
-                    <span id="res-secondary-score" style="color: var(--text-secondary);">0.0 / 10</span>
-                </div>
-                <div id="res-secondary-tier" class="tier-badge" style="margin-bottom: 20px;">-</div>
-
-                <div class="eyebrow" style="margin-top: 16px;">TERTIARY RESONANCE</div>
-                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                    <span id="res-tertiary-name" style="font-size: 1.1rem; font-family: var(--font-heading);">-</span>
-                    <span id="res-tertiary-score" style="color: var(--text-secondary);">0.0 / 10</span>
-                </div>
-                <div id="res-tertiary-tier" class="tier-badge">-</div>
-            </div>
-
-            <div class="panel" style="border-color: rgba(225, 29, 72, 0.3);">
-                <div class="eyebrow" style="color: #f43f5e;">PRIMARY SHADOW</div>
-                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                    <span id="res-shadow-name" style="font-size: 1.1rem; color: #f43f5e; font-family: var(--font-heading);">-</span>
-                    <span id="res-shadow-score" style="color: var(--text-secondary);">0.0 / 10</span>
-                </div>
-                <p id="res-shadow-desc" style="font-size: 0.82rem; color: var(--text-secondary); font-style: italic;"></p>
-            </div>
-
-            <div class="details-toggle" onclick="toggleDetails()">
-                [ ◈ TOGGLE FULL SPECTRUM ANALYSIS ]
-            </div>
-
-            <div id="details-content" class="details-content panel">
-                <div class="eyebrow" style="margin-bottom: 16px;">GREATER FLAMES</div>
-                <div id="greater-flames-list" class="flame-grid"></div>
-
-                <div class="eyebrow" style="margin-top: 24px; margin-bottom: 16px;">LESSER FLAMES</div>
-                <div id="lesser-flames-list" class="flame-grid"></div>
-
-                <div class="eyebrow" style="margin-top: 24px; margin-bottom: 16px; color: #f43f5e;">SHADOW SPECTRUM</div>
-                <div id="shadow-flames-list" class="flame-grid"></div>
-            </div>
-
-            <div class="panel">
-                <div class="eyebrow">ABOUT THE FLAMES</div>
-                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7;">
-                    Every Fragment carries the potential to produce a Flame. But the Flame does not choose its bearer. It reflects them. A Fragment may awaken the same Core energy within different people, yet no two resonances are necessarily the same. The stronger the connection between a person and their nature, the stronger the Flame becomes. And where light exists, a shadow may follow.
-                </p>
-            </div>
-
-            <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-direction: column;">
-                <button class="btn" onclick="copyResults()">[ COPY RESULT ]</button>
-                <button class="btn" style="border-color: transparent; background: transparent; box-shadow: none;" onclick="restartAssessment()">[ ↻ RETAKE ASSESSMENT ]</button>
-            </div>
-
-            <div class="disclaimer-card">
-                This is a fictional personality-based assessment created for the BLDS universe. It is not a clinical psychological test or professional diagnosis.
-            </div>
-        </div>
-
-    </div>
-
-    <footer>
-        <div style="font-family: var(--font-heading); font-weight: 600;">BLACKLIGHTDOMS © 2026</div>
-        <div class="footer-links">
-            <a class="footer-link" href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&ilr=1" target="_blank" rel="noopener noreferrer">
-                <span>◉ WHATSAPP COMMUNITY</span>
-            </a>
-            <a class="footer-link" href="https://discord.gg/r4dM4QFteV" target="_blank" rel="noopener noreferrer">
-                <span>◉ DISCORD COMMUNITY</span>
-            </a>
-        </div>
-    </footer>
-
-    <div id="toast-container"></div>
-
-    <script>
-        // --- CONSTANTS & DATA STRUCTURES ---
-        const DB_URL = "https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app/";
-
-        const FLAMES = {
-            VISION: { name: "VISION", type: "GREATER", symbol: "◇", shadow: "BLINDNESS", desc: "The ability to see direction even when others are lost." },
-            DISCIPLINE: { name: "DISCIPLINE", type: "GREATER", symbol: "⟐", shadow: "INDISCIPLINE", desc: "To continue growing even when nobody is watching." },
-            LOYALTY: { name: "LOYALTY", type: "GREATER", symbol: "∞", shadow: "BETRAYAL", desc: "To stand together through victory and defeat." },
-            AMBITION: { name: "AMBITION", type: "GREATER", symbol: "↑", shadow: "ARROGANCE", desc: "The desire to surpass limits and continue evolving." },
-            RESILIENCE: { name: "RESILIENCE", type: "GREATER", symbol: "↻", shadow: "DESPAIR", desc: "The strength to rise again after every fall." },
-            HOPE: { name: "HOPE", type: "LESSER", symbol: "✦", shadow: "HOPELESSNESS", desc: "The light that remains during difficult times." },
-            AWARENESS: { name: "AWARENESS", type: "LESSER", symbol: "◉", shadow: "UNAWARENESS", desc: "The ability to stay conscious and understand reality." },
-            PATIENCE: { name: "PATIENCE", type: "LESSER", symbol: "⌁", shadow: "IMPATIENCE", desc: "Growth takes time and endurance." },
-            COURAGE: { name: "COURAGE", type: "LESSER", symbol: "△", shadow: "COWARDICE", desc: "The will to move forward despite fear." },
-            UNITY: { name: "UNITY", type: "LESSER", symbol: "⟡", shadow: "DIVISION", desc: "The bond that turns individuals into something greater." }
-        };
-
-        const SHADOWS = {
-            BLINDNESS: { name: "BLINDNESS", symbol: "◆", desc: "The inability to see a direction, even when the path is right before you." },
-            INDISCIPLINE: { name: "INDISCIPLINE", symbol: "◈", desc: "The refusal to improve, especially when nobody is watching." },
-            BETRAYAL: { name: "BETRAYAL", symbol: "⟁", desc: "The choice to abandon others when loyalty becomes difficult." },
-            ARROGANCE: { name: "ARROGANCE", symbol: "↓", desc: "The belief that there is nothing left to learn and no one worth surpassing." },
-            DESPAIR: { name: "DESPAIR", symbol: "⟲", desc: "The surrender to failure, believing there is no reason to rise again." },
-            HOPELESSNESS: { name: "HOPELESSNESS", symbol: "✧", desc: "The loss of light when difficult times become impossible to endure." },
-            UNAWARENESS: { name: "UNAWARENESS", symbol: "◯", desc: "The inability to recognize reality, even when it stands directly before you." },
-            IMPATIENCE: { name: "IMPATIENCE", symbol: "⚡", desc: "The refusal to wait, allowing haste to destroy what time was meant to build." },
-            COWARDICE: { name: "COWARDICE", symbol: "▽", desc: "The decision to retreat when fear becomes stronger than the will to move forward." },
-            DIVISION: { name: "DIVISION", symbol: "⟑", desc: "The force that separates individuals until nothing greater can be built together." }
-        };
-
-        const UNSTABLE_MESSAGES = {
-            VISION: "Clear vision without awareness of self yields blindness to immediate realities.",
-            DISCIPLINE: "Rigid structure without adaptability degrades into mechanical indiscipline.",
-            LOYALTY: "Blind devotion without discernment opens the door to devastating betrayal.",
-            AMBITION: "Great ambition burns brightly, but unchecked ambition may distort into arrogance.",
-            RESILIENCE: "Enduring endless hardship without purpose eventually surrenders to despair.",
-            HOPE: "Clinging to empty expectations without action collapses into hopelessness.",
-            AWARENESS: "Overthinking reality without taking action results in cognitive unawareness.",
-            PATIENCE: "Waiting endlessly without active progression decays into hidden impatience.",
-            COURAGE: "Reckless bravery without strategic mind retreats into cowardice under extreme threat.",
-            UNITY: "Forcing alignment without genuine trust ultimately accelerates division."
-        };
-
-        // --- 30 Situational Questions ---
-        const QUESTIONS = [
-            {
-                question: "You encounter a complex task with zero oversight and vague guidelines. How do you proceed?",
-                options: [
-                    { text: "Formulate a long-term strategy immediately to map out where this project should lead.", scores: { VISION: 3, AWARENESS: 1 } },
-                    { text: "Establish a strict daily routine to work on it consistently until complete.", scores: { DISCIPLINE: 3, PATIENCE: 1 } },
-                    { text: "Assemble a team of capable peers to pool talents and divide the labor.", scores: { UNITY: 3, LOYALTY: 1 } },
-                    { text: "Push the project far beyond its initial scope to showcase exceptional results.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Adapt as problems arrive, keeping faith that progress will unfold naturally.", scores: { HOPE: 2, RESILIENCE: 2 } }
-                ]
-            },
-            {
-                question: "A major failure halts your team's progress. Expectations were high, but the result was disastrous.",
-                options: [
-                    { text: "Analyze the root cause objectively to ensure the mistake is never repeated.", scores: { AWARENESS: 3, VISION: 1 } },
-                    { text: "Refuse to give up; immediately organize a recovery plan and try again.", scores: { RESILIENCE: 3, COURAGE: 1 } },
-                    { text: "Reassure your allies and remain by their side despite the loss.", scores: { LOYALTY: 3, HOPE: 1 } },
-                    { text: "Blame the current framework and strive harder to independently master the task.", scores: { AMBITION: 2, DESPAIR: 1 } },
-                    { text: "Accept the temporary setback calmly and wait for the right moment to retry.", scores: { PATIENCE: 3, HOPELESSNESS: 1 } }
-                ]
-            },
-            {
-                question: "You notice an ally making a decision that will harm their standing in the long run.",
-                options: [
-                    { text: "Confront them directly with harsh facts to force situational clarity.", scores: { AWARENESS: 2, COURAGE: 2 } },
-                    { text: "Stand by them regardless of their choices, offering unwavering support.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
-                    { text: "Privately explain the long-term consequences they are failing to see.", scores: { VISION: 3, PATIENCE: 1 } },
-                    { text: "Intervene and take control of the situation to prevent damage.", scores: { AMBITION: 2, ARROGANCE: 1 } },
-                    { text: "Guide them gently toward alternative choices through shared discussion.", scores: { UNITY: 2, PATIENCE: 2 } }
-                ]
-            },
-            {
-                question: "You are offered a shortcut that guarantees personal success but bypasses the necessary learning process.",
-                options: [
-                    { text: "Reject it entirely; growth requires rigorous effort and self-control.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
-                    { text: "Decline it because true success must be shared and built with others.", scores: { UNITY: 2, LOYALTY: 2 } },
-                    { text: "Take it to accelerate your goals; ultimate outcome matters most.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Evaluate whether taking it compromises your core long-term vision.", scores: { VISION: 2, AWARENESS: 2 } },
-                    { text: "Politely pass, willing to wait as long as needed to succeed legitimately.", scores: { PATIENCE: 3, IMPATIENCE: 1 } }
-                ]
-            },
-            {
-                question: "In a chaotic situation where panic is spreading, what is your default reaction?",
-                options: [
-                    { text: "Step forward immediately to direct others despite personal fear.", scores: { COURAGE: 3, COWARDICE: 1 } },
-                    { text: "Observe the environment silently to calculate the safest path forward.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
-                    { text: "Keep moral spirits high by reminding everyone that survival is possible.", scores: { HOPE: 3, RESILIENCE: 1 } },
-                    { text: "Maintain strict personal composure and follow established protocols.", scores: { DISCIPLINE: 3, PATIENCE: 1 } },
-                    { text: "Gather scattered individuals into a cohesive group to protect each other.", scores: { UNITY: 3, DIVISION: 1 } }
-                ]
-            },
-            {
-                question: "How do you view your own limits?",
-                options: [
-                    { text: "Boundaries to be dismantled and surpassed through sheer willpower.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Indicators highlighting areas that demand methodical, daily training.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
-                    { text: "Temporary hurdles that time and continuous endurance will break.", scores: { PATIENCE: 2, RESILIENCE: 2 } },
-                    { text: "Realities to accept so I can focus on guiding others effectively.", scores: { VISION: 2, UNITY: 2 } },
-                    { text: "Challenges that reveal true character when faced with bravery.", scores: { COURAGE: 3, HOPE: 1 } }
-                ]
-            },
-            {
-                question: "When working in a team, what role do you naturally fill?",
-                options: [
-                    { text: "The strategist who foresees future obstacles and defines objectives.", scores: { VISION: 3, AWARENESS: 1 } },
-                    { text: "The unyielding backbone who keeps working when others slow down.", scores: { DISCIPLINE: 2, RESILIENCE: 2 } },
-                    { text: "The glue that maintains group harmony and resolves inner tension.", scores: { UNITY: 3, LOYALTY: 1 } },
-                    { text: "The driving engine pushing the group toward higher targets.", scores: { AMBITION: 3, IMPATIENCE: 1 } },
-                    { text: "The reliable defender who protects colleagues in times of crisis.", scores: { LOYALTY: 3, COURAGE: 1 } }
-                ]
-            },
-            {
-                question: "You receive harsh, public criticism regarding your recent performance.",
-                options: [
-                    { text: "Filter out emotional noise to extract actionable truth for self-improvement.", scores: { AWARENESS: 3, DISCIPLINE: 1 } },
-                    { text: "Absorb the hit silently and use it as motivation to bounce back stronger.", scores: { RESILIENCE: 3, DESPAIR: 1 } },
-                    { text: "Stand firm in your convictions if your actions align with long-term goals.", scores: { VISION: 2, COURAGE: 2 } },
-                    { text: "Vow to eclipse all critics by achieving undeniable dominance.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Maintain optimism, trusting your value isn't diminished by criticism.", scores: { HOPE: 3, HOPELESSNESS: 1 } }
-                ]
-            },
-            {
-                question: "A long-term effort you invested months into yields very little initial result.",
-                options: [
-                    { text: "Remain steadfast; true growth requires patience and deep roots.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
-                    { text: "Re-evaluate the operational plan to see where foresight was lacking.", scores: { VISION: 3, AWARENESS: 1 } },
-                    { text: "Redouble effort immediately; failure is merely an incomplete process.", scores: { RESILIENCE: 3, DISCIPLINE: 1 } },
-                    { text: "Pivot aggressively to a new method to secure rapid achievement.", scores: { AMBITION: 2, IMPATIENCE: 2 } },
-                    { text: "Seek counsel from trusted allies to rebuild momentum together.", scores: { UNITY: 2, LOYALTY: 2 } }
-                ]
-            },
-            {
-                question: "An opportunity arises that benefits you greatly, but requires abandoning your current group.",
-                options: [
-                    { text: "Refuse the offer; group solidarity overrides individual gain.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
-                    { text: "Accept it if it aligns with your ultimate destination and evolution.", scores: { AMBITION: 3, BETRAYAL: 1 } },
-                    { text: "Negotiate terms that allow the opportunity to benefit your entire group.", scores: { UNITY: 3, VISION: 1 } },
-                    { text: "Carefully analyze if this offer is a trap or genuine progress.", scores: { AWARENESS: 3, BLINDNESS: 1 } },
-                    { text: "Stay, believing that long-term perseverance where you are brings true success.", scores: { PATIENCE: 2, RESILIENCE: 2 } }
-                ]
-            },
-            {
-                question: "What drives you forward when exhaustion sets in?",
-                options: [
-                    { text: "An unshakeable vision of the destination I must reach.", scores: { VISION: 3, HOPE: 1 } },
-                    { text: "Internal pride in maintaining duty regardless of physical state.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
-                    { text: "The knowledge that people depend on me to hold the line.", scores: { LOYALTY: 3, RESILIENCE: 1 } },
-                    { text: "The refusal to let fatigue prove my limitations.", scores: { AMBITION: 2, RESILIENCE: 2 } },
-                    { text: "Belief that the current suffering is temporary and leads to light.", scores: { HOPE: 3, DESPAIR: 1 } }
-                ]
-            },
-            {
-                question: "How do you respond when faced with a risk that could ruin your current standing?",
-                options: [
-                    { text: "Step into the danger resolutely if the cause is worth the hazard.", scores: { COURAGE: 3, COWARDICE: 1 } },
-                    { text: "Calculate the exact probability of success before taking a step.", scores: { AWARENESS: 3, BLINDNESS: 1 } },
-                    { text: "Avoid unnecessary risk; steady, disciplined progress is superior.", scores: { DISCIPLINE: 2, PATIENCE: 2 } },
-                    { text: "Take the risk if it promises a monumental leap in power or position.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Share the burden of risk with trusted partners to mitigate failure.", scores: { UNITY: 2, LOYALTY: 2 } }
-                ]
-            },
-            {
-                question: "You witness internal conflict destroying a community you care about.",
-                options: [
-                    { text: "Act as a neutral bridge to restore trust and cohesion.", scores: { UNITY: 3, DIVISION: 1 } },
-                    { text: "Enforce strict boundaries and rules to prevent further decay.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
-                    { text: "Remind everyone of the shared long-term goal that binds them.", scores: { VISION: 2, HOPE: 2 } },
-                    { text: "Protect your closest allies and let the unstable elements collapse.", scores: { LOYALTY: 2, BETRAYAL: 1 } },
-                    { text: "Face the instigators directly and challenge their actions.", scores: { COURAGE: 3, DIVISION: 1 } }
-                ]
-            },
-            {
-                question: "What is your greatest fear during a major endeavor?",
-                options: [
-                    { text: "Losing foresight and wandering aimlessly without purpose.", scores: { VISION: 2, BLINDNESS: 2 } },
-                    { text: "Losing self-control and slipping into laziness or stagnation.", scores: { DISCIPLINE: 2, INDISCIPLINE: 2 } },
-                    { text: "Failing the people who placed their trust in my hands.", scores: { LOYALTY: 2, BETRAYAL: 2 } },
-                    { text: "Settling for mediocrity and failing to fulfill my potential.", scores: { AMBITION: 2, ARROGANCE: 2 } },
-                    { text: "Giving up entirely when faced with insurmountable odds.", scores: { RESILIENCE: 2, DESPAIR: 2 } }
-                ]
-            },
-            {
-                question: "How do you handle a scenario where you are completely outmatched?",
-                options: [
-                    { text: "Endure the pressure, adapt continuously, and outlast the opponent.", scores: { RESILIENCE: 3, PATIENCE: 1 } },
-                    { text: "Study the opponent's patterns to find a subtle tactical flaw.", scores: { AWARENESS: 3, VISION: 1 } },
-                    { text: "Combine forces with others to equalize the imbalance.", scores: { UNITY: 3, COURAGE: 1 } },
-                    { text: "Fight with absolute resolve regardless of the probable outcome.", scores: { COURAGE: 3, HOPE: 1 } },
-                    { text: "Retreat temporarily to disciplined training until I surpass them.", scores: { DISCIPLINE: 2, AMBITION: 2 } }
-                ]
-            },
-            {
-                question: "When making a crucial decision, what do you rely on most?",
-                options: [
-                    { text: "Clear perception of current facts, free from emotional bias.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
-                    { text: "Long-range projection of where each choice leads in the future.", scores: { VISION: 3, BLINDNESS: 1 } },
-                    { text: "Commitment to duty and established moral commitments.", scores: { DISCIPLINE: 2, LOYALTY: 2 } },
-                    { text: "The potential for maximum advancement and growth.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "An unyielding belief in a positive outcome.", scores: { HOPE: 3, HOPELESSNESS: 1 } }
-                ]
-            },
-            {
-                question: "Someone in your team is struggling to keep up with standard requirements.",
-                options: [
-                    { text: "Patiently mentor them until they reach the required standard.", scores: { PATIENCE: 3, LOYALTY: 1 } },
-                    { text: "Implement a rigorous daily training regime for them to follow.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
-                    { text: "Encourage them, fostering faith in their hidden capabilities.", scores: { HOPE: 3, RESILIENCE: 1 } },
-                    { text: "Reassign them to a role that better fits the grand strategy.", scores: { VISION: 2, UNITY: 2 } },
-                    { text: "Replace them if they threaten the ultimate goal's achievement.", scores: { AMBITION: 2, DIVISION: 1 } }
-                ]
-            },
-            {
-                question: "You find yourself trapped in a tedious, repetitive environment with slow progress.",
-                options: [
-                    { text: "Maintain strict personal routine, mastering every repetitive task.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
-                    { text: "Wait with quiet endurance, knowing cycles inevitably change.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
-                    { text: "Focus on the ultimate distant goal to keep my mind sharp.", scores: { VISION: 2, HOPE: 2 } },
-                    { text: "Disrupt the status quo to force rapid movement and change.", scores: { AMBITION: 2, COURAGE: 2 } },
-                    { text: "Build strong bonds with fellow captives to make time meaningful.", scores: { UNITY: 3, LOYALTY: 1 } }
-                ]
-            },
-            {
-                question: "A sudden betrayal from an ally destabilizes your plan. What is your immediate focus?",
-                options: [
-                    { text: "Absorb the blow, stabilize the damage, and keep moving forward.", scores: { RESILIENCE: 3, DESPAIR: 1 } },
-                    { text: "Understand why it happened and reassess my situational awareness.", scores: { AWARENESS: 3, BLINDNESS: 1 } },
-                    { text: "Double down on protecting and supporting my remaining true allies.", scores: { LOYALTY: 3, UNITY: 1 } },
-                    { text: "Overcome the setback rapidly to prove the betrayal was meaningless.", scores: { AMBITION: 2, COURAGE: 2 } },
-                    { text: "Refuse to let bitterness destroy my faith in future alliances.", scores: { HOPE: 3, BETRAYAL: 1 } }
-                ]
-            },
-            {
-                question: "How do you measure true victory?",
-                options: [
-                    { text: "Reaching the absolute pinnacle of capability and achievement.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Fulfilling the grand trajectory that was mapped out from the start.", scores: { VISION: 3, BLINDNESS: 1 } },
-                    { text: "Surviving catastrophe with core values and allies intact.", scores: { RESILIENCE: 2, LOYALTY: 2 } },
-                    { text: "Uniting disparate forces into an enduring, harmonious whole.", scores: { UNITY: 3, DIVISION: 1 } },
-                    { text: "Executing duty with flawless self-mastery and precision.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } }
-                ]
-            },
-            {
-                question: "You are tasked with leading a group into unknown and hazardous territory.",
-                options: [
-                    { text: "March at the front, taking the first risks to inspire bravery.", scores: { COURAGE: 3, COWARDICE: 1 } },
-                    { text: "Scan every detail of the environment to avoid unseen traps.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
-                    { text: "Chart the route carefully using long-range environmental signs.", scores: { VISION: 3, BLINDNESS: 1 } },
-                    { text: "Keep the group tied closely together so no one gets lost.", scores: { UNITY: 3, LOYALTY: 1 } },
-                    { text: "Instill absolute belief that destination and safety will be reached.", scores: { HOPE: 3, HOPELESSNESS: 1 } }
-                ]
-            },
-            {
-                question: "When you feel temptation to abandon your duties, what keeps you grounded?",
-                options: [
-                    { text: "Self-imposed code and habits built through daily practice.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
-                    { text: "Honor and obligation to the people who rely on my presence.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
-                    { text: "Clear perception of the negative consequences of slipping.", scores: { AWARENESS: 2, VISION: 2 } },
-                    { text: "Refusal to let temporary weakness derail my personal growth.", scores: { AMBITION: 2, RESILIENCE: 2 } },
-                    { text: "Understanding that endurance now yields fruits in due time.", scores: { PATIENCE: 3, IMPATIENCE: 1 } }
-                ]
-            },
-            {
-                question: "What is your stance on power and influence?",
-                options: [
-                    { text: "Essential tools required to surpass limits and shape reality.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "A heavy responsibility meant solely to protect and unite others.", scores: { LOYALTY: 2, UNITY: 2 } },
-                    { text: "A natural result of consistent discipline and self-mastery.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
-                    { text: "Dangerous unless guided by clear long-term foresight.", scores: { VISION: 3, BLINDNESS: 1 } },
-                    { text: "Secondary to maintaining inner hope and personal integrity.", scores: { HOPE: 2, RESILIENCE: 2 } }
-                ]
-            },
-            {
-                question: "You are thrust into a fierce competition where only one person can succeed.",
-                options: [
-                    { text: "Focus entirely on maximizing my own performance to conquer.", scores: { AMBITION: 3, ARROGANCE: 1 } },
-                    { text: "Execute my trained routine with calm, methodical focus.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
-                    { text: "Engage with daring strategies that put everything on the line.", scores: { COURAGE: 3, IMPATIENCE: 1 } },
-                    { text: "Analyze my competitors' moves to outmaneuver their choices.", scores: { AWARENESS: 3, VISION: 1 } },
-                    { text: "Compete honorably, maintaining respect for all participants.", scores: { LOYALTY: 2, PATIENCE: 2 } }
-                ]
-            },
-            {
-                question: "A major change disrupts all your established plans for the future.",
-                options: [
-                    { text: "Adapt instantly, formulating a revised trajectory forward.", scores: { VISION: 3, RESILIENCE: 1 } },
-                    { text: "Hold your ground, enduring the chaos until stability returns.", scores: { RESILIENCE: 3, PATIENCE: 1 } },
-                    { text: "Observe the shifting landscape carefully before committing.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
-                    { text: "Rally your community to navigate the transformation together.", scores: { UNITY: 3, LOYALTY: 1 } },
-                    { text: "View the disruption as a fresh opportunity to push boundaries.", scores: { AMBITION: 2, COURAGE: 2 } }
-                ]
-            },
-            {
-                question: "How do you treat your personal weaknesses?",
-                options: [
-                    { text: "Acknowledge them clearly without self-deception or denial.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
-                    { text: "Target them through rigorous, uncomfortable practice.", scores: { DISCIPLINE: 3, INDISCIPLINE: 1 } },
-                    { text: "Accept that growth takes time and work patiently to fix them.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
-                    { text: "Compensate for them by surrounding myself with strong allies.", scores: { UNITY: 3, LOYALTY: 1 } },
-                    { text: "Refuse to let them limit my drive toward grand achievements.", scores: { AMBITION: 2, RESILIENCE: 2 } }
-                ]
-            },
-            {
-                question: "When facing an enemy or obstacle that instills deep fear:",
-                options: [
-                    { text: "Step forward regardless, using action to burn away fear.", scores: { COURAGE: 3, COWARDICE: 1 } },
-                    { text: "Rely on ingrained discipline so habits take over automatically.", scores: { DISCIPLINE: 3, AWARENESS: 1 } },
-                    { text: "Hold onto the light of future victory to keep moving.", scores: { HOPE: 3, HOPELESSNESS: 1 } },
-                    { text: "Stand shoulder-to-shoulder with allies; fear shrinks in unity.", scores: { UNITY: 2, LOYALTY: 2 } },
-                    { text: "Endure the terror, knowing no state of fear lasts forever.", scores: { RESILIENCE: 2, PATIENCE: 2 } }
-                ]
-            },
-            {
-                question: "What is the most vital element in maintaining long-term relationships?",
-                options: [
-                    { text: "Unbreakable loyalty through both prosperity and hardship.", scores: { LOYALTY: 3, BETRAYAL: 1 } },
-                    { text: "Shared long-term direction and aligned core values.", scores: { VISION: 2, UNITY: 2 } },
-                    { text: "Patience with each other's flaws and slow growth.", scores: { PATIENCE: 3, IMPATIENCE: 1 } },
-                    { text: "Deep awareness and understanding of each other's reality.", scores: { AWARENESS: 3, UNAWARENESS: 1 } },
-                    { text: "Mutual encouragement to push each other to evolve.", scores: { AMBITION: 2, HOPE: 2 } }
-                ]
-            },
-            {
-                question: "You are standing at a crossroads with no clear safe choice.",
-                options: [
-                    { text: "Choose the path that demands maximum courage and risk.", scores: { COURAGE: 3, COWARDICE: 1 } },
-                    { text: "Project where each path leads and select the strategic option.", scores: { VISION: 3, BLINDNESS: 1 } },
-                    { text: "Trust your internal resilience to handle whichever path yields hardship.", scores: { RESILIENCE: 3, DESPAIR: 1 } },
-                    { text: "Consult with your group to ensure a unified choice.", scores: { UNITY: 3, DIVISION: 1 } },
-                    { text: "Pause calmly, gathering full situational awareness before acting.", scores: { AWARENESS: 2, PATIENCE: 2 } }
-                ]
-            },
-            {
-                question: "Looking back at your journey through the BLDS assessment, what essence drove your choices?",
-                options: [
-                    { text: "The desire to chart clear horizons and see what others miss.", scores: { VISION: 3, AWARENESS: 1 } },
-                    { text: "The relentless pursuit of growth, mastery, and higher peaks.", scores: { AMBITION: 2, DISCIPLINE: 2 } },
-                    { text: "Unwavering commitment to protect and stand alongside others.", scores: { LOYALTY: 2, UNITY: 2 } },
-                    { text: "The strength to endure, adapt, and rise despite all fires.", scores: { RESILIENCE: 2, COURAGE: 2 } },
-                    { text: "Quiet faith, patience, and clear awareness of inner truth.", scores: { HOPE: 2, PATIENCE: 2 } }
-                ]
-            }
-        ];
-
-        // --- STATE MANAGEMENT ---
-        let AppState = {
-            participantId: null,
-            displayName: "",
-            normalizedName: "",
-            currentQuestionIndex: 0,
-            answers: [],
-            selectedOptionIndex: null,
-            flameScores: {},
-            shadowScores: {},
-            results: null
-        };
-
-        // --- INITIALIZATION ---
-        document.addEventListener("DOMContentLoaded", () => {
-            initScores();
-            loadProgress();
+      QUESTIONS_LIST.forEach(q => {
+        const traitMax = {};
+        const traitMin = {};
+        q.options.forEach(opt => {
+          if (opt.scores) {
+            Object.entries(opt.scores).forEach(([traitId, w]) => {
+              traitMax[traitId] = Math.max(traitMax[traitId] || 0, w);
+              traitMin[traitId] = Math.min(traitMin[traitId] || 0, w);
+            });
+          }
         });
+        Object.entries(traitMax).forEach(([tId, maxW]) => {
+          if (maxScores[tId] !== undefined) maxScores[tId] += maxW;
+        });
+        Object.entries(traitMin).forEach(([tId, minW]) => {
+          if (minScores[tId] !== undefined) minScores[tId] += minW;
+        });
+      });
 
-        function initScores() {
-            Object.keys(FLAMES).forEach(key => AppState.flameScores[key] = 0);
-            Object.keys(SHADOWS).forEach(key => AppState.shadowScores[key] = 0);
+      const percentages = {};
+      TRAITS_CATALOG.forEach(t => {
+        const raw = rawScores[t.id] || 0;
+        const max = maxScores[t.id] || 1;
+        const min = minScores[t.id] || 0;
+        let pct = 0;
+        if (max > min) {
+          pct = 100 * (raw - min) / (max - min);
         }
+        percentages[t.id] = Math.min(100, Math.max(0, Math.round(pct)));
+      });
 
-        // --- NAVIGATION & UI VIEWS ---
-        function switchView(viewId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            setTimeout(() => {
-                const target = document.getElementById(viewId);
-                if (target) target.classList.add('active');
-            }, 50);
-        }
+      return { rawScores, percentages };
+    }
 
-        function showToast(message, type = "info") {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<span>◈</span> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
+    // ==========================================
+    // STATE & ROUTING MANAGEMENT (SPA)
+    // ==========================================
+    let currentRoute = window.location.hash || '#/';
+    let currentUser = null;
 
-        // --- REGISTRATION & FIREBASE REST API ---
-        function normalizeName(name) {
-            return name.trim().toLowerCase().replace(/\s+/g, ' ');
-        }
+    // Toast Helper
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-medium shadow-lg backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 ${
+        type === 'success' ? 'bg-darkSurface/90 border-gold/40 text-gold glow-box' :
+        type === 'error' ? 'bg-darkSurface/90 border-crimson/40 text-crimson' :
+        'bg-darkSurface/90 border-arcaneBlue/40 text-arcaneBlue'
+      }`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
 
-        async function handleNameCheck() {
-            const input = document.getElementById('participant-name');
-            const rawName = input.value.trim();
-            const statusDiv = document.getElementById('name-status');
-            const btn = document.getElementById('btn-check-name');
+    // Escape HTML untuk cegah XSS
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
 
-            if (!rawName) {
-                showToast("IDENTITY REQUIRED", "error");
-                statusDiv.className = "status-msg error";
-                statusDiv.innerText = "⚠ IDENTITY REQUIRED";
-                return;
-            }
+    // ==========================================
+    // RENDER FOOTER KOMPONEN RESMI
+    // ==========================================
+    function renderFooter() {
+      return `
+        <footer class="w-full bg-darkSurface/90 border-t border-gold/20 py-10 px-6 mt-auto">
+          <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div>
+              <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                <span class="text-gold font-cinzel font-bold tracking-widest text-sm text-glow-gold">BLACKLIGHTDOMINIONS</span>
+                <span class="text-mutedText">•</span>
+                <span class="text-primaryText font-semibold text-xs">BLDS FLAMES</span>
+              </div>
+              <p class="text-[11px] text-mutedText max-w-md">
+                A BLACKLIGHTDOMINIONS Experience. Tes refleksi kepribadian fiktif untuk Dominioners. Bukan tes psikologi tervalidasi atau diagnosis medis.
+              </p>
+              <p class="text-[10px] text-mutedText mt-1">
+                © 2026 BLACKLIGHTDOMINIONS. All rights reserved.
+              </p>
+            </div>
 
-            const norm = normalizeName(rawName);
-            btn.disabled = true;
-            statusDiv.className = "status-msg";
-            statusDiv.innerText = "Checking Core records...";
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+              <a
+                href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&ilr=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-obsidian/80 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-500/10 hover:border-emerald-500/60 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+              >
+                <svg class="w-4 h-4 fill-emerald-400" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.612-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                <span>WA Community</span>
+              </a>
 
-            try {
-                // Query nameRegistry via REST API
-                const response = await fetch(`${DB_URL}nameRegistry/${encodeURIComponent(norm)}.json`);
-                if (!response.ok) throw new Error("Network response error");
-                
-                const existingEntry = await response.json();
+              <a
+                href="https://discord.gg/r4dM4QFteV"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-obsidian/80 border border-indigo-500/30 text-indigo-400 text-xs font-medium hover:bg-indigo-500/10 hover:border-indigo-500/60 transition-all shadow-[0_0_15px_rgba(99,102,241,0.1)]"
+              >
+                <svg class="w-4 h-4 fill-indigo-400" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                <span>Discord Community</span>
+              </a>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
 
-                if (existingEntry) {
-                    statusDiv.className = "status-msg warning";
-                    statusDiv.innerText = "⚠ RESONANCE ID ALREADY REGISTERED";
-                    showToast("RESONANCE ID ALREADY REGISTERED", "warning");
-                    btn.disabled = false;
-                } else {
-                    statusDiv.className = "status-msg success";
-                    statusDiv.innerText = "✓ RESONANCE ID AVAILABLE";
-                    
-                    AppState.displayName = rawName;
-                    AppState.normalizedName = norm;
-                    AppState.participantId = "SUB-" + Math.floor(100000 + Math.random() * 900000);
-                    
-                    setTimeout(() => {
-                        btn.disabled = false;
-                        startAssessment();
-                    }, 800);
-                }
-            } catch (err) {
-                console.error(err);
-                statusDiv.className = "status-msg warning";
-                statusDiv.innerText = "⚠ CORE CONNECTION LOST - Proceeding Offline";
-                showToast("CORE CONNECTION LOST. OFFLINE MODE", "warning");
-                
-                // Allow offline proceed
-                AppState.displayName = rawName;
-                AppState.normalizedName = norm;
-                AppState.participantId = "OFF-" + Math.floor(100000 + Math.random() * 900000);
-                
-                setTimeout(() => {
-                    btn.disabled = false;
-                    startAssessment();
-                }, 1000);
-            }
-        }
+    function renderNavbar() {
+      return `
+        <header class="w-full border-b border-gold/15 bg-obsidian/90 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+          <a href="#/" class="flex items-center gap-3 group">
+            <div class="relative w-10 h-10 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS FLAMES" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-xs border border-gold/40 rounded-lg w-full h-full bg-darkSurface">BLDS</div>
+            </div>
+            <div>
+              <span class="font-cinzel font-bold tracking-widest text-gold text-sm block text-glow-gold">BLDS FLAMES</span>
+              <span class="text-[9px] text-mutedText tracking-wider uppercase block">Blacklightdominions</span>
+            </div>
+          </a>
 
-        // --- ASSESSMENT CORE LOGIC ---
-        function startAssessment() {
-            if (AppState.answers.length === 0) {
-                AppState.currentQuestionIndex = 0;
-            }
-            saveProgress();
-            switchView('view-assessment');
-            renderQuestion();
-        }
+          <div class="flex items-center gap-3">
+            <a href="#/start" class="px-4 py-2 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-semibold tracking-wide hover:bg-gold/20 transition-all glow-btn">
+              Mulai Tes
+            </a>
+            <a href="#/admin/login" class="text-xs text-mutedText hover:text-secondaryText transition-colors px-2 py-1">
+              Admin
+            </a>
+          </div>
+        </header>
+      `;
+    }
 
-        function renderQuestion() {
-            const qIndex = AppState.currentQuestionIndex;
-            const q = QUESTIONS[qIndex];
-            
-            document.getElementById('question-tracker').innerText = `QUESTION ${String(qIndex + 1).padStart(2, '0')} / 30`;
-            document.getElementById('progress-bar').style.width = `${((qIndex + 1) / 30) * 100}%`;
-            document.getElementById('question-text').innerText = q.question;
+    // ==========================================
+    // RENDER HALAMAN: LANDING PAGE (#/)
+    // ==========================================
+    function renderLandingPage() {
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center">
+          <!-- Hero Section -->
+          <section class="w-full max-w-5xl mx-auto px-6 py-20 text-center flex flex-col items-center">
+            <div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-2xl border border-gold/40 rounded-2xl w-full h-full bg-darkSurface glow-box">BLDS</div>
+            </div>
 
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-medium mb-6">
+              <span>BLACKLIGHTDOMINIONS • Mystical Personality Archive</span>
+            </div>
 
-            const prefixes = ['A', 'B', 'C', 'D', 'E'];
-            AppState.selectedOptionIndex = AppState.answers[qIndex] !== undefined ? AppState.answers[qIndex] : null;
+            <h1 class="text-4xl md:text-6xl font-cinzel font-bold tracking-tight text-primaryText mb-6 text-glow-gold">
+              Discover the Flames Within
+            </h1>
 
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `option-btn ${AppState.selectedOptionIndex === idx ? 'selected' : ''}`;
-                btn.onclick = () => selectOption(idx);
-                btn.innerHTML = `<span class="option-prefix">[${prefixes[idx]}]</span> <span>${opt.text}</span>`;
-                container.appendChild(btn);
-            });
+            <p class="text-base md:text-lg text-secondaryText max-w-2xl mb-10 leading-relaxed font-sans">
+              Masuki arsip rahasia BLACKLIGHTDOMINIONS. Temukan refleksi kepribadian mendalam melalui 12 Flames dan 12 Shadow Flames yang membentuk identitas Dominioners.
+            </p>
 
-            document.getElementById('btn-next').disabled = AppState.selectedOptionIndex === null;
-        }
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+              <a href="#/start" class="px-8 py-4 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-sm tracking-wider hover:bg-brightGold transition-all flex items-center gap-3 glow-btn">
+                <span>Mulai Tes Sekarang</span>
+                <svg class="w-4 h-4 fill-obsidian" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
+              </a>
+            </div>
+          </section>
 
-        function selectOption(index) {
-            AppState.selectedOptionIndex = index;
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach((btn, idx) => {
-                if (idx === index) btn.classList.add('selected');
-                else btn.classList.remove('selected');
-            });
-            document.getElementById('btn-next').disabled = false;
-        }
+          <!-- Preview Flames & Shadow Section -->
+          <section class="w-full max-w-6xl mx-auto px-6 py-16 border-t border-gold/15">
+            <div class="text-center mb-12">
+              <h2 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Dimensi Refleksi Diri</h2>
+              <p class="text-xs text-mutedText tracking-wider uppercase">12 Pasangan Sifat Utama • Refleksi Konstruktif & Tantangan</p>
+            </div>
 
-        function handleNextQuestion() {
-            if (AppState.selectedOptionIndex === null) return;
-
-            AppState.answers[AppState.currentQuestionIndex] = AppState.selectedOptionIndex;
-            saveProgress();
-
-            if (AppState.currentQuestionIndex < QUESTIONS.length - 1) {
-                AppState.currentQuestionIndex++;
-                renderQuestion();
-            } else {
-                runCalibrationSequence();
-            }
-        }
-
-        // --- CALIBRATION & SCORING ---
-        function runCalibrationSequence() {
-            switchView('view-calibration');
-            const statuses = [
-                "CALIBRATING...",
-                "READING FRAGMENT...",
-                "ANALYZING RESONANCE...",
-                "CORE SIGNAL DETECTED",
-                "RESONANCE ESTABLISHED"
-            ];
-            
-            let step = 0;
-            const interval = setInterval(() => {
-                step++;
-                if (step < statuses.length) {
-                    document.getElementById('calibration-status').innerText = statuses[step];
-                } else {
-                    clearInterval(interval);
-                    calculateAndDisplayResults();
-                }
-            }, 800);
-        }
-
-        function calculateAndDisplayResults() {
-            initScores();
-
-            // Calculate raw scores
-            AppState.answers.forEach((ansIndex, qIndex) => {
-                const option = QUESTIONS[qIndex].options[ansIndex];
-                if (option && option.scores) {
-                    Object.keys(option.scores).forEach(key => {
-                        if (FLAMES[key]) {
-                            AppState.flameScores[key] += option.scores[key];
-                        }
-                        if (SHADOWS[key]) {
-                            AppState.shadowScores[key] += option.scores[key];
-                        }
-                    });
-                }
-            });
-
-            // Derive dependent shadow points if not directly assigned
-            Object.keys(FLAMES).forEach(flameKey => {
-                const shadowKey = FLAMES[flameKey].shadow;
-                if (AppState.shadowScores[shadowKey] === 0) {
-                    AppState.shadowScores[shadowKey] = Math.round(AppState.flameScores[flameKey] * 0.4);
-                }
-            });
-
-            // Normalization (0.0 to 10.0)
-            const normalizedFlames = {};
-            const normalizedShadows = {};
-
-            Object.keys(FLAMES).forEach(k => {
-                let score = (AppState.flameScores[k] / 18) * 10;
-                normalizedFlames[k] = Math.min(10.0, Math.max(0.5, parseFloat(score.toFixed(1))));
-            });
-
-            Object.keys(SHADOWS).forEach(k => {
-                let score = (AppState.shadowScores[k] / 12) * 10;
-                normalizedShadows[k] = Math.min(10.0, Math.max(0.2, parseFloat(score.toFixed(1))));
-            });
-
-            // Rank Flames
-            const sortedFlames = Object.keys(normalizedFlames)
-                .map(k => ({ key: k, score: normalizedFlames[k], ...FLAMES[k] }))
-                .sort((a, b) => b.score - a.score);
-
-            // Rank Shadows
-            const sortedShadows = Object.keys(normalizedShadows)
-                .map(k => ({ key: k, score: normalizedShadows[k], ...SHADOWS[k] }))
-                .sort((a, b) => b.score - a.score);
-
-            const primaryFlame = sortedFlames[0];
-            const secondaryFlame = sortedFlames[1];
-            const tertiaryFlame = sortedFlames[2];
-            const primaryShadow = sortedShadows[0];
-
-            // Check Unstable Resonance
-            let isUnstable = false;
-            let unstableMessage = "";
-            
-            const assocShadowScore = normalizedShadows[primaryFlame.shadow] || 0;
-            if (primaryFlame.score >= 8.0 && assocShadowScore >= 7.0) {
-                isUnstable = true;
-                unstableMessage = UNSTABLE_MESSAGES[primaryFlame.key] || "High energy resonance distorting near shadow boundaries.";
-            }
-
-            AppState.results = {
-                primaryFlame,
-                secondaryFlame,
-                tertiaryFlame,
-                primaryShadow,
-                allFlames: sortedFlames,
-                allShadows: sortedShadows,
-                isUnstable,
-                unstableMessage
-            };
-
-            // Save to Firebase
-            saveToFirebase();
-
-            // Clear temporary progress
-            clearProgress();
-
-            // Populate Result UI
-            renderResultsUI();
-            switchView('view-result');
-        }
-
-        function getTier(score) {
-            if (score <= 1.9) return "DORMANT";
-            if (score <= 3.9) return "FAINT";
-            if (score <= 5.9) return "RESONANT";
-            if (score <= 7.9) return "STRONG";
-            if (score <= 9.4) return "DOMINANT";
-            return "ASCENDANT";
-        }
-
-        function renderResultsUI() {
-            const res = AppState.results;
-
-            document.getElementById('res-display-name').innerText = AppState.displayName.toUpperCase();
-            document.getElementById('res-participant-id').innerText = `ID: ${AppState.participantId}`;
-
-            // Unstable Resonance Warning
-            const warningEl = document.getElementById('unstable-warning');
-            if (res.isUnstable) {
-                warningEl.style.display = "block";
-                document.getElementById('unstable-text').innerText = res.unstableMessage;
-            } else {
-                warningEl.style.display = "none";
-            }
-
-            // Primary
-            document.getElementById('res-primary-symbol').innerText = res.primaryFlame.symbol;
-            document.getElementById('res-primary-name').innerText = res.primaryFlame.name;
-            document.getElementById('res-primary-score').innerText = `${res.primaryFlame.score.toFixed(1)} / 10`;
-            document.getElementById('res-primary-tier').innerText = getTier(res.primaryFlame.score);
-            document.getElementById('res-primary-desc').innerText = `"${res.primaryFlame.desc}"`;
-
-            // Secondary & Tertiary
-            document.getElementById('res-secondary-name').innerText = `${res.secondaryFlame.symbol} ${res.secondaryFlame.name}`;
-            document.getElementById('res-secondary-score').innerText = `${res.secondaryFlame.score.toFixed(1)} / 10`;
-            document.getElementById('res-secondary-tier').innerText = getTier(res.secondaryFlame.score);
-
-            document.getElementById('res-tertiary-name').innerText = `${res.tertiaryFlame.symbol} ${res.tertiaryFlame.name}`;
-            document.getElementById('res-tertiary-score').innerText = `${res.tertiaryFlame.score.toFixed(1)} / 10`;
-            document.getElementById('res-tertiary-tier').innerText = getTier(res.tertiaryFlame.score);
-
-            // Shadow
-            document.getElementById('res-shadow-name').innerText = `${res.primaryShadow.symbol} ${res.primaryShadow.name}`;
-            document.getElementById('res-shadow-score').innerText = `${res.primaryShadow.score.toFixed(1)} / 10`;
-            document.getElementById('res-shadow-desc').innerText = `"${res.primaryShadow.desc}"`;
-
-            // Full lists
-            renderFlameList('greater-flames-list', res.allFlames.filter(f => f.type === 'GREATER'));
-            renderFlameList('lesser-flames-list', res.allFlames.filter(f => f.type === 'LESSER'));
-            renderFlameList('shadow-flames-list', res.allShadows);
-        }
-
-        function renderFlameList(containerId, list) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            list.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'flame-item';
-                el.innerHTML = `
-                    <div class="flame-info">
-                        <span>${item.symbol} ${item.name}</span>
-                        <span>${item.score.toFixed(1)} / 10</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${FLAMES_LIST.slice(0, 6).map(flame => {
+                const shadow = SHADOWS_LIST.find(s => s.pairId === flame.pairId);
+                return `
+                  <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 flex flex-col justify-between hover:border-gold/50 transition-all glow-box">
+                    <div>
+                      <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-cinzel font-bold text-gold tracking-widest uppercase">${escapeHTML(flame.nameEn)}</span>
+                        <span class="w-2 h-2 rounded-full bg-gold shadow-[0_0_8px_rgba(217,173,85,0.8)]"></span>
+                      </div>
+                      <h3 class="text-sm font-semibold text-primaryText mb-2">${escapeHTML(flame.nameId)}</h3>
+                      <p class="text-xs text-secondaryText mb-4 line-clamp-3">${escapeHTML(flame.description)}</p>
                     </div>
-                    <div class="flame-bar-bg">
-                        <div class="flame-bar-fill" style="width: ${(item.score / 10) * 100}%"></div>
-                    </div>
+                    ${shadow ? `
+                      <div class="pt-3 border-t border-white/5 text-[11px] text-mutedText">
+                        <span class="text-crimson font-medium">Shadow:</span> ${escapeHTML(shadow.nameId)}
+                      </div>
+                    ` : ''}
+                  </div>
                 `;
-                container.appendChild(el);
-            });
+              }).join('')}
+            </div>
+          </section>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    // ==========================================
+    // RENDER HALAMAN: MULAI TES (#/start)
+    // ==========================================
+    let startNameInput = '';
+    function renderStartPage() {
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-12">
+          <div class="w-full max-w-md bg-darkSurface/80 border border-gold/30 rounded-3xl p-8 glow-box flex flex-col items-center text-center">
+            <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-lg border border-gold/40 rounded-xl w-full h-full bg-obsidian">BLDS</div>
+            </div>
+
+            <h1 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Identifikasi Dominioner</h1>
+            <p class="text-xs text-secondaryText mb-8">
+              Masukkan nama atau panggilanmu untuk memulai perjalanan refleksi kepribadian BLDS FLAMES.
+            </p>
+
+            <form id="start-form" class="w-full space-y-4 text-left">
+              <div>
+                <label class="block text-xs font-medium text-mutedText mb-1 uppercase tracking-wider">
+                  Nama / Panggilan
+                </label>
+                <input
+                  type="text"
+                  id="participant-name"
+                  value="${escapeHTML(startNameInput)}"
+                  placeholder="Contoh: Daren Akito"
+                  maxlength="30"
+                  class="w-full bg-obsidian border border-gold/20 rounded-xl px-4 py-3 text-sm text-primaryText focus:outline-none focus:border-gold transition-colors"
+                />
+                <p id="name-error" class="text-xs text-crimson mt-1 hidden"></p>
+              </div>
+
+              <button
+                type="submit"
+                class="w-full py-3.5 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-xs tracking-wider hover:bg-brightGold transition-all flex items-center justify-center gap-2 glow-btn"
+              >
+                <span>Mulai 30 Pertanyaan</span>
+                <svg class="w-4 h-4 fill-obsidian" viewBox="0 0 24 24"><path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z"/></svg>
+              </button>
+            </form>
+
+            <div class="mt-6 flex items-center gap-2 text-[11px] text-mutedText">
+              <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              <span>Data disimpan secara aman untuk laporan kepribadian eksklusif.</span>
+            </div>
+          </div>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    // ==========================================
+    // RENDER HALAMAN: TES (#/test)
+    // ==========================================
+    let currentTestIndex = 0;
+    let userAnswers = {}; // { questionId: optionId }
+    let testParticipant = null;
+
+    function renderTestPage() {
+      if (!testParticipant) {
+        window.location.hash = '#/start';
+        return '';
+      }
+
+      const currentQ = QUESTIONS_LIST[currentTestIndex];
+      const totalQ = QUESTIONS_LIST.length;
+      const progressPct = ((currentTestIndex + 1) / totalQ) * 100;
+      const selectedOpt = userAnswers[currentQ.id];
+
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-10 max-w-3xl mx-auto w-full">
+          <!-- Progress Header -->
+          <div class="w-full mb-8">
+            <div class="flex justify-between items-center text-xs text-mutedText mb-2">
+              <span class="font-semibold text-gold font-cinzel">Pertanyaan ${currentTestIndex + 1} dari ${totalQ}</span>
+              <span>${Math.round(progressPct)}% Selesai</span>
+            </div>
+            <div class="w-full h-1.5 bg-darkSurface rounded-full overflow-hidden border border-gold/20">
+              <div class="h-full bg-gold transition-all duration-300" style="width: ${progressPct}%"></div>
+            </div>
+          </div>
+
+          <!-- Question Card -->
+          <div class="w-full bg-darkSurface/80 border border-gold/30 rounded-3xl p-8 glow-box mb-8">
+            <h2 class="text-lg md:text-xl font-cinzel font-semibold text-primaryText mb-6 leading-relaxed">
+              ${escapeHTML(currentQ.text)}
+            </h2>
+
+            <div class="space-y-3">
+              ${currentQ.options.map(opt => {
+                const isSelected = selectedOpt === opt.id;
+                return `
+                  <button
+                    onclick="window.selectTestOption(${currentQ.id}, '${opt.id}')"
+                    class="w-full text-left p-4 rounded-xl border transition-all flex items-start gap-4 ${
+                      isSelected
+                        ? 'bg-gold/15 border-gold text-brightGold glow-box'
+                        : 'bg-obsidian/60 border-gold/15 text-secondaryText hover:border-gold/40 hover:text-primaryText'
+                    }"
+                  >
+                    <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 border ${
+                      isSelected ? 'bg-gold text-obsidian border-gold' : 'border-gold/30 text-gold'
+                    }">
+                      ${opt.id}
+                    </span>
+                    <span class="text-sm pt-0.5">${escapeHTML(opt.text)}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Navigation Footer -->
+          <div class="w-full flex items-center justify-between">
+            <button
+              onclick="window.prevTestQuestion()"
+              ${currentTestIndex === 0 ? 'disabled' : ''}
+              class="px-5 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                currentTestIndex === 0 ? 'opacity-40 border-white/10 text-mutedText cursor-not-allowed' : 'border-gold/30 text-gold hover:bg-gold/10'
+              }"
+            >
+              <span>Sebelumnya</span>
+            </button>
+
+            ${currentTestIndex < totalQ - 1 ? `
+              <button
+                onclick="window.nextTestQuestion()"
+                ${!selectedOpt ? 'disabled' : ''}
+                class="px-6 py-2.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn ${
+                  !selectedOpt ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'bg-gold text-obsidian hover:bg-brightGold'
+                }"
+              >
+                <span>Lanjut</span>
+              </button>
+            ` : `
+              <button
+                onclick="window.goToReview()"
+                ${!selectedOpt ? 'disabled' : ''}
+                class="px-8 py-3 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn ${
+                  !selectedOpt ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'bg-gold text-obsidian hover:bg-brightGold'
+                }"
+              >
+                <span>Review & Selesai</span>
+              </button>
+            `}
+          </div>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    // Global handlers untuk tes
+    window.selectTestOption = function(qId, optId) {
+      userAnswers[qId] = optId;
+      // Re-render untuk update UI
+      const appDiv = document.getElementById('app');
+      appDiv.innerHTML = renderTestPage();
+    };
+
+    window.nextTestQuestion = function() {
+      if (currentTestIndex < QUESTIONS_LIST.length - 1) {
+        currentTestIndex++;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const appDiv = document.getElementById('app');
+        appDiv.innerHTML = renderTestPage();
+      }
+    };
+
+    window.prevTestQuestion = function() {
+      if (currentTestIndex > 0) {
+        currentTestIndex--;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const appDiv = document.getElementById('app');
+        appDiv.innerHTML = renderTestPage();
+      }
+    };
+
+    window.goToReview = function() {
+      window.location.hash = '#/review';
+    };
+
+    // ==========================================
+    // RENDER HALAMAN: REVIEW JAWABAN (#/review)
+    // ==========================================
+    function renderReviewPage() {
+      if (!testParticipant) {
+        window.location.hash = '#/start';
+        return '';
+      }
+
+      const answeredCount = Object.keys(userAnswers).length;
+      const isComplete = answeredCount === QUESTIONS_LIST.length;
+
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-3xl mx-auto w-full">
+          <div class="w-full bg-darkSurface/90 border border-gold/30 rounded-3xl p-8 glow-box mb-8 text-center">
+            <h1 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Review Jawaban Dominioner</h1>
+            <p class="text-xs text-secondaryText">
+              Pastikan seluruh 30 pertanyaan telah terjawab sebelum menghitung profil BLDS Flames milikmu.
+            </p>
+            <div class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-xs font-semibold text-gold">
+              <span>Terjawab: ${answeredCount} dari 30</span>
+            </div>
+          </div>
+
+          <div class="w-full space-y-4 mb-8">
+            ${QUESTIONS_LIST.map((q, idx) => {
+              const ans = userAnswers[q.id];
+              return `
+                <div class="bg-darkSurface/60 border ${ans ? 'border-gold/20' : 'border-crimson/30'} rounded-2xl p-5 flex items-center justify-between gap-4">
+                  <div>
+                    <span class="text-[10px] text-mutedText uppercase tracking-wider block mb-1">Soal ${idx + 1}</span>
+                    <p class="text-xs text-primaryText font-medium line-clamp-1">${escapeHTML(q.text)}</p>
+                  </div>
+                  <div class="flex items-center gap-3 shrink-0">
+                    <span class="px-3 py-1 rounded-lg text-xs font-bold ${ans ? 'bg-gold/20 text-gold border border-gold/40' : 'bg-crimson/20 text-crimson border border-crimson/40'}">
+                      ${ans ? `Opsi ${ans}` : 'Belum'}
+                    </span>
+                    <button onclick="window.jumpToQuestion(${idx})" class="text-xs text-gold underline hover:text-brightGold">Ubah</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="w-full flex items-center justify-between">
+            <a href="#/test" class="px-5 py-2.5 rounded-xl border border-gold/30 text-gold text-xs font-semibold hover:bg-gold/10 transition-all">
+              Kembali ke Tes
+            </a>
+            <button
+              onclick="window.submitTestResult()"
+              ${!isComplete ? 'disabled' : ''}
+              class="px-8 py-3.5 rounded-xl text-xs font-cinzel font-bold flex items-center gap-2 transition-all glow-btn ${
+                !isComplete ? 'bg-white/10 text-mutedText cursor-not-allowed' : 'bg-gold text-obsidian hover:bg-brightGold'
+              }"
+            >
+              <span>Hitung & Lihat Profil Flames</span>
+            </button>
+          </div>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    window.jumpToQuestion = function(idx) {
+      currentTestIndex = idx;
+      window.location.hash = '#/test';
+    };
+
+    window.submitTestResult = async function() {
+      if (!testParticipant) return;
+      const { rawScores, percentages } = calculateScores(userAnswers);
+
+      const resultId = 'res_' + Math.random().toString(36).substring(2, 12);
+      const participantResult = {
+        id: resultId,
+        participantId: testParticipant.id,
+        name: testParticipant.name,
+        createdAt: testParticipant.createdAt,
+        completedAt: Date.now(),
+        status: 'completed',
+        questionSetVersion: QUESTION_SET_VERSION,
+        algorithmVersion: ALGORITHM_VERSION,
+        answers: userAnswers,
+        rawScores,
+        percentages
+      };
+
+      // Simpan ke localStorage dulu sebagai fallback andalan
+      localStorage.setItem(`blds_result_${resultId}`, JSON.stringify(participantResult));
+
+      // Coba simpan ke Firebase Realtime Database jika terinisialisasi
+      if (isFirebaseInitialized && db) {
+        try {
+          await set(ref(db, `participants/${resultId}`), participantResult);
+          showToast('Profil berhasil disimpan ke arsip rahasia BLDS!', 'success');
+        } catch (e) {
+          console.error("Gagal simpan ke Firebase:", e);
+          showToast('Gagal terhubung ke Firebase, hasil tersimpan di mode lokal.', 'error');
         }
+      } else {
+        showToast('Hasil berhasil dihitung (Mode Demo/Lokal).', 'success');
+      }
 
-        function toggleDetails() {
-            const content = document.getElementById('details-content');
-            content.classList.toggle('open');
-        }
+      window.location.hash = `#/result/${resultId}`;
+    };
 
-        // --- FIREBASE API INTERACTION ---
-        async function saveToFirebase() {
-            if (!AppState.participantId || !AppState.results) return;
+    // ==========================================
+    // RENDER HALAMAN: HASIL (#/result/:id)
+    // ==========================================
+    function renderResultPage(resultId) {
+      let resultData = null;
+      // Cek localStorage
+      const local = localStorage.getItem(`blds_result_${resultId}`);
+      if (local) {
+        resultData = JSON.parse(local);
+      }
 
-            const res = AppState.results;
-            const payload = {
-                displayName: AppState.displayName,
-                normalizedName: AppState.normalizedName,
-                answers: AppState.answers,
-                primaryFlame: res.primaryFlame.name,
-                secondaryFlame: res.secondaryFlame.name,
-                tertiaryFlame: res.tertiaryFlame.name,
-                primaryShadow: res.primaryShadow.name,
-                flameScores: res.allFlames.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.score }), {}),
-                shadowScores: res.allShadows.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.score }), {}),
-                resonanceState: res.isUnstable ? "UNSTABLE" : "STABLE",
-                completed: true,
-                completedAt: new Date().toISOString()
-            };
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center px-6 py-12 max-w-5xl mx-auto w-full">
+          <div id="result-content" class="w-full flex flex-col items-center">
+            ${!resultData ? `
+              <div class="w-full bg-darkSurface/90 border border-gold/30 rounded-3xl p-12 text-center glow-box">
+                <h1 class="text-2xl font-cinzel font-bold text-gold mb-2">Memuat Arsip Kepribadian...</h1>
+                <p class="text-xs text-mutedText">Mencari data profil Dominioner dalam dimensi BLDS.</p>
+              </div>
+            ` : `
+              <!-- Header Result -->
+              <div class="w-full bg-darkSurface/90 border border-gold/30 rounded-3xl p-8 glow-box text-center mb-10">
+                <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                  <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-lg border border-gold/40 rounded-xl w-full h-full bg-obsidian">BLDS</div>
+                </div>
+                <span class="text-xs text-gold font-cinzel tracking-widest uppercase block mb-1">Arsip Profil Resmi • BLDS FLAMES</span>
+                <h1 class="text-3xl font-cinzel font-bold text-primaryText mb-2 text-glow-gold">${escapeHTML(resultData.name)}</h1>
+                <p class="text-xs text-mutedText">
+                  Diselesaikan pada ${new Date(resultData.completedAt).toLocaleDateString('id-ID', { dateStyle: 'full' })}
+                </p>
 
-            try {
-                // Save Participant Data
-                await fetch(`${DB_URL}participants/${AppState.participantId}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
+                  <button
+                    onclick="window.copyResultSummary('${resultId}')"
+                    class="px-5 py-2.5 rounded-xl bg-gold/10 border border-gold/30 text-gold text-xs font-semibold flex items-center gap-2 hover:bg-gold/20 transition-all glow-btn"
+                  >
+                    <span>Salin Ringkasan Profil</span>
+                  </button>
+                  <a href="#/" class="px-5 py-2.5 rounded-xl border border-gold/30 text-gold text-xs font-semibold hover:bg-gold/10 transition-all">
+                    Kembali ke Beranda
+                  </a>
+                </div>
+              </div>
 
-                // Reserve Name in Registry
-                await fetch(`${DB_URL}nameRegistry/${encodeURIComponent(AppState.normalizedName)}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ participantId: AppState.participantId, registeredAt: new Date().toISOString() })
-                });
+              <!-- 12 Flames Section -->
+              <div class="w-full mb-12">
+                <h2 class="text-xl font-cinzel font-bold text-gold mb-6 text-glow-gold flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-gold shadow-[0_0_10px_rgba(217,173,85,0.9)]"></span>
+                  <span>12 FLAMES (Sisi Konstruktif)</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  ${FLAMES_LIST.map(flame => {
+                    const pct = resultData.percentages[flame.id] || 0;
+                    return `
+                      <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box flex flex-col justify-between">
+                        <div>
+                          <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-cinzel font-bold text-gold tracking-widest">${escapeHTML(flame.nameEn)}</span>
+                            <span class="text-sm font-bold text-brightGold">${pct}%</span>
+                          </div>
+                          <h3 class="text-sm font-semibold text-primaryText mb-2">${escapeHTML(flame.nameId)}</h3>
+                          <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-gold/20 mb-3">
+                            <div class="h-full bg-gold transition-all duration-500" style="width: ${pct}%"></div>
+                          </div>
+                          <p class="text-xs text-secondaryText leading-relaxed">${escapeHTML(flame.description)}</p>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
 
-            } catch (err) {
-                console.error("Firebase sync error:", err);
-                showToast("CORE SYNC INTERRUPTED - LOCAL DATA RETAINED", "warning");
+              <!-- 12 Shadow Flames Section -->
+              <div class="w-full mb-12">
+                <h2 class="text-xl font-cinzel font-bold text-crimson mb-6 text-glow-crimson flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-crimson shadow-[0_0_10px_rgba(197,77,105,0.9)]"></span>
+                  <span>12 SHADOW FLAMES (Sisi Tantangan)</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  ${SHADOWS_LIST.map(shadow => {
+                    const pct = resultData.percentages[shadow.id] || 0;
+                    return `
+                      <div class="bg-darkSurface/60 border border-crimson/20 rounded-2xl p-6 flex flex-col justify-between">
+                        <div>
+                          <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-cinzel font-bold text-crimson tracking-widest">${escapeHTML(shadow.nameEn)}</span>
+                            <span class="text-sm font-bold text-primaryText">${pct}%</span>
+                          </div>
+                          <h3 class="text-sm font-semibold text-primaryText mb-2">${escapeHTML(shadow.nameId)}</h3>
+                          <div class="w-full h-2 bg-obsidian rounded-full overflow-hidden border border-crimson/20 mb-3">
+                            <div class="h-full bg-crimson transition-all duration-500" style="width: ${pct}%"></div>
+                          </div>
+                          <p class="text-xs text-secondaryText leading-relaxed">${escapeHTML(shadow.description)}</p>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `}
+          </div>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    window.copyResultSummary = function(resultId) {
+      const local = localStorage.getItem(`blds_result_${resultId}`);
+      if (!local) return;
+      const data = JSON.parse(local);
+      const text = `Profil BLDS Flames - ${data.name}\nTanggal: ${new Date(data.completedAt).toLocaleDateString()}\nJelajahi arsip kepribadian BLACKLIGHTDOMINIONS.`;
+      navigator.clipboard.writeText(text);
+      showToast('Ringkasan profil berhasil disalin!', 'success');
+    };
+
+    // ==========================================
+    // RENDER HALAMAN: ADMIN LOGIN (#/admin/login)
+    // ==========================================
+    function renderAdminLoginPage() {
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center justify-center px-6 py-12">
+          <div class="w-full max-w-md bg-darkSurface/90 border border-gold/30 rounded-3xl p-8 glow-box flex flex-col items-center text-center">
+            <div class="relative w-20 h-20 mb-4 flex items-center justify-center">
+              <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-lg border border-gold/40 rounded-xl w-full h-full bg-obsidian">BLDS</div>
+            </div>
+
+            <h1 class="text-2xl font-cinzel font-bold text-gold mb-2 text-glow-gold">Admin Portal</h1>
+            <p class="text-xs text-secondaryText mb-8">Autentikasi khusus pengelola arsip BLACKLIGHTDOMINIONS.</p>
+
+            <form id="admin-login-form" onsubmit="window.handleAdminLogin(event)" class="w-full space-y-4 text-left">
+              <div>
+                <label class="block text-xs font-medium text-mutedText mb-1 uppercase tracking-wider">Email Admin</label>
+                <input
+                  type="email"
+                  id="admin-email"
+                  required
+                  class="w-full bg-obsidian border border-gold/20 rounded-xl px-4 py-3 text-sm text-primaryText focus:outline-none focus:border-gold"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-mutedText mb-1 uppercase tracking-wider">Password</label>
+                <input
+                  type="password"
+                  id="admin-password"
+                  required
+                  class="w-full bg-obsidian border border-gold/20 rounded-xl px-4 py-3 text-sm text-primaryText focus:outline-none focus:border-gold"
+                />
+              </div>
+
+              <div id="login-error" class="text-xs text-crimson text-center hidden"></div>
+
+              <button
+                type="submit"
+                class="w-full py-3.5 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-xs tracking-wider hover:bg-brightGold transition-all flex items-center justify-center gap-2 glow-btn"
+              >
+                <span>Masuk Dashboard</span>
+              </button>
+            </form>
+          </div>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    window.handleAdminLogin = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('admin-email').value;
+      const password = document.getElementById('admin-password').value;
+      const errBox = document.getElementById('login-error');
+
+      if (!isFirebaseInitialized || !auth) {
+        errBox.textContent = "Firebase belum dikonfigurasi. Masukkan konfigurasi API Key terlebih dahulu.";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showToast('Login admin berhasil!', 'success');
+        window.location.hash = '#/admin';
+      } catch (err) {
+        console.error(err);
+        errBox.textContent = "Login gagal. Periksa kembali email dan password Anda.";
+        errBox.classList.remove('hidden');
+      }
+    };
+
+    // ==========================================
+    // RENDER HALAMAN: ADMIN DASHBOARD & SUB-ROUTE
+    // ==========================================
+    function renderAdminLayout(activeTab, contentHtml) {
+      return `
+        <div class="min-h-screen bg-obsidian text-primaryText flex flex-col md:flex-row">
+          <aside class="w-full md:w-64 bg-darkSurface border-b md:border-b-0 md:border-r border-gold/20 flex flex-col">
+            <div class="p-6 border-b border-gold/10 flex items-center gap-3">
+              <div class="relative w-10 h-10 flex items-center justify-center">
+                <img src="./public/logo.png" alt="BLDS Logo" class="w-full h-full object-contain logo-glow" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                <div class="hidden items-center justify-center font-cinzel font-bold text-gold text-xs border border-gold/40 rounded-lg w-full h-full bg-obsidian">BLDS</div>
+              </div>
+              <div>
+                <h1 class="font-cinzel font-bold text-sm text-gold tracking-wider">BLDS ADMIN</h1>
+                <p class="text-[10px] text-mutedText">Dominioners Archive</p>
+              </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-1 font-sans">
+              <a href="#/admin" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'dashboard' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+                <span>Dashboard</span>
+              </a>
+              <a href="#/admin/participants" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'participants' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+                <span>Peserta</span>
+              </a>
+              <a href="#/admin/statistics" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'statistics' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+                <span>Statistik</span>
+              </a>
+              <a href="#/admin/settings" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition-all ${activeTab === 'settings' ? 'bg-gold/15 text-gold border border-gold/30 glow-box' : 'text-secondaryText hover:bg-white/5 hover:text-primaryText'}">
+                <span>Pengaturan</span>
+              </a>
+            </nav>
+
+            <div class="p-4 border-t border-gold/10 space-y-2">
+              <a href="#/" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-mutedText hover:text-primaryText transition-colors">
+                <span>Kembali ke Beranda</span>
+              </a>
+              <button onclick="window.handleAdminLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-crimson hover:bg-crimson/10 transition-colors">
+                <span>Keluar</span>
+              </button>
+            </div>
+          </aside>
+
+          <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+            ${contentHtml}
+          </main>
+        </div>
+      `;
+    }
+
+    window.handleAdminLogout = async function() {
+      if (auth) {
+        await signOut(auth);
+      }
+      showToast('Berhasil keluar.', 'success');
+      window.location.hash = '#/admin/login';
+    };
+
+    function renderAdminDashboard() {
+      return renderAdminLayout('dashboard', `
+        <div class="space-y-8">
+          <div>
+            <h1 class="text-2xl font-cinzel font-bold text-gold mb-1 text-glow-gold">Dashboard Overview</h1>
+            <p class="text-xs text-mutedText">Statistik dan ringkasan aktivitas peserta BLDS FLAMES.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box">
+              <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Algoritma Versi</span>
+              <p class="text-3xl font-cinzel font-bold text-primaryText">v${ALGORITHM_VERSION}</p>
+            </div>
+            <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box">
+              <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Bank Soal</span>
+              <p class="text-3xl font-cinzel font-bold text-primaryText">30 Soal</p>
+            </div>
+            <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 glow-box">
+              <span class="text-xs text-mutedText uppercase tracking-wider block mb-2">Status Database</span>
+              <p class="text-sm font-semibold text-emerald-400 mt-2">${isFirebaseInitialized ? 'Terhubung' : 'Mode Lokal (Demo)'}</p>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderAdminParticipants() {
+      // Ambil data lokal untuk tabel admin
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('blds_result_'));
+      const participants = keys.map(k => JSON.parse(localStorage.getItem(k)));
+
+      return renderAdminLayout('participants', `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 class="text-2xl font-cinzel font-bold text-gold mb-1 text-glow-gold">Kelola Peserta</h1>
+              <p class="text-xs text-mutedText">Daftar Dominioner yang telah menyelesaikan tes (Lokal / Cache).</p>
+            </div>
+          </div>
+
+          <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-gold/20 bg-obsidian/40 text-[11px] text-mutedText uppercase tracking-wider font-cinzel">
+                  <th class="p-4">Nama</th>
+                  <th class="p-4">Tanggal</th>
+                  <th class="p-4">Status</th>
+                  <th class="p-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 text-xs">
+                ${participants.length === 0 ? `
+                  <tr><td colspan="4" class="p-6 text-center text-mutedText">Belum ada data peserta tersimpan di perangkat ini.</td></tr>
+                ` : participants.map(p => `
+                  <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-semibold text-primaryText">${escapeHTML(p.name)}</td>
+                    <td class="p-4 text-secondaryText">${new Date(p.completedAt).toLocaleDateString()}</td>
+                    <td class="p-4">
+                      <span class="px-2.5 py-1 rounded-full text-[10px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">${p.status}</span>
+                    </td>
+                    <td class="p-4 text-right space-x-2">
+                      <a href="#/result/${p.id}" class="inline-flex px-3 py-1 rounded-lg bg-gold/10 text-gold hover:bg-gold/25 transition-colors font-medium">Lihat</a>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderAdminStatistics() {
+      return renderAdminLayout('statistics', `
+        <div class="space-y-6">
+          <h1 class="text-2xl font-cinzel font-bold text-gold text-glow-gold">Statistik Agregat</h1>
+          <p class="text-xs text-mutedText">Analisis mendalam distribusi dimensi Flames dan Shadow Flames.</p>
+          <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-8 text-center text-mutedText">
+            Statistik agregat aktif membaca rekam jejak arsip Dominioners.
+          </div>
+        </div>
+      `);
+    }
+
+    function renderAdminSettings() {
+      return renderAdminLayout('settings', `
+        <div class="space-y-6">
+          <h1 class="text-2xl font-cinzel font-bold text-gold text-glow-gold">Pengaturan Sistem</h1>
+          <p class="text-xs text-mutedText">Konfigurasi Firebase Realtime Database & Versi Algoritma.</p>
+          <div class="bg-darkSurface/60 border border-gold/20 rounded-2xl p-6 space-y-4">
+            <div>
+              <span class="text-xs text-mutedText block uppercase">Database URL</span>
+              <span class="text-sm text-primaryText font-mono">https://blds-flame-default-rtdb.asia-southeast1.firebasedatabase.app</span>
+            </div>
+            <div>
+              <span class="text-xs text-mutedText block uppercase">Algoritma Versi</span>
+              <span class="text-sm text-primaryText font-mono">v${ALGORITHM_VERSION}</span>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderNotFound() {
+      return `
+        ${renderNavbar()}
+        <main class="flex-1 flex flex-col items-center justify-center px-6 text-center py-20">
+          <h1 class="text-3xl font-cinzel font-bold text-gold mb-2 text-glow-gold">404 • Dimensi Tidak Ditemukan</h1>
+          <p class="text-xs text-secondaryText mb-8">Halaman yang kamu cari tidak berada dalam arsip rahasia BLDS.</p>
+          <a href="#/" class="px-6 py-3 rounded-xl bg-gold text-obsidian font-cinzel font-bold text-xs tracking-wider hover:bg-brightGold transition-all glow-btn">
+            Kembali ke Beranda
+          </a>
+        </main>
+        ${renderFooter()}
+      `;
+    }
+
+    // ==========================================
+    // ROUTER UTAMA
+    // ==========================================
+    function router() {
+      const hash = window.location.hash || '#/';
+      const appDiv = document.getElementById('app');
+      if (!appDiv) return;
+
+      // Handle submit form di start page
+      setTimeout(() => {
+        const startForm = document.getElementById('start-form');
+        if (startForm) {
+          startForm.onsubmit = function(e) {
+            e.preventDefault();
+            const inputVal = document.getElementById('participant-name').value.trim();
+            const errEl = document.getElementById('name-error');
+            if (!inputVal) {
+              errEl.textContent = "Nama peserta wajib diisi.";
+              errEl.classList.remove('hidden');
+              return;
             }
-        }
-
-        // --- LOCAL STORAGE PROGRESS ---
-        function saveProgress() {
-            const data = {
-                displayName: AppState.displayName,
-                normalizedName: AppState.normalizedName,
-                participantId: AppState.participantId,
-                currentQuestionIndex: AppState.currentQuestionIndex,
-                answers: AppState.answers
-            };
-            localStorage.setItem('BLDS_FLAME_PROGRESS', JSON.stringify(data));
-        }
-
-        function loadProgress() {
-            const saved = localStorage.getItem('BLDS_FLAME_PROGRESS');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (parsed.answers && parsed.answers.length > 0) {
-                        AppState.displayName = parsed.displayName || "";
-                        AppState.normalizedName = parsed.normalizedName || "";
-                        AppState.participantId = parsed.participantId || null;
-                        AppState.currentQuestionIndex = parsed.currentQuestionIndex || 0;
-                        AppState.answers = parsed.answers || [];
-                        showToast("PREVIOUS RESONANCE SESSION RESTORED", "info");
-                    }
-                } catch (e) {
-                    console.error("Failed to parse local progress");
-                }
+            if (inputVal.length > 30) {
+              errEl.textContent = "Nama maksimal 30 karakter.";
+              errEl.classList.remove('hidden');
+              return;
             }
+            startNameInput = inputVal;
+            const participantId = 'dom_' + Math.random().toString(36).substring(2, 10);
+            testParticipant = {
+              id: participantId,
+              name: inputVal,
+              createdAt: Date.now()
+            };
+            currentTestIndex = 0;
+            userAnswers = {};
+            window.location.hash = '#/test';
+          };
         }
+      }, 50);
 
-        function clearProgress() {
-            localStorage.removeItem('BLDS_FLAME_PROGRESS');
-        }
+      if (hash === '#/' || hash === '') {
+        appDiv.innerHTML = renderLandingPage();
+      } else if (hash === '#/start') {
+        appDiv.innerHTML = renderStartPage();
+      } else if (hash === '#/test') {
+        appDiv.innerHTML = renderTestPage();
+      } else if (hash === '#/review') {
+        appDiv.innerHTML = renderReviewPage();
+      } else if (hash.startsWith('#/result/')) {
+        const id = hash.replace('#/result/', '');
+        appDiv.innerHTML = renderResultPage(id);
+      } else if (hash === '#/admin/login') {
+        appDiv.innerHTML = renderAdminLoginPage();
+      } else if (hash === '#/admin') {
+        appDiv.innerHTML = renderAdminDashboard();
+      } else if (hash === '#/admin/participants') {
+        appDiv.innerHTML = renderAdminParticipants();
+      } else if (hash === '#/admin/statistics') {
+        appDiv.innerHTML = renderAdminStatistics();
+      } else if (hash === '#/admin/settings') {
+        appDiv.innerHTML = renderAdminSettings();
+      } else {
+        appDiv.innerHTML = renderNotFound();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        function restartAssessment() {
-            AppState.currentQuestionIndex = 0;
-            AppState.answers = [];
-            AppState.selectedOptionIndex = null;
-            AppState.results = null;
-            initScores();
-            clearProgress();
-            switchView('view-landing');
-        }
-
-        // --- UTILITY: COPY RESULT ---
-        function copyResults() {
-            if (!AppState.results) return;
-
-            const res = AppState.results;
-            const text = `THE FLAME RESONANCE\nBLACKLIGHTDOMS\n\nName: ${AppState.displayName}\nID: ${AppState.participantId}\n\nPrimary Flame:\n${res.primaryFlame.name} — ${res.primaryFlame.score.toFixed(1)}/10 (${getTier(res.primaryFlame.score)})\n\nSecondary Flame:\n${res.secondaryFlame.name} — ${res.secondaryFlame.score.toFixed(1)}/10\n\nTertiary Flame:\n${res.tertiaryFlame.name} — ${res.tertiaryFlame.score.toFixed(1)}/10\n\nPrimary Shadow:\n${res.primaryShadow.name} — ${res.primaryShadow.score.toFixed(1)}/10\n\nResonance State:\n${res.isUnstable ? 'UNSTABLE RESONANCE' : 'STABLE'}`;
-
-            navigator.clipboard.writeText(text).then(() => {
-                showToast("RESULT COPIED TO CLIPBOARD", "info");
-            }).catch(() => {
-                showToast("FAILED TO COPY RESULT", "error");
-            });
-        }
-    </script>
+    window.addEventListener('hashchange', router);
+    window.addEventListener('DOMContentLoaded', router);
+  </script>
 </body>
 </html>
